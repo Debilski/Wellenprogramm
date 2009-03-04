@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+import glob
+import os
+import sys
+
+Import("env", 'target_bin_dir')
+#env.Append(QTDIR = '/usr/include/q')
+
+#env['CPPPATH'] += ['#/src']
+
+
+def takebasename(file) : return os.path.splitext(os.path.basename(file))[0]
+
+resources = [ env.Qrc(qrc, QT4_QRCFLAGS='-name '+takebasename(qrc))
+            for qrc in glob.glob('../../../ui/*.qrc')]
+interfaces = [env.Uic4(uic)
+            for uic in glob.glob('../../../ui/*.ui')]
+
+#env.Program('application', ['main.cpp', 'mainwindow.cpp', 'latticewindow.cpp']+resources, LIBS=env["LIBS"]+["fhnmodel2b", "fhnlatticeb"])
+
+#env.Program('maintest', ['main.cpp'])
+
+if not sys.platform=="darwin" :
+    env.Append( LINKFLAGS = "-Wl,--export-dynamic" )
+    env.Append( LINKFLAGS = Split('-z origin') )
+    env.Append( RPATH = env.Literal(os.path.join('\\$$ORIGIN', 'lib')))
+
+env.Program('plot', ['plot.cpp', 'main_window.cpp', 'plotwindow_2d.cpp', 'defects_editor.cpp', 'script_editor.cpp', 'tiny_double_edit.cpp'], LIBS=["lattice_plugin_registration"]+env["LIBS"], LINKFLAGS = "-static-libgcc -ldl -Wl -lstdc++ -Wl,--export-dynamic ")#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")
+

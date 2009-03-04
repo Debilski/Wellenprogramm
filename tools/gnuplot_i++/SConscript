@@ -1,0 +1,5 @@
+# import these variables from the parent build script
+import os
+Import('env', 'sources', 'static_libs', 'test_sources', 'target_lib_dir')
+
+gnuplot = env.Library(target_lib_dir + os.sep + 'gnuplot_i++', 'gnuplot_i.cc')

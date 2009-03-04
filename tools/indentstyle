@@ -1,0 +1,4 @@
+#!/bin/bash
+
+indent -bad --blank-lines-after-procedures -br -ce -cdw -i4 -ncs -npcs -nut -npsl -fca -lc79 -fc1 $1
+

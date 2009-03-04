@@ -1,0 +1,617 @@
+/********************************************************************************
+** Form generated from reading ui file 'plotwindow_2d.ui'
+**
+** Created: Sun Jan 11 13:49:55 2009
+**      by: Qt User Interface Compiler version 4.4.3
+**
+** WARNING! All changes made in this file will be lost when recompiling ui file!
+********************************************************************************/
+
+#ifndef UI_PLOTWINDOW_2D_H
+#define UI_PLOTWINDOW_2D_H
+
+#include <QtCore/QVariant>
+#include <QtGui/QAction>
+#include <QtGui/QApplication>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QComboBox>
+#include <QtGui/QDockWidget>
+#include <QtGui/QDoubleSpinBox>
+#include <QtGui/QFormLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QMainWindow>
+#include <QtGui/QMenu>
+#include <QtGui/QMenuBar>
+#include <QtGui/QPushButton>
+#include <QtGui/QSpacerItem>
+#include <QtGui/QSpinBox>
+#include <QtGui/QTabWidget>
+#include <QtGui/QToolBar>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QWidget>
+#include "qwt_plot.h"
+
+QT_BEGIN_NAMESPACE
+
+class Ui_plotWindow_2d
+{
+public:
+    QAction *actionTest;
+    QAction *actionOpen;
+    QAction *actionResize_program_window_to_force_update;
+    QAction *actionShow_Curvature;
+    QAction *actionShow_Cluster_Ids;
+    QAction *actionStartStop;
+    QAction *actionClear;
+    QAction *actionSave;
+    QAction *actionRecall;
+    QAction *actionDump;
+    QAction *actionUndump;
+    QAction *actionSave_as_Png;
+    QAction *actionLoad_from_Png;
+    QAction *actionSave_as_Movie_Pngs;
+    QAction *actionEdit_defects;
+    QAction *actionBistabiles;
+    QAction *action25_ms;
+    QAction *action100_ms;
+    QAction *action500_ms;
+    QAction *action1_s;
+    QAction *action5_s;
+    QAction *actionClose_Window;
+    QAction *actionDefault_Colour_Scheme;
+    QAction *actionAdaptive_Scheme;
+    QAction *actionDelayed_Adaptive_Scheme;
+    QAction *actionStandard;
+    QAction *actionGrey;
+    QAction *actionJet;
+    QAction *actionAbout;
+    QAction *actionShow_Slice;
+    QWidget *centralwidget;
+    QVBoxLayout *centralLayout;
+    QWidget *widget;
+    QVBoxLayout *_2;
+    QWidget *buttonWidget;
+    QHBoxLayout *horizontalLayout_2;
+    QPushButton *startStopButton;
+    QPushButton *clearButton;
+    QSpacerItem *horizontalSpacer;
+    QLabel *simulationTimeLabel;
+    QWidget *infoWidget;
+    QHBoxLayout *horizontalLayout_5;
+    QLabel *clusterNumberLabel;
+    QLabel *gammaLabel;
+    QLabel *waveSizeLabel;
+    QSpacerItem *horizontalSpacer_2;
+    QTabWidget *plotTabWidget;
+    QWidget *tab;
+    QHBoxLayout *horizontalLayout_4;
+    QwtPlot *oldgraph;
+    QWidget *tab_2;
+    QMenuBar *menubar;
+    QMenu *menuMode;
+    QMenu *menuProgram_Settings;
+    QMenu *menuSelect_Colour_Scheme;
+    QMenu *menuCluster_Tracking;
+    QMenu *menuDefects;
+    QMenu *menuUpdate_Period;
+    QMenu *menuAbout;
+    QDockWidget *simulationWidget;
+    QWidget *simulationWidgetContents;
+    QHBoxLayout *horizontalLayout_3;
+    QFormLayout *simulationWidgetFormLayout;
+    QLabel *label;
+    QDoubleSpinBox *noiseBox;
+    QLabel *label_6;
+    QSpinBox *noise_correlationValue;
+    QLabel *label_9;
+    QComboBox *boundaryConditionsComboBox;
+    QDoubleSpinBox *timestepValue;
+    QLabel *label_7;
+    QDockWidget *parameterWidget;
+    QWidget *parameterWidgetContents;
+    QVBoxLayout *verticalLayout;
+    QFormLayout *parameterWidgetFormLayout;
+    QDockWidget *sliceWidget;
+    QWidget *sliceWidgetContents;
+    QHBoxLayout *horizontalLayout;
+    QwtPlot *slicePlot;
+    QDockWidget *adaptationParameterWidget;
+    QWidget *adaptationParameterWidgetContents;
+    QVBoxLayout *verticalLayout_3;
+    QFormLayout *adaptationParameterWidgetFormLayout;
+    QDockWidget *extrasWidget;
+    QWidget *extrasWidgetContents;
+    QVBoxLayout *verticalLayout_31;
+    QFormLayout *extrasWidgetFormLayout;
+    QLabel *label_10;
+    QDoubleSpinBox *midpoint_sizeValue;
+    QToolBar *toolBar;
+
+    void setupUi(QMainWindow *plotWindow_2d)
+    {
+    if (plotWindow_2d->objectName().isEmpty())
+        plotWindow_2d->setObjectName(QString::fromUtf8("plotWindow_2d"));
+    plotWindow_2d->resize(732, 566);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(plotWindow_2d->sizePolicy().hasHeightForWidth());
+    plotWindow_2d->setSizePolicy(sizePolicy);
+    actionTest = new QAction(plotWindow_2d);
+    actionTest->setObjectName(QString::fromUtf8("actionTest"));
+    actionOpen = new QAction(plotWindow_2d);
+    actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
+    actionResize_program_window_to_force_update = new QAction(plotWindow_2d);
+    actionResize_program_window_to_force_update->setObjectName(QString::fromUtf8("actionResize_program_window_to_force_update"));
+    actionResize_program_window_to_force_update->setCheckable(true);
+    actionShow_Curvature = new QAction(plotWindow_2d);
+    actionShow_Curvature->setObjectName(QString::fromUtf8("actionShow_Curvature"));
+    actionShow_Curvature->setCheckable(true);
+    actionShow_Curvature->setEnabled(true);
+    actionShow_Cluster_Ids = new QAction(plotWindow_2d);
+    actionShow_Cluster_Ids->setObjectName(QString::fromUtf8("actionShow_Cluster_Ids"));
+    actionShow_Cluster_Ids->setCheckable(true);
+    actionStartStop = new QAction(plotWindow_2d);
+    actionStartStop->setObjectName(QString::fromUtf8("actionStartStop"));
+    actionClear = new QAction(plotWindow_2d);
+    actionClear->setObjectName(QString::fromUtf8("actionClear"));
+    actionSave = new QAction(plotWindow_2d);
+    actionSave->setObjectName(QString::fromUtf8("actionSave"));
+    actionRecall = new QAction(plotWindow_2d);
+    actionRecall->setObjectName(QString::fromUtf8("actionRecall"));
+    actionDump = new QAction(plotWindow_2d);
+    actionDump->setObjectName(QString::fromUtf8("actionDump"));
+    actionUndump = new QAction(plotWindow_2d);
+    actionUndump->setObjectName(QString::fromUtf8("actionUndump"));
+    actionSave_as_Png = new QAction(plotWindow_2d);
+    actionSave_as_Png->setObjectName(QString::fromUtf8("actionSave_as_Png"));
+    actionLoad_from_Png = new QAction(plotWindow_2d);
+    actionLoad_from_Png->setObjectName(QString::fromUtf8("actionLoad_from_Png"));
+    actionSave_as_Movie_Pngs = new QAction(plotWindow_2d);
+    actionSave_as_Movie_Pngs->setObjectName(QString::fromUtf8("actionSave_as_Movie_Pngs"));
+    actionEdit_defects = new QAction(plotWindow_2d);
+    actionEdit_defects->setObjectName(QString::fromUtf8("actionEdit_defects"));
+    actionBistabiles = new QAction(plotWindow_2d);
+    actionBistabiles->setObjectName(QString::fromUtf8("actionBistabiles"));
+    action25_ms = new QAction(plotWindow_2d);
+    action25_ms->setObjectName(QString::fromUtf8("action25_ms"));
+    action25_ms->setCheckable(true);
+    action100_ms = new QAction(plotWindow_2d);
+    action100_ms->setObjectName(QString::fromUtf8("action100_ms"));
+    action100_ms->setCheckable(true);
+    action500_ms = new QAction(plotWindow_2d);
+    action500_ms->setObjectName(QString::fromUtf8("action500_ms"));
+    action500_ms->setCheckable(true);
+    action1_s = new QAction(plotWindow_2d);
+    action1_s->setObjectName(QString::fromUtf8("action1_s"));
+    action1_s->setCheckable(true);
+    action5_s = new QAction(plotWindow_2d);
+    action5_s->setObjectName(QString::fromUtf8("action5_s"));
+    action5_s->setCheckable(true);
+    actionClose_Window = new QAction(plotWindow_2d);
+    actionClose_Window->setObjectName(QString::fromUtf8("actionClose_Window"));
+    actionDefault_Colour_Scheme = new QAction(plotWindow_2d);
+    actionDefault_Colour_Scheme->setObjectName(QString::fromUtf8("actionDefault_Colour_Scheme"));
+    actionDefault_Colour_Scheme->setCheckable(true);
+    actionAdaptive_Scheme = new QAction(plotWindow_2d);
+    actionAdaptive_Scheme->setObjectName(QString::fromUtf8("actionAdaptive_Scheme"));
+    actionAdaptive_Scheme->setCheckable(true);
+    actionDelayed_Adaptive_Scheme = new QAction(plotWindow_2d);
+    actionDelayed_Adaptive_Scheme->setObjectName(QString::fromUtf8("actionDelayed_Adaptive_Scheme"));
+    actionDelayed_Adaptive_Scheme->setCheckable(true);
+    actionStandard = new QAction(plotWindow_2d);
+    actionStandard->setObjectName(QString::fromUtf8("actionStandard"));
+    actionStandard->setCheckable(true);
+    actionGrey = new QAction(plotWindow_2d);
+    actionGrey->setObjectName(QString::fromUtf8("actionGrey"));
+    actionGrey->setCheckable(true);
+    actionJet = new QAction(plotWindow_2d);
+    actionJet->setObjectName(QString::fromUtf8("actionJet"));
+    actionJet->setCheckable(true);
+    actionAbout = new QAction(plotWindow_2d);
+    actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
+    actionShow_Slice = new QAction(plotWindow_2d);
+    actionShow_Slice->setObjectName(QString::fromUtf8("actionShow_Slice"));
+    actionShow_Slice->setCheckable(true);
+    centralwidget = new QWidget(plotWindow_2d);
+    centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
+    sizePolicy.setHeightForWidth(centralwidget->sizePolicy().hasHeightForWidth());
+    centralwidget->setSizePolicy(sizePolicy);
+    centralLayout = new QVBoxLayout(centralwidget);
+    centralLayout->setSpacing(0);
+    centralLayout->setMargin(0);
+    centralLayout->setObjectName(QString::fromUtf8("centralLayout"));
+    widget = new QWidget(centralwidget);
+    widget->setObjectName(QString::fromUtf8("widget"));
+    _2 = new QVBoxLayout(widget);
+    _2->setObjectName(QString::fromUtf8("_2"));
+    buttonWidget = new QWidget(widget);
+    buttonWidget->setObjectName(QString::fromUtf8("buttonWidget"));
+    horizontalLayout_2 = new QHBoxLayout(buttonWidget);
+    horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+    startStopButton = new QPushButton(buttonWidget);
+    startStopButton->setObjectName(QString::fromUtf8("startStopButton"));
+
+    horizontalLayout_2->addWidget(startStopButton);
+
+    clearButton = new QPushButton(buttonWidget);
+    clearButton->setObjectName(QString::fromUtf8("clearButton"));
+
+    horizontalLayout_2->addWidget(clearButton);
+
+    horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+    horizontalLayout_2->addItem(horizontalSpacer);
+
+    simulationTimeLabel = new QLabel(buttonWidget);
+    simulationTimeLabel->setObjectName(QString::fromUtf8("simulationTimeLabel"));
+    simulationTimeLabel->setMinimumSize(QSize(60, 0));
+    QFont font;
+    font.setBold(true);
+    font.setWeight(75);
+    simulationTimeLabel->setFont(font);
+    simulationTimeLabel->setFrameShape(QFrame::Box);
+    simulationTimeLabel->setFrameShadow(QFrame::Sunken);
+
+    horizontalLayout_2->addWidget(simulationTimeLabel);
+
+
+    _2->addWidget(buttonWidget);
+
+    infoWidget = new QWidget(widget);
+    infoWidget->setObjectName(QString::fromUtf8("infoWidget"));
+    horizontalLayout_5 = new QHBoxLayout(infoWidget);
+    horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+    clusterNumberLabel = new QLabel(infoWidget);
+    clusterNumberLabel->setObjectName(QString::fromUtf8("clusterNumberLabel"));
+    clusterNumberLabel->setMinimumSize(QSize(60, 0));
+    clusterNumberLabel->setFont(font);
+    clusterNumberLabel->setFrameShape(QFrame::Box);
+    clusterNumberLabel->setFrameShadow(QFrame::Sunken);
+
+    horizontalLayout_5->addWidget(clusterNumberLabel);
+
+    gammaLabel = new QLabel(infoWidget);
+    gammaLabel->setObjectName(QString::fromUtf8("gammaLabel"));
+    gammaLabel->setMinimumSize(QSize(72, 0));
+    gammaLabel->setFont(font);
+    gammaLabel->setFrameShape(QFrame::Box);
+    gammaLabel->setFrameShadow(QFrame::Sunken);
+
+    horizontalLayout_5->addWidget(gammaLabel);
+
+    waveSizeLabel = new QLabel(infoWidget);
+    waveSizeLabel->setObjectName(QString::fromUtf8("waveSizeLabel"));
+    waveSizeLabel->setMinimumSize(QSize(60, 0));
+    waveSizeLabel->setFont(font);
+    waveSizeLabel->setFrameShape(QFrame::Box);
+    waveSizeLabel->setFrameShadow(QFrame::Sunken);
+
+    horizontalLayout_5->addWidget(waveSizeLabel);
+
+    horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+    horizontalLayout_5->addItem(horizontalSpacer_2);
+
+
+    _2->addWidget(infoWidget);
+
+    plotTabWidget = new QTabWidget(widget);
+    plotTabWidget->setObjectName(QString::fromUtf8("plotTabWidget"));
+    tab = new QWidget();
+    tab->setObjectName(QString::fromUtf8("tab"));
+    horizontalLayout_4 = new QHBoxLayout(tab);
+    horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+    oldgraph = new QwtPlot(tab);
+    oldgraph->setObjectName(QString::fromUtf8("oldgraph"));
+    sizePolicy.setHeightForWidth(oldgraph->sizePolicy().hasHeightForWidth());
+    oldgraph->setSizePolicy(sizePolicy);
+
+    horizontalLayout_4->addWidget(oldgraph);
+
+    plotTabWidget->addTab(tab, QString());
+    tab_2 = new QWidget();
+    tab_2->setObjectName(QString::fromUtf8("tab_2"));
+    plotTabWidget->addTab(tab_2, QString());
+
+    _2->addWidget(plotTabWidget);
+
+
+    centralLayout->addWidget(widget);
+
+    plotWindow_2d->setCentralWidget(centralwidget);
+    menubar = new QMenuBar(plotWindow_2d);
+    menubar->setObjectName(QString::fromUtf8("menubar"));
+    menubar->setEnabled(true);
+    menubar->setGeometry(QRect(0, 0, 732, 20));
+    menuMode = new QMenu(menubar);
+    menuMode->setObjectName(QString::fromUtf8("menuMode"));
+    menuProgram_Settings = new QMenu(menubar);
+    menuProgram_Settings->setObjectName(QString::fromUtf8("menuProgram_Settings"));
+    menuSelect_Colour_Scheme = new QMenu(menuProgram_Settings);
+    menuSelect_Colour_Scheme->setObjectName(QString::fromUtf8("menuSelect_Colour_Scheme"));
+    menuCluster_Tracking = new QMenu(menubar);
+    menuCluster_Tracking->setObjectName(QString::fromUtf8("menuCluster_Tracking"));
+    menuDefects = new QMenu(menubar);
+    menuDefects->setObjectName(QString::fromUtf8("menuDefects"));
+    menuUpdate_Period = new QMenu(menubar);
+    menuUpdate_Period->setObjectName(QString::fromUtf8("menuUpdate_Period"));
+    menuAbout = new QMenu(menubar);
+    menuAbout->setObjectName(QString::fromUtf8("menuAbout"));
+    plotWindow_2d->setMenuBar(menubar);
+    simulationWidget = new QDockWidget(plotWindow_2d);
+    simulationWidget->setObjectName(QString::fromUtf8("simulationWidget"));
+    simulationWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
+    simulationWidgetContents = new QWidget();
+    simulationWidgetContents->setObjectName(QString::fromUtf8("simulationWidgetContents"));
+    horizontalLayout_3 = new QHBoxLayout(simulationWidgetContents);
+    horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+    simulationWidgetFormLayout = new QFormLayout();
+    simulationWidgetFormLayout->setObjectName(QString::fromUtf8("simulationWidgetFormLayout"));
+    label = new QLabel(simulationWidgetContents);
+    label->setObjectName(QString::fromUtf8("label"));
+
+    simulationWidgetFormLayout->setWidget(1, QFormLayout::LabelRole, label);
+
+    noiseBox = new QDoubleSpinBox(simulationWidgetContents);
+    noiseBox->setObjectName(QString::fromUtf8("noiseBox"));
+    noiseBox->setDecimals(6);
+    noiseBox->setMaximum(1e+07);
+    noiseBox->setSingleStep(0.01);
+
+    simulationWidgetFormLayout->setWidget(1, QFormLayout::FieldRole, noiseBox);
+
+    label_6 = new QLabel(simulationWidgetContents);
+    label_6->setObjectName(QString::fromUtf8("label_6"));
+
+    simulationWidgetFormLayout->setWidget(2, QFormLayout::LabelRole, label_6);
+
+    noise_correlationValue = new QSpinBox(simulationWidgetContents);
+    noise_correlationValue->setObjectName(QString::fromUtf8("noise_correlationValue"));
+    noise_correlationValue->setMinimum(-1);
+    noise_correlationValue->setMaximum(10000);
+    noise_correlationValue->setValue(-1);
+
+    simulationWidgetFormLayout->setWidget(2, QFormLayout::FieldRole, noise_correlationValue);
+
+    label_9 = new QLabel(simulationWidgetContents);
+    label_9->setObjectName(QString::fromUtf8("label_9"));
+
+    simulationWidgetFormLayout->setWidget(3, QFormLayout::LabelRole, label_9);
+
+    boundaryConditionsComboBox = new QComboBox(simulationWidgetContents);
+    boundaryConditionsComboBox->setObjectName(QString::fromUtf8("boundaryConditionsComboBox"));
+
+    simulationWidgetFormLayout->setWidget(3, QFormLayout::FieldRole, boundaryConditionsComboBox);
+
+    timestepValue = new QDoubleSpinBox(simulationWidgetContents);
+    timestepValue->setObjectName(QString::fromUtf8("timestepValue"));
+    timestepValue->setDecimals(7);
+    timestepValue->setSingleStep(0.01);
+
+    simulationWidgetFormLayout->setWidget(0, QFormLayout::FieldRole, timestepValue);
+
+    label_7 = new QLabel(simulationWidgetContents);
+    label_7->setObjectName(QString::fromUtf8("label_7"));
+
+    simulationWidgetFormLayout->setWidget(0, QFormLayout::LabelRole, label_7);
+
+
+    horizontalLayout_3->addLayout(simulationWidgetFormLayout);
+
+    simulationWidget->setWidget(simulationWidgetContents);
+    plotWindow_2d->addDockWidget(static_cast<Qt::DockWidgetArea>(1), simulationWidget);
+    parameterWidget = new QDockWidget(plotWindow_2d);
+    parameterWidget->setObjectName(QString::fromUtf8("parameterWidget"));
+    parameterWidget->setFloating(true);
+    parameterWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
+    parameterWidgetContents = new QWidget();
+    parameterWidgetContents->setObjectName(QString::fromUtf8("parameterWidgetContents"));
+    verticalLayout = new QVBoxLayout(parameterWidgetContents);
+    verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+    parameterWidgetFormLayout = new QFormLayout();
+    parameterWidgetFormLayout->setObjectName(QString::fromUtf8("parameterWidgetFormLayout"));
+
+    verticalLayout->addLayout(parameterWidgetFormLayout);
+
+    parameterWidget->setWidget(parameterWidgetContents);
+    plotWindow_2d->addDockWidget(static_cast<Qt::DockWidgetArea>(1), parameterWidget);
+    sliceWidget = new QDockWidget(plotWindow_2d);
+    sliceWidget->setObjectName(QString::fromUtf8("sliceWidget"));
+    sliceWidget->setFloating(true);
+    sliceWidgetContents = new QWidget();
+    sliceWidgetContents->setObjectName(QString::fromUtf8("sliceWidgetContents"));
+    horizontalLayout = new QHBoxLayout(sliceWidgetContents);
+    horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+    slicePlot = new QwtPlot(sliceWidgetContents);
+    slicePlot->setObjectName(QString::fromUtf8("slicePlot"));
+
+    horizontalLayout->addWidget(slicePlot);
+
+    sliceWidget->setWidget(sliceWidgetContents);
+    plotWindow_2d->addDockWidget(static_cast<Qt::DockWidgetArea>(8), sliceWidget);
+    adaptationParameterWidget = new QDockWidget(plotWindow_2d);
+    adaptationParameterWidget->setObjectName(QString::fromUtf8("adaptationParameterWidget"));
+    adaptationParameterWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
+    adaptationParameterWidgetContents = new QWidget();
+    adaptationParameterWidgetContents->setObjectName(QString::fromUtf8("adaptationParameterWidgetContents"));
+    verticalLayout_3 = new QVBoxLayout(adaptationParameterWidgetContents);
+    verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
+    adaptationParameterWidgetFormLayout = new QFormLayout();
+    adaptationParameterWidgetFormLayout->setObjectName(QString::fromUtf8("adaptationParameterWidgetFormLayout"));
+    adaptationParameterWidgetFormLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
+    verticalLayout_3->addLayout(adaptationParameterWidgetFormLayout);
+
+    adaptationParameterWidget->setWidget(adaptationParameterWidgetContents);
+    plotWindow_2d->addDockWidget(static_cast<Qt::DockWidgetArea>(1), adaptationParameterWidget);
+    extrasWidget = new QDockWidget(plotWindow_2d);
+    extrasWidget->setObjectName(QString::fromUtf8("extrasWidget"));
+    extrasWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
+    extrasWidgetContents = new QWidget();
+    extrasWidgetContents->setObjectName(QString::fromUtf8("extrasWidgetContents"));
+    verticalLayout_31 = new QVBoxLayout(extrasWidgetContents);
+    verticalLayout_31->setObjectName(QString::fromUtf8("verticalLayout_31"));
+    extrasWidgetFormLayout = new QFormLayout();
+    extrasWidgetFormLayout->setObjectName(QString::fromUtf8("extrasWidgetFormLayout"));
+    extrasWidgetFormLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    label_10 = new QLabel(extrasWidgetContents);
+    label_10->setObjectName(QString::fromUtf8("label_10"));
+
+    extrasWidgetFormLayout->setWidget(0, QFormLayout::LabelRole, label_10);
+
+    midpoint_sizeValue = new QDoubleSpinBox(extrasWidgetContents);
+    midpoint_sizeValue->setObjectName(QString::fromUtf8("midpoint_sizeValue"));
+    midpoint_sizeValue->setSingleStep(0.1);
+
+    extrasWidgetFormLayout->setWidget(0, QFormLayout::FieldRole, midpoint_sizeValue);
+
+
+    verticalLayout_31->addLayout(extrasWidgetFormLayout);
+
+    extrasWidget->setWidget(extrasWidgetContents);
+    plotWindow_2d->addDockWidget(static_cast<Qt::DockWidgetArea>(1), extrasWidget);
+    toolBar = new QToolBar(plotWindow_2d);
+    toolBar->setObjectName(QString::fromUtf8("toolBar"));
+    plotWindow_2d->addToolBar(Qt::TopToolBarArea, toolBar);
+
+#ifndef QT_NO_SHORTCUT
+    label->setBuddy(noiseBox);
+    label_6->setBuddy(noise_correlationValue);
+    label_9->setBuddy(boundaryConditionsComboBox);
+    label_7->setBuddy(timestepValue);
+    label_10->setBuddy(midpoint_sizeValue);
+#endif // QT_NO_SHORTCUT
+
+    QWidget::setTabOrder(startStopButton, clearButton);
+    QWidget::setTabOrder(clearButton, timestepValue);
+    QWidget::setTabOrder(timestepValue, noiseBox);
+    QWidget::setTabOrder(noiseBox, noise_correlationValue);
+    QWidget::setTabOrder(noise_correlationValue, boundaryConditionsComboBox);
+    QWidget::setTabOrder(boundaryConditionsComboBox, plotTabWidget);
+
+    menubar->addAction(menuMode->menuAction());
+    menubar->addAction(menuProgram_Settings->menuAction());
+    menubar->addAction(menuDefects->menuAction());
+    menubar->addAction(menuCluster_Tracking->menuAction());
+    menubar->addAction(menuUpdate_Period->menuAction());
+    menubar->addAction(menuAbout->menuAction());
+    menuMode->addSeparator();
+    menuMode->addAction(actionClose_Window);
+    menuProgram_Settings->addAction(actionResize_program_window_to_force_update);
+    menuProgram_Settings->addAction(actionShow_Curvature);
+    menuProgram_Settings->addAction(menuSelect_Colour_Scheme->menuAction());
+    menuProgram_Settings->addAction(actionShow_Slice);
+    menuSelect_Colour_Scheme->addAction(actionStandard);
+    menuSelect_Colour_Scheme->addAction(actionGrey);
+    menuSelect_Colour_Scheme->addAction(actionJet);
+    menuSelect_Colour_Scheme->addSeparator();
+    menuSelect_Colour_Scheme->addAction(actionDefault_Colour_Scheme);
+    menuSelect_Colour_Scheme->addAction(actionAdaptive_Scheme);
+    menuSelect_Colour_Scheme->addAction(actionDelayed_Adaptive_Scheme);
+    menuCluster_Tracking->addAction(actionShow_Cluster_Ids);
+    menuDefects->addAction(actionEdit_defects);
+    menuUpdate_Period->addAction(action25_ms);
+    menuUpdate_Period->addAction(action100_ms);
+    menuUpdate_Period->addAction(action500_ms);
+    menuUpdate_Period->addAction(action1_s);
+    menuUpdate_Period->addAction(action5_s);
+    menuAbout->addAction(actionAbout);
+    toolBar->addAction(actionStartStop);
+    toolBar->addAction(actionClear);
+    toolBar->addAction(actionSave);
+    toolBar->addAction(actionRecall);
+    toolBar->addAction(actionDump);
+    toolBar->addAction(actionUndump);
+    toolBar->addAction(actionSave_as_Png);
+    toolBar->addAction(actionLoad_from_Png);
+    toolBar->addAction(actionSave_as_Movie_Pngs);
+
+    retranslateUi(plotWindow_2d);
+
+    plotTabWidget->setCurrentIndex(0);
+
+
+    QMetaObject::connectSlotsByName(plotWindow_2d);
+    } // setupUi
+
+    void retranslateUi(QMainWindow *plotWindow_2d)
+    {
+    plotWindow_2d->setWindowTitle(QApplication::translate("plotWindow_2d", "MainWindow", 0, QApplication::UnicodeUTF8));
+    actionTest->setText(QApplication::translate("plotWindow_2d", "test", 0, QApplication::UnicodeUTF8));
+    actionOpen->setText(QApplication::translate("plotWindow_2d", "open", 0, QApplication::UnicodeUTF8));
+    actionResize_program_window_to_force_update->setText(QApplication::translate("plotWindow_2d", "Resize program window to force update", 0, QApplication::UnicodeUTF8));
+    actionResize_program_window_to_force_update->setShortcut(QApplication::translate("plotWindow_2d", "Ctrl+F", 0, QApplication::UnicodeUTF8));
+    actionShow_Curvature->setText(QApplication::translate("plotWindow_2d", "Show Curvature", 0, QApplication::UnicodeUTF8));
+    actionShow_Cluster_Ids->setText(QApplication::translate("plotWindow_2d", "Show Cluster Ids", 0, QApplication::UnicodeUTF8));
+    actionShow_Cluster_Ids->setShortcut(QApplication::translate("plotWindow_2d", "Ctrl+K", 0, QApplication::UnicodeUTF8));
+    actionStartStop->setText(QApplication::translate("plotWindow_2d", "Start", 0, QApplication::UnicodeUTF8));
+    actionStartStop->setShortcut(QApplication::translate("plotWindow_2d", "Ctrl+Space", 0, QApplication::UnicodeUTF8));
+    actionClear->setText(QApplication::translate("plotWindow_2d", "Clear", 0, QApplication::UnicodeUTF8));
+    actionSave->setText(QApplication::translate("plotWindow_2d", "Save", 0, QApplication::UnicodeUTF8));
+    actionRecall->setText(QApplication::translate("plotWindow_2d", "Recall", 0, QApplication::UnicodeUTF8));
+    actionDump->setText(QApplication::translate("plotWindow_2d", "Dump", 0, QApplication::UnicodeUTF8));
+    actionUndump->setText(QApplication::translate("plotWindow_2d", "Undump", 0, QApplication::UnicodeUTF8));
+    actionSave_as_Png->setText(QApplication::translate("plotWindow_2d", "Save as PNG", 0, QApplication::UnicodeUTF8));
+    actionLoad_from_Png->setText(QApplication::translate("plotWindow_2d", "Load from PNG", 0, QApplication::UnicodeUTF8));
+    actionSave_as_Movie_Pngs->setText(QApplication::translate("plotWindow_2d", "Save as Movie PNGs", 0, QApplication::UnicodeUTF8));
+    actionEdit_defects->setText(QApplication::translate("plotWindow_2d", "Edit defects\342\200\246", 0, QApplication::UnicodeUTF8));
+    actionBistabiles->setText(QApplication::translate("plotWindow_2d", "Bistabiles", 0, QApplication::UnicodeUTF8));
+    action25_ms->setText(QApplication::translate("plotWindow_2d", "25 ms", 0, QApplication::UnicodeUTF8));
+    action100_ms->setText(QApplication::translate("plotWindow_2d", "100 ms", 0, QApplication::UnicodeUTF8));
+    action500_ms->setText(QApplication::translate("plotWindow_2d", "500 ms", 0, QApplication::UnicodeUTF8));
+    action1_s->setText(QApplication::translate("plotWindow_2d", "1 s", 0, QApplication::UnicodeUTF8));
+    action5_s->setText(QApplication::translate("plotWindow_2d", "5 s", 0, QApplication::UnicodeUTF8));
+    actionClose_Window->setText(QApplication::translate("plotWindow_2d", "Close Window", 0, QApplication::UnicodeUTF8));
+    actionClose_Window->setShortcut(QApplication::translate("plotWindow_2d", "Ctrl+W", 0, QApplication::UnicodeUTF8));
+    actionDefault_Colour_Scheme->setText(QApplication::translate("plotWindow_2d", "Default Colour Scheme", 0, QApplication::UnicodeUTF8));
+    actionAdaptive_Scheme->setText(QApplication::translate("plotWindow_2d", "Adaptive Scheme", 0, QApplication::UnicodeUTF8));
+    actionDelayed_Adaptive_Scheme->setText(QApplication::translate("plotWindow_2d", "Delayed Adaptive Scheme", 0, QApplication::UnicodeUTF8));
+    actionStandard->setText(QApplication::translate("plotWindow_2d", "Standard", 0, QApplication::UnicodeUTF8));
+    actionGrey->setText(QApplication::translate("plotWindow_2d", "Grey", 0, QApplication::UnicodeUTF8));
+    actionJet->setText(QApplication::translate("plotWindow_2d", "Jet", 0, QApplication::UnicodeUTF8));
+    actionAbout->setText(QApplication::translate("plotWindow_2d", "About", 0, QApplication::UnicodeUTF8));
+    actionShow_Slice->setText(QApplication::translate("plotWindow_2d", "Show Slice", 0, QApplication::UnicodeUTF8));
+    startStopButton->setText(QApplication::translate("plotWindow_2d", "Start", 0, QApplication::UnicodeUTF8));
+    clearButton->setText(QApplication::translate("plotWindow_2d", "Clear", 0, QApplication::UnicodeUTF8));
+    simulationTimeLabel->setText(QApplication::translate("plotWindow_2d", "0", 0, QApplication::UnicodeUTF8));
+    clusterNumberLabel->setText(QApplication::translate("plotWindow_2d", "0", 0, QApplication::UnicodeUTF8));
+    gammaLabel->setText(QApplication::translate("plotWindow_2d", "0", 0, QApplication::UnicodeUTF8));
+    waveSizeLabel->setText(QApplication::translate("plotWindow_2d", "0", 0, QApplication::UnicodeUTF8));
+    plotTabWidget->setTabText(plotTabWidget->indexOf(tab), QApplication::translate("plotWindow_2d", "Tab 1", 0, QApplication::UnicodeUTF8));
+    plotTabWidget->setTabText(plotTabWidget->indexOf(tab_2), QApplication::translate("plotWindow_2d", "Tab 2", 0, QApplication::UnicodeUTF8));
+    menuMode->setTitle(QApplication::translate("plotWindow_2d", "&Model", 0, QApplication::UnicodeUTF8));
+    menuProgram_Settings->setTitle(QApplication::translate("plotWindow_2d", "Interface Settings", 0, QApplication::UnicodeUTF8));
+    menuSelect_Colour_Scheme->setTitle(QApplication::translate("plotWindow_2d", "Select Colour Scheme", 0, QApplication::UnicodeUTF8));
+    menuCluster_Tracking->setTitle(QApplication::translate("plotWindow_2d", "Cluster Tracking", 0, QApplication::UnicodeUTF8));
+    menuDefects->setTitle(QApplication::translate("plotWindow_2d", "Defects", 0, QApplication::UnicodeUTF8));
+    menuUpdate_Period->setTitle(QApplication::translate("plotWindow_2d", "Update Period", 0, QApplication::UnicodeUTF8));
+    menuAbout->setTitle(QApplication::translate("plotWindow_2d", "Help", 0, QApplication::UnicodeUTF8));
+    simulationWidget->setWindowTitle(QApplication::translate("plotWindow_2d", "Simulation", 0, QApplication::UnicodeUTF8));
+    label->setText(QApplication::translate("plotWindow_2d", "Noise", 0, QApplication::UnicodeUTF8));
+    label_6->setText(QApplication::translate("plotWindow_2d", "Correlation", 0, QApplication::UnicodeUTF8));
+    label_9->setText(QApplication::translate("plotWindow_2d", "Boundary", 0, QApplication::UnicodeUTF8));
+    boundaryConditionsComboBox->clear();
+    boundaryConditionsComboBox->insertItems(0, QStringList()
+     << QApplication::translate("plotWindow_2d", "Fixed", 0, QApplication::UnicodeUTF8)
+     << QApplication::translate("plotWindow_2d", "Periodic", 0, QApplication::UnicodeUTF8)
+     << QApplication::translate("plotWindow_2d", "No Flux", 0, QApplication::UnicodeUTF8)
+    );
+    label_7->setText(QApplication::translate("plotWindow_2d", "Timestep", 0, QApplication::UnicodeUTF8));
+    parameterWidget->setWindowTitle(QApplication::translate("plotWindow_2d", "Model Properties", 0, QApplication::UnicodeUTF8));
+    adaptationParameterWidget->setWindowTitle(QApplication::translate("plotWindow_2d", "Adaptation", 0, QApplication::UnicodeUTF8));
+    extrasWidget->setWindowTitle(QApplication::translate("plotWindow_2d", "Extra", 0, QApplication::UnicodeUTF8));
+    label_10->setText(QApplication::translate("plotWindow_2d", "Midpoint Size", 0, QApplication::UnicodeUTF8));
+    toolBar->setWindowTitle(QApplication::translate("plotWindow_2d", "toolBar", 0, QApplication::UnicodeUTF8));
+    } // retranslateUi
+
+};
+
+namespace Ui {
+    class plotWindow_2d: public Ui_plotWindow_2d {};
+} // namespace Ui
+
+QT_END_NAMESPACE
+
+#endif // UI_PLOTWINDOW_2D_H

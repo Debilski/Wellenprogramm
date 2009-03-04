@@ -1,0 +1,88 @@
+<ui version="4.0" >
+ <class>scriptEditor</class>
+ <widget class="QDialog" name="scriptEditor" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>667</width>
+    <height>302</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QSplitter" name="outputSplitter" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QSplitter" name="inputSplitter" >
+      <property name="lineWidth" >
+       <number>5</number>
+      </property>
+      <property name="midLineWidth" >
+       <number>5</number>
+      </property>
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget" >
+       <layout class="QVBoxLayout" name="verticalLayout_2" >
+        <item>
+         <widget class="QPlainTextEdit" name="loopScriptEdit" />
+        </item>
+        <item>
+         <widget class="QCheckBox" name="loopScriptCheckBox" >
+          <property name="text" >
+           <string>Loop</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget" >
+       <layout class="QVBoxLayout" name="verticalLayout_3" >
+        <item>
+         <widget class="QPlainTextEdit" name="onceScriptEdit" />
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4" >
+          <item>
+           <spacer name="horizontalSpacer_2" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="onceScriptPushButton" >
+            <property name="text" >
+             <string>Once</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QPlainTextEdit" name="outputScriptEdit" >
+      <property name="readOnly" >
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

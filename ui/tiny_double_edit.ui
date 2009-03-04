@@ -1,0 +1,56 @@
+<ui version="4.0" >
+ <class>tinyDoubleEdit</class>
+ <widget class="QDialog" name="tinyDoubleEdit" >
+  <property name="windowModality" >
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>127</width>
+    <height>44</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QDoubleSpinBox" name="doubleEditSpinBox" >
+     <property name="decimals" >
+      <number>3</number>
+     </property>
+     <property name="minimum" >
+      <double>-99.998999999999995</double>
+     </property>
+     <property name="maximum" >
+      <double>99.998999999999995</double>
+     </property>
+     <property name="singleStep" >
+      <double>0.500000000000000</double>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>doubleEditSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>tinyDoubleEdit</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>63</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>63</x>
+     <y>21</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
