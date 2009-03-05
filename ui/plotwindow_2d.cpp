@@ -259,29 +259,15 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
         lattice( 0 )
 {
     std::cout << realSize_ << "/" << latticeSize_ << std::endl;
-    QStringList arguments = QCoreApplication::instance()->arguments();
-
-    QStringList pathList = arguments.filter( "--libdir=" );
 
     QStringList filters;
-#ifdef Q_OS_DARWIN
-    filters << "*lattice.dylib";
-#else
-    filters << "*lattice.so";
-#endif
-    QString testLibDir;
-    if ( !pathList.empty() ) {
-        testLibDir = pathList.first();
-        testLibDir.replace( "--libdir=", "" );
-    } else {
-#ifdef Q_OS_DARWIN
-        testLibDir = "builds/darwin/models";
-#else
-        testLibDir = "builds/lomo/models";
-#endif
-    }
-    std::cout << "Checking if " << qPrintable(testLibDir) << " exists… ";
-    QDir libDir( testLibDir );
+    Configuration* config = Configuration::instance();
+    config->read();
+
+    filters << config->libraryPattern();
+
+    std::cout << "Checking if " << qPrintable(config->libraryDirectory()) << " exists… ";
+    QDir libDir( config->libraryDirectory() );
     if ( !libDir.exists() ) {
         std::cout << "No!" << std::endl;
         exit( -1 );

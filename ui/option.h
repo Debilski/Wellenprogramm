@@ -21,7 +21,7 @@ private:
     T defaultValue_;
 
 public:
-    Option( const QString& name, T value, const QString& description ) :
+    Option( const QString& name, T value, const QString& description = QString() ) :
         name_(name), value_(value), description_(description)
     {
 
@@ -31,6 +31,7 @@ public:
     const T& value() { return value_; }
     void setValue( const T& value ) { value_ = value; }
     void operator=( const T& value ) { value_ = value; }
+    const T& operator()( ) { return value_; }
 
 };
 

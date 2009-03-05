@@ -26,21 +26,12 @@ public:
 } ConfigurationCleanerInst;
 */
 
-
-
 SingletonCleaner< Configuration > ConfigurationCleaner;
-
-
 
 // static members
 //
 Configuration* Configuration::instance_ = 0;
 int Configuration::refCount_ = 0;
-
-
-Configuration::Configuration() {
-        QSettings settings;
-    }
 
 
 /**

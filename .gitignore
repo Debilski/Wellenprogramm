@@ -1,0 +1,17 @@
+/*
+builds/
+latex/
+!SC*
+!Doxy*
+!models/*
+!lattice/*
+!share/*
+!tools/*
+!ui/*
+!*.py
+.*
+!.gitignore
+*.os
+*.dylib
+*.pyc
+*~

@@ -26,6 +26,8 @@
 #include "script_editor.h"
 
 #include "lattice_interface.h"
+
+#include "configuration.h"
 //#include "rds_lattice.h"
 /*
  #include "lattice_models.h"
