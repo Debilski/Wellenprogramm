@@ -3,6 +3,7 @@ import glob
 import os
 import sys
 
+
 Import("env", 'target_bin_dir')
 #env.Append(QTDIR = '/usr/include/q')
 
@@ -25,5 +26,21 @@ if not sys.platform=="darwin" :
     env.Append( LINKFLAGS = Split('-z origin') )
     env.Append( RPATH = env.Literal(os.path.join('\\$$ORIGIN', 'lib')))
 
-env.Program('plot', ['plot.cpp', 'main_window.cpp', 'plotwindow_2d.cpp', 'defects_editor.cpp', 'script_editor.cpp', 'tiny_double_edit.cpp'], LIBS=["lattice_plugin_registration"]+env["LIBS"], LINKFLAGS = "-static-libgcc -ldl -Wl -lstdc++ -Wl,--export-dynamic ")#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")
+plotFiles = [
+	'plot.cpp',
+	'main_window.cpp',
+	'plotwindow_2d.cpp',
+	'defects_editor.cpp',
+	'script_editor.cpp',
+	'tiny_double_edit.cpp',
+	'option.cpp',
+	'configuration.cpp'
+	]
 
+
+if not sys.platform=="darwin" :
+    linkflags = "-static-libgcc -ldl -Wl -lstdc++ -Wl,--export-dynamic "
+else:
+    linkflags = ""#-static-libgcc -ldl -Wl -lstdc++ "
+
+env.Program('plot', plotFiles, LIBS=["lattice_plugin_registration"]+env["LIBS"], LINKFLAGS = linkflags)#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")

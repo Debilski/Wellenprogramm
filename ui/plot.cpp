@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Debilski");
     app.setOrganizationDomain("debilski.de");
     app.setApplicationName("Wellenprogramm");
-    QSettings settings;
+
 
 
 
