@@ -1593,8 +1593,9 @@ void Waveprogram2DPlot::on_actionExport_as_Matlab_Structure_triggered()
 
 void Waveprogram2DPlot::savePng(QString filename)
 {
+    for (uint component=0; component < lattice->numberOfVariables(); ++component) {
     QImage image = QImage( lattice->latticeSizeX(), lattice->latticeSizeY(), QImage::Format_ARGB32 );
-    uint save_component = 0;
+    uint save_component = component;
 
     for (int i = 0; i < lattice->latticeSizeX(); ++i) {
         for (int j = 0; j < lattice->latticeSizeY(); ++j) {
@@ -1609,7 +1610,8 @@ void Waveprogram2DPlot::savePng(QString filename)
             }
         }
     }
-    image.mirrored( false, true ).save( filename, "PNG" );
+    image.mirrored( false, true ).save( filename + QString(".%1").arg(save_component), "PNG" );
+    }
 }
 
 void Waveprogram2DPlot::adaptationModeCheckBox_clicked(bool b)

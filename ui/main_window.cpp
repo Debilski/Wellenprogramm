@@ -78,7 +78,7 @@ metalist << (templist << 256 << 128); templist.clear();
   //connect( pushButton_about, SIGNAL( clicked() ), this, SLOT( about() ) );
 
   readSettings();
-
+/*
   TinyDoubleEdit tEdit(this, 10);
 
 
@@ -87,6 +87,7 @@ metalist << (templist << 256 << 128); templist.clear();
   std::cout << c;
   setStatusTip( QString("%1").arg(c) );
   }
+  */
 }
 
 void MainWindow::closeEvent ( QCloseEvent * event )
