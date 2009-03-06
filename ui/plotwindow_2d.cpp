@@ -261,13 +261,12 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     std::cout << realSize_ << "/" << latticeSize_ << std::endl;
 
     QStringList filters;
-    Configuration* config = Configuration::instance();
-    config->read();
 
-    filters << config->libraryPattern();
 
-    std::cout << "Checking if " << qPrintable(config->libraryDirectory()) << " exists… ";
-    QDir libDir( config->libraryDirectory() );
+    filters << config("libraryPattern").toString();
+
+    std::cout << "Checking if " << qPrintable(config("libraryDirectory").toString()) << " exists… ";
+    QDir libDir( config("libraryDirectory").toString() );
     if ( !libDir.exists() ) {
         std::cout << "No!" << std::endl;
         exit( -1 );

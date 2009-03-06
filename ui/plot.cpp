@@ -2,6 +2,8 @@
 
 #include "main_window.h"
 
+#include "configuration.h"
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -10,7 +12,9 @@ int main(int argc, char *argv[])
     app.setApplicationName("Wellenprogramm");
 
 
-
+    //Configuration config = Config::instance();
+        config.read();
+        config.debug();
 
     MainWindow *dialog = new MainWindow();
 

@@ -28,12 +28,14 @@ public:
 
     blitz::Array<int, 2> clusterField;
 private:
-    double clusterThreshold_;
+
+    long int nextClusterId_;
+    unsigned int numClusters_;
     int distanceThreshold_;
     double sizeThreshold_;
+    double clusterThreshold_;
 
-    unsigned int numClusters_;
-    long int nextClusterId_;
+
     int clusterWalker(long int position, int setTo);
 
     std::queue< long int > clusterQueue;

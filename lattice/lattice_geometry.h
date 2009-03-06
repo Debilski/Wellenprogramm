@@ -287,12 +287,11 @@ private:
     bool isInsidePolygon(LatticePoint p)
     {
 
-        unsigned int xnew,ynew;
-        unsigned int xold,yold;
-        unsigned int x1,y1;
-        unsigned int x2,y2;
-        int i;
-        int inside=0;
+        unsigned int xnew, ynew;
+        unsigned int xold, yold;
+        unsigned int x1, y1;
+        unsigned int x2, y2;
+        bool inside = false;
 
         unsigned int npoints = polygon_.size();
         if (npoints < 3) {
@@ -300,7 +299,7 @@ private:
         }
         xold=polygon_[npoints-1].x;
         yold=polygon_[npoints-1].y;
-        for (i=0 ; i < npoints ; i++) {
+        for (unsigned int i=0 ; i < npoints ; i++) {
              xnew=polygon_[i].x;
              ynew=polygon_[i].y;
              if (xnew > xold) {
@@ -315,7 +314,7 @@ private:
                   y1=ynew;
                   y2=yold;
              }
-             if ((xnew < p.x) == (p.x <= xold)          /* edge "open" at one end */
+             if (((long)xnew < (long)p.x) == ((long)p.x <= (long)xold)          /* edge "open" at one end */
               && ((long)p.y-(long)y1)*(long)(x2-x1)
                < ((long)y2-(long)y1)*(long)(p.x-x1)) {
                   inside=!inside;

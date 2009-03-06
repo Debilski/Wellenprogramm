@@ -166,6 +166,7 @@ public slots:
         TinyDoubleEdit tEdit( this, spectrogram_->data().range().maxValue() );
         if ( tEdit.exec() ) {
             double c = tEdit.value();
+            std::cout << c;
         }
     }
     void changeBottom()
@@ -173,6 +174,7 @@ public slots:
         TinyDoubleEdit tEdit( this, spectrogram_->data().range().minValue() );
         if ( tEdit.exec() ) {
             double c = tEdit.value();
+            std::cout << c;
         }
     }
 private:

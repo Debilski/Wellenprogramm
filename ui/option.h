@@ -8,30 +8,96 @@
 #ifndef OPTION_H_
 #define OPTION_H_
 
-#include <QString>
+#include <QtCore>
 
-template <typename T>
 class Option {
 
 private:
     QString name_;
-    QString description_;
-    QString helpText_;
-    T value_;
-    T defaultValue_;
+    QVariant value_;
+    QVariant defaultValue_;
+
+    QStringList commandLineStrings_;
+
+    QString settingsKey_;
+
+    /**
+     * Gibt an, ob der Wert, falls geändert auch in der Config gespeichert werden soll.
+     */
+    bool saveToConfig_;
+
+    /**
+     * Gibt an, ob der Wert eine Änderung durch den User erfahren hat.
+     */
+    bool changedByUser_;
 
 public:
-    Option( const QString& name, T value, const QString& description = QString() ) :
-        name_(name), value_(value), description_(description)
+    Option(const Option& o):
+    name_(o.name_), value_(o.value_), defaultValue_(o.defaultValue_), commandLineStrings_(o.commandLineStrings_),
+    settingsKey_(o.settingsKey_), saveToConfig_(o.saveToConfig_), changedByUser_(o.changedByUser_)
     {
+        qDebug() << "Attempt to copy from" << o.name_ << o.value_;
+    }
+    Option() :
+        name_(), defaultValue_(), settingsKey_(), saveToConfig_( false ), changedByUser_( false )
+    {
+        qDebug() << "Created empty Option";
+    }
+    Option(const QString& name, QVariant defaultValue) :
+        name_( name ), defaultValue_( defaultValue ), saveToConfig_( false ),
+            changedByUser_( false )
+    {
+        qDebug() << "Created Option" << name;
+    }
+    Option(const QString& name, QVariant defaultValue, const QString& settingsKey) :
+        name_( name ), defaultValue_( defaultValue ), settingsKey_( settingsKey ), saveToConfig_(
+            false ), changedByUser_( false )
+    {
+        qDebug() << "Created Option" << name;
+    }
+
+    const QString& name() const
+    {
+        return name_;
+    }
+
+    const QVariant& value() const
+    {
+        if ( value_.isValid() )
+            return value_;
+        return defaultValue_;
+    }
+
+    const QVariant& defaultValue() const
+    {
+        return defaultValue_;
+    }
+
+    void setValue(const QVariant& value)
+    {
+        changedByUser_ = true;
+        value_ = value;
+    }
+
+
+    QString toString() const;
+
+
+    Option& addCommandLineString(const QString& commandLineString, bool longFormat = true)
+    {
+
+        QString format = longFormat ? "--%1=" : "-%1=";
+        commandLineStrings_ << format.arg( commandLineString );
+        return *this;
 
     }
 
-    const QString& name() { return name_; }
-    const T& value() { return value_; }
-    void setValue( const T& value ) { value_ = value; }
-    void operator=( const T& value ) { value_ = value; }
-    const T& operator()( ) { return value_; }
+    bool readCommandLine();
+    bool readQSettings();
+
+    void read();
+
+    void write();
 
 };
 

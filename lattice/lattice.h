@@ -367,20 +367,20 @@ protected:
     /*
      * Gibt den 4er-Laplace an \a position in Komponente \a component zurück.
      */
-    double laplacian4(uint component, int position, bool periodic) {}
+    double laplacian4(uint component, int position, bool periodic) { return 0; }
     /*
      * Gibt den 8er-Laplace an \a position in Komponente \a component zurück.
      */
-    double laplacian8(uint component, int position, bool periodic) {}
+    double laplacian8(uint component, int position, bool periodic) {return 0;}
 
     /*
      * Gibt den X-Gradienten an \a position in Komponente \a component zurück.
      */
-    double gradientX(uint component, int position, bool periodic) {}
+    double gradientX(uint component, int position, bool periodic) {return 0;}
     /*
      * Gibt den Y-Gradienten an \a position in Komponente \a component zurück.
      */
-    double gradientY(uint component, int position, bool periodic) {}
+    double gradientY(uint component, int position, bool periodic) {return 0;}
 
 
 };

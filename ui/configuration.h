@@ -10,77 +10,84 @@
 
 #include <QtCore>
 
+#include <boost/noncopyable.hpp>
+#include <boost/thread/once.hpp>
+
+#include <iostream>
+
 #include "option.h"
 
-class Configuration : public QObject {
-
-    Q_OBJECT
+template<typename T>
+struct singleton : private boost::noncopyable {
 public:
-    /**
-     * Erzeugt eine neue Instanz oder gibt die bereits erzeugte Instanz zurück.
-     */
-    static Configuration* instance()
+    static T & instance()
     {
-      if ( instance_ == 0 ) // if first time ...
-      {
-        instance_ = new Configuration(); // ... create a new 'solo' instance
-      }
-      refCount_++; //increase reference counter
-      return instance_;
+        boost::call_once( call_me_once, once_ );
+        return instance_helper();
     }
-
-    static void release();
-    static void destroy();
-    ~Configuration() {}
-    void read() {
-        QStringList arguments = QCoreApplication::instance()->arguments();
-
-        QStringList pathList = arguments.filter( "--libdir=" );
-
-
-    #ifdef Q_OS_DARWIN
-        libraryPattern = "*lattice.dylib";
-    #else
-        libraryPattern = "*lattice.so";
-    #endif
-        QString testLibDir;
-        if ( !pathList.empty() ) {
-            testLibDir = pathList.first();
-            testLibDir.replace( "--libdir=", "" );
-        } else {
-            QSettings settings;
-            settings.beginGroup( "General" );
-    #ifdef Q_OS_DARWIN
-            testLibDir = settings.value( "inputSplitter", "builds/darwin/models" ).toString();
-    #else
-            testLibDir = settings.value( "inputSplitter", "builds/lomo/models" ).toString();
-    #endif
-            settings.endGroup();
-        }
-        libraryDirectory = testLibDir;
-
-
-    }
-    void write() {}
 protected:
+    static boost::once_flag once_;
+    static void call_me_once()
+    {
+        instance_helper();
+    }
 
-    Configuration() :
-    libraryDirectory( QString("libDir"), QString(".") ),
-    libraryPattern(QString( "libDir"), QString(".") )
+    static T & instance_helper()
+    {
+        static T t;
+        return t;
+    }
+    singleton()
+    {
+    }
+    ~singleton()
+    {
+    }
+};
+template<typename T>
+boost::once_flag singleton< T >::once_ = BOOST_ONCE_INIT;
+
+class Configuration : /*public QObject, */ public singleton< Configuration > {
+
+    //Q_OBJECT
+
+public:
+
+    Configuration()
     {
         QSettings settings;
+        addOption( "libraryDirectory", "builds/darwin/models", "global/libraryDirectory" ). addCommandLineString(
+            "libDir" );
+
+        addOption( "libraryPattern", "*lattice.dylib", "global/libraryPattern" ). addCommandLineString(
+            "libPattern" );
+
     }
+    ~Configuration()
+    {
+    }
+public:
 
-    Configuration(const Configuration&); /* verhindert, dass eine weitere Instanz via
-   Kopie-Konstruktor erstellt werden kann */
-    Configuration& operator=(const Configuration &); //Verhindert weitere Instanz durch Kopie
-    static Configuration* instance_;
-    static int refCount_;
+    void debug();
+    void read();
+    void write();
 
+    Option& addOption(const QString& name, const QVariant& defaultValue);
+    Option
+        & addOption(const QString& name, const QVariant& defaultValue, const QString& settingsKey);
+
+    Option& operator()(const QString& name);
+    Option option(const QString& name) const;
+
+    QHash< QString, Option > optionList;
+    typedef QHash< QString, Option >::iterator optionListIterator;
 
 public:
-    Option<QString> libraryDirectory;
-    Option<QString> libraryPattern;
+    Option emptyOption;
+private:
+    Configuration(const Configuration&);
 };
+
+#define config Configuration::instance()
 
 #endif /* CONFIGURATION_H_ */
