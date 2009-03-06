@@ -4,6 +4,7 @@ builds/
 latex/
 !SC*
 !Doxy*
+!helper/*
 !models/*
 !lattice/*
 !share/*
