@@ -12,6 +12,7 @@ latex/
 !*.py
 .*
 !.gitignore
+!README*
 *.os
 *.o
 *.dylib
