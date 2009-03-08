@@ -53,26 +53,7 @@ class Configuration : /*public QObject, */ public singleton< Configuration > {
 
 public:
 
-    Configuration()
-    {
-        QSettings settings;
-
-#ifdef Q_OS_DARWIN
-    QString libPattern = "*lattice.dylib";
-    QString libDir = "builds/darwin/models";
-#else
-    QString libPattern = "*lattice.so";
-    QString libDir = "builds/lomo/models";
-#endif
-
-
-        addOption( "libraryDirectory", libDir, "global/libraryDirectory" ). addCommandLineString(
-            "libDir" );
-
-        addOption( "libraryPattern", libPattern, "global/libraryPattern" ). addCommandLineString(
-            "libPattern" );
-
-    }
+    Configuration();
     ~Configuration()
     {
     }

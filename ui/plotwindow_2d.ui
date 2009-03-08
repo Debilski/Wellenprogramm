@@ -247,7 +247,7 @@
        <item>
         <widget class="QTabWidget" name="plotTabWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -318,6 +318,7 @@
     <addaction name="menuSelect_Colour_Scheme"/>
     <addaction name="actionShow_Slice"/>
     <addaction name="actionEdit_Script"/>
+    <addaction name="actionShow_Single_Plot"/>
    </widget>
    <widget class="QMenu" name="menuCluster_Tracking">
     <property name="title">
@@ -875,6 +876,11 @@
   <action name="actionEdit_Script">
    <property name="text">
     <string>Edit Script …</string>
+   </property>
+  </action>
+  <action name="actionShow_Single_Plot">
+   <property name="text">
+    <string>Show Single Plot</string>
    </property>
   </action>
  </widget>

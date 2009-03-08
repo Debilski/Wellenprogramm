@@ -9,6 +9,10 @@
 #define SCRIPT_EDITOR_H_
 
 #include <QtGui>
+
+
+
+
 #include "ui_script_editor.h"
 
 class ScriptEditor : public QDialog, private Ui::scriptEditor {

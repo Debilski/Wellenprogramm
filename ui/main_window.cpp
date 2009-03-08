@@ -8,7 +8,7 @@ MainWindow::MainWindow(QMainWindow *parent)
 {
   setAttribute(Qt::WA_MacMetalStyle);
   setupUi(this); // this sets up GUI
-
+  setWindowTitle("Select Lattice Size");
   // signals/slots mechanism in action
 
   lattice_menu = new QMenu(this);

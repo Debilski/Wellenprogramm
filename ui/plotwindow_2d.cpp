@@ -148,11 +148,10 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     QStringList filters;
 
-
-    filters << config("libraryPattern").toString();
+    filters << config( "libraryPattern" ).toString();
 
     std::cout << "Checking if " << qPrintable(config("libraryDirectory").toString()) << " exists… ";
-    QDir libDir( config("libraryDirectory").toString() );
+    QDir libDir( config( "libraryDirectory" ).toString() );
     if ( !libDir.exists() ) {
         std::cout << "No!" << std::endl;
         exit( -1 );
@@ -242,9 +241,9 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     setUpColourSchemeMenu();
 
-    initField( realSize, latticeSize, "FhnLattice" );
+    QString lastUsedModel = config.option( "last_model" ).value().toString();
 
-
+    initField( realSize, latticeSize, qPrintable(lastUsedModel) );
 
     boundaryConditionsComboBox->setCurrentIndex( lattice->boundaryCondition() );
 
@@ -295,7 +294,7 @@ void Waveprogram2DPlot::on_actionClose_Window_triggered()
 
 void Waveprogram2DPlot::on_actionEdit_Script_triggered()
 {
-    scriptEditor = new ScriptEditor(this);
+    scriptEditor = new ScriptEditor( this );
     scriptEditor->show();
     scriptEditor->raise();
     scriptEditor->activateWindow();
@@ -576,7 +575,6 @@ void Waveprogram2DPlot::setUpTabs()
         plotTabWidget->addTab( tab, name );
     }
 
-
     for (uint component = 0; component < lattice->numberOfVariables(); ++component) {
 
         QString label;
@@ -589,7 +587,8 @@ void Waveprogram2DPlot::setUpTabs()
             label = QString( "Intensity" );
         }
         PlotView* tab = new PlotView(
-            SpectrogramDataFft( lattice, component, this ), colorMap, component, label, plotTabWidget, true );
+            SpectrogramDataFft( lattice, component, this ), colorMap, component, label,
+            plotTabWidget, true );
 
         plotViewVector_ << tab;
         // tab->plot_->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -607,7 +606,6 @@ void Waveprogram2DPlot::setUpTabs()
 
         plotTabWidget->addTab( tab, name );
     }
-
 
     plotTabWidget->show();
 
@@ -703,8 +701,6 @@ void Waveprogram2DPlot::setUpModelProperties()
 
     setUpDiffusion();
     setUpParameters();
-
-
 
     setUpAdaptationParameters();
 }
@@ -852,6 +848,10 @@ void Waveprogram2DPlot::replot()
 
     if ( !lattice )
         return;
+
+    emit
+    replotAllChildren();
+
     foreach(QwtPlotCurve* curve, curves ) {
             curve->attach( 0 );
             delete curve;
@@ -876,15 +876,15 @@ void Waveprogram2DPlot::replot()
         //currentPlot->rightAxis->setColorMap( tab->spectrogram_->data().range(), tab->spectrogram_->colorMap() );
         qMarkerVector.reserve( lattice->numberOfClusters() );
         std::vector< Cluster > clusterVector = lattice->getClusters();
-/*
-        std::vector< SurfacePoint > tips = lattice->getSpiralTips();
-        for (uint i = 0; i < tips.size(); ++i) {
-            QwtPlotMarker* marker = new QwtPlotMarker;
-            marker->setValue( tips[ i ].x, tips[ i ].y );
-            marker->setLabel( QString( "Hi!" ) );
-            marker->attach( currentPlot );
-        }
-*/
+        /*
+         std::vector< SurfacePoint > tips = lattice->getSpiralTips();
+         for (uint i = 0; i < tips.size(); ++i) {
+         QwtPlotMarker* marker = new QwtPlotMarker;
+         marker->setValue( tips[ i ].x, tips[ i ].y );
+         marker->setLabel( QString( "Hi!" ) );
+         marker->attach( currentPlot );
+         }
+         */
         // Marker
         for (uint i = 0; i < clusterVector.size(); ++i) {
             QwtPlotMarker* marker = new QwtPlotMarker;
@@ -906,7 +906,7 @@ void Waveprogram2DPlot::replot()
             marker->attach( currentPlot );
             qMarkerVector << marker;
 
-            std::cout << "\n"<< lattice->time() << ": "<< clusterVector[ i ].position.x << "!";
+            std::cout << "\n" << lattice->time() << ": " << clusterVector[ i ].position.x << "!";
         }
 
         lastClustersUpdateTime = lattice->time();
@@ -1090,15 +1090,19 @@ void Waveprogram2DPlot::setUpActions()
 void Waveprogram2DPlot::changeModel(std::string m)
 {
     loopStop();
+    emit
+        modelClosed();
+
     killField();
+
 
     //removeTabs();
     initField( 1, 1, m );
+    emit modelChanged();
 }
 
 void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string model)
 {
-
     removeTabs();
     if ( parent != 0 ) {
         if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
@@ -1107,7 +1111,7 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
         }
     }
     QCoreApplication::processEvents();
-    std::cout << model << std::endl;
+    qDebug() << "Trying Model " << model.c_str();
     /*    lattice = new FhnLattice(1,1,1,1);
      delete lattice;
      lattice = new BarkleyLattice(1,1,1,1);
@@ -1117,13 +1121,21 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
 
     std::list< std::string > m = LatticePluginRegistration::instance()->models();
     int n = 0;
+    bool modelExists = false;
+    latticeIdentifier_ = m.front();
+
     for (std::list< std::string >::iterator it = m.begin(); it != m.end(); ++it) {
+        if ( *it == model ) {
+            modelExists = true;
+            latticeIdentifier_ = *it;
+        }
         ++n;
-        std::cout << n << "! ";
-        std::cout << (*it).c_str() << std::endl;
+        //std::cout << n << "! ";
+        //std::cout << (*it).c_str() << std::endl;
+        qDebug() << "Model:" << n << (*it).c_str();
     }
 
-    latticeIdentifier_ = model;
+    //latticeIdentifier_ = model;
     lattice = LatticePluginRegistration::instance()->getMakerByName( latticeIdentifier_ )(
         realSize_, realSize_, latticeSize_, latticeSize_ );
 
@@ -1311,7 +1323,7 @@ void Waveprogram2DPlot::on_actionUndump_triggered()
 void Waveprogram2DPlot::on_actionCopy_to_Clipboard_triggered()
 {
     int component = plotTabWidget->currentIndex();
-    component = ( component < lattice->numberOfVariables() ) ? component : 0;
+    component = (component < lattice->numberOfVariables()) ? component : 0;
 
     QString text;
     text += QString( "[" );
@@ -1320,11 +1332,11 @@ void Waveprogram2DPlot::on_actionCopy_to_Clipboard_triggered()
         for (int i = 0; i < lattice->latticeSizeX(); ++i) {
             double value = lattice->getComponentAt( component, i, j );
             text += QString( "%1" ).arg( value, 0, 'f', 4 );
-            if ( i != lattice->latticeSizeX() - 1)
+            if ( i != lattice->latticeSizeX() - 1 )
                 text += QString( ", " );
         }
         text += QString( "]" );
-        if ( j != lattice->latticeSizeY() - 1)
+        if ( j != lattice->latticeSizeY() - 1 )
             text += QString( "; " );
     }
     text += QString( "]" );
@@ -1334,41 +1346,40 @@ void Waveprogram2DPlot::on_actionCopy_to_Clipboard_triggered()
 /**
  * Exportiert eine Zeitreihe in eine matlab-lesbare Datei
  */
-void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString structureName, int timeIndex, bool append /*= true*/)
+void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString structureName,
+                                                int timeIndex, bool append /*= true*/)
 {
     QString text;
     for (int component = 0; component < lattice->numberOfVariables(); ++component) {
-        text += QString("%1{%2,%3} = ").arg(structureName).arg(timeIndex).arg(component + 1);
+        text += QString( "%1{%2,%3} = " ).arg( structureName ).arg( timeIndex ).arg( component + 1 );
         text += QString( "[" );
 
         double value = lattice->getComponentAt( component, 16, 16 );
 
-
-
-                        text += QString( "%1" ).arg( value, 0, 'f', 4 );
-                        text += QString( "];\n" );
-        /*
-        for (int j = 0; j < lattice->latticeSizeY(); ++j) {
-            text += QString( "[" );
-            for (int i = 0; i < lattice->latticeSizeX(); ++i) {
-                double value = lattice->getComponentAt( component, i, j );
-
-                if ( i!= 13 && j!=13) continue;
-
-                text += QString( "%1" ).arg( value, 0, 'f', 4 );
-                if ( i != lattice->latticeSizeX() - 1 )
-                    text += QString( ", " );
-            }
-            text += QString( "]" );
-            if ( j != lattice->latticeSizeY() - 1 )
-                text += QString( "; " );
-        }
+        text += QString( "%1" ).arg( value, 0, 'f', 4 );
         text += QString( "];\n" );
-        */
+        /*
+         for (int j = 0; j < lattice->latticeSizeY(); ++j) {
+         text += QString( "[" );
+         for (int i = 0; i < lattice->latticeSizeX(); ++i) {
+         double value = lattice->getComponentAt( component, i, j );
+
+         if ( i!= 13 && j!=13) continue;
+
+         text += QString( "%1" ).arg( value, 0, 'f', 4 );
+         if ( i != lattice->latticeSizeX() - 1 )
+         text += QString( ", " );
+         }
+         text += QString( "]" );
+         if ( j != lattice->latticeSizeY() - 1 )
+         text += QString( "; " );
+         }
+         text += QString( "];\n" );
+         */
     }
-    QFile data(fileName);
-    if ( append ? data.open(QFile::Append) : data.open(QFile::WriteOnly | QFile::Truncate)  ) {
-        QTextStream out(&data);
+    QFile data( fileName );
+    if ( append ? data.open( QFile::Append ) : data.open( QFile::WriteOnly | QFile::Truncate ) ) {
+        QTextStream out( &data );
         out << text;
     }
 }
@@ -1476,8 +1487,8 @@ void Waveprogram2DPlot::on_actionExport_as_Matlab_Structure_triggered()
 {
     if ( matlabExportFile_.isEmpty() ) {
         matlabExportIndex_ = 1;
-        matlabExportFile_ = QFileDialog::getSaveFileName( this, tr( "Matlab File" ), "matlabexport.m", tr(
-        "Matlab Files (*.m)" ) );
+        matlabExportFile_ = QFileDialog::getSaveFileName(
+            this, tr( "Matlab File" ), "matlabexport.m", tr( "Matlab Files (*.m)" ) );
         actionExport_as_Matlab_Structure->setText( "is Exporting" );
     } else {
         matlabExportFile_.clear();
@@ -1487,24 +1498,28 @@ void Waveprogram2DPlot::on_actionExport_as_Matlab_Structure_triggered()
 
 void Waveprogram2DPlot::savePng(QString filename)
 {
-    for (uint component=0; component < lattice->numberOfVariables(); ++component) {
-    QImage image = QImage( lattice->latticeSizeX(), lattice->latticeSizeY(), QImage::Format_ARGB32 );
-    uint save_component = component;
+    for (uint component = 0; component < lattice->numberOfVariables(); ++component) {
+        QImage image = QImage(
+            lattice->latticeSizeX(), lattice->latticeSizeY(), QImage::Format_ARGB32 );
+        uint save_component = component;
 
-    for (int i = 0; i < lattice->latticeSizeX(); ++i) {
-        for (int j = 0; j < lattice->latticeSizeY(); ++j) {
+        for (int i = 0; i < lattice->latticeSizeX(); ++i) {
+            for (int j = 0; j < lattice->latticeSizeY(); ++j) {
 
-            if ( plotViewVector_.size() > 0 ) {
-                image.setPixel( i, j, plotViewVector_[ save_component ]->spectrogram_->colorMap().color(
-                    plotViewVector_[ save_component ]->spectrogram_->data().range(), lattice->getComponentAt(
-                        save_component, i, j ) ).rgb() );
-            } else {
-                image.setPixel( i, j, colorMap.color(
-                    QwtDoubleInterval( -2.2, 2.5 ), lattice->getComponentAt( save_component, i, j ) ).rgb() );
+                if ( plotViewVector_.size() > 0 ) {
+                    image.setPixel(
+                        i, j, plotViewVector_[ save_component ]->spectrogram_->colorMap().color(
+                            plotViewVector_[ save_component ]->spectrogram_->data().range(),
+                            lattice->getComponentAt( save_component, i, j ) ).rgb() );
+                } else {
+                    image.setPixel( i, j, colorMap.color(
+                        QwtDoubleInterval( -2.2, 2.5 ), lattice->getComponentAt(
+                            save_component, i, j ) ).rgb() );
+                }
             }
         }
-    }
-    image.mirrored( false, true ).save( filename + QString(".%1").arg(save_component), "PNG" );
+        image.mirrored( false, true ).save(
+            filename + QString( ".%1" ).arg( save_component ), "PNG" );
     }
 }
 
@@ -1663,21 +1678,18 @@ void Waveprogram2DPlot::loop()
 
         if ( !matlabExportFile_.isEmpty() ) {
             QString modelName( lattice->modelName().c_str() );
-            modelName = modelName.remove(QRegExp("[^A-Za-z]" ) );
-            exportAsMatlabStructure( matlabExportFile_, modelName, matlabExportIndex_, true);
+            modelName = modelName.remove( QRegExp( "[^A-Za-z]" ) );
+            exportAsMatlabStructure( matlabExportFile_, modelName, matlabExportIndex_, true );
             ++matlabExportIndex_;
         }
 
+        /*        QScriptEngine engine;
 
-/*        QScriptEngine engine;
+         QScriptValue objectValue = engine.newQObject(this);
+         engine.globalObject().setProperty("myObject", objectValue);
+         qDebug() << engine.evaluate( "myObject.changeDiffusion( 10 ) " ).toNumber();
 
-             QScriptValue objectValue = engine.newQObject(this);
-             engine.globalObject().setProperty("myObject", objectValue);
-             qDebug() << engine.evaluate( "myObject.changeDiffusion( 10 ) " ).toNumber();
-
-*/
-
-
+         */
 
     }
 }
@@ -1711,7 +1723,6 @@ void Waveprogram2DPlot::on_actionShow_Slice_triggered(bool b)
     sliceWidget->setVisible( b );
 }
 
-
 void Waveprogram2DPlot::readSettings()
 {
     QSettings settings;
@@ -1720,12 +1731,12 @@ void Waveprogram2DPlot::readSettings()
 
     //resize(settings.value("size", QSize(400, 400)).toSize());
     //move(settings.value("pos", QPoint(200, 200)).toPoint());
-/*
-    QString s = settings.value("dockPositions").toString();
-    QTextStream stream;
-    stream << s;
-        stream >> *mainWindow;
-*/
+    /*
+     QString s = settings.value("dockPositions").toString();
+     QTextStream stream;
+     stream << s;
+     stream >> *mainWindow;
+     */
 
     settings.endGroup();
 
@@ -1738,20 +1749,18 @@ void Waveprogram2DPlot::writeSettings()
     //    settings.setValue("size", size());
     //    settings.setValue("pos", pos());
     settings.setValue( "geometry", saveGeometry() );
-/*
-    QTextStream stream;
+    /*
+     QTextStream stream;
 
-            stream << *this;
-            QString s;
-            stream >> s;
+     stream << *this;
+     QString s;
+     stream >> s;
 
-            settings.setValue("dockPositions", s);
-*/
+     settings.setValue("dockPositions", s);
+     */
     settings.endGroup();
 
 }
-
-
 
 void Waveprogram2DPlot::setUpParameterSets()
 {
@@ -1845,8 +1854,8 @@ void Waveprogram2DPlot::readParameterSets()
 
         QStringList keys = settings.allKeys();
         foreach( QString k, keys ) {
-            p.insert( k, settings.value(k).toDouble() );
-        }
+                p.insert( k, settings.value( k ).toDouble() );
+            }
 
         savedParameterSets << p;
     }
@@ -1868,9 +1877,9 @@ void Waveprogram2DPlot::writeParameterSets()
     for (int i = 0; i < savedParameterSets.size(); ++i) {
         settings.setArrayIndex( i );
         qDebug() << "set #" << i;
-        const ParameterValueMap p = savedParameterSets.at(i);
+        const ParameterValueMap p = savedParameterSets.at( i );
         ParameterValueMap::const_iterator it = p.constBegin();
-        for( ; it != p.constEnd(); ++it) {
+        for (; it != p.constEnd(); ++it) {
             settings.setValue( it.key(), it.value() );
             qDebug() << it.key() << it.value();
         }
@@ -1879,4 +1888,13 @@ void Waveprogram2DPlot::writeParameterSets()
     settings.endArray();
     settings.endGroup();
     settings.endGroup();
+}
+
+void Waveprogram2DPlot::on_actionShow_Single_Plot_triggered()
+{
+    PlotSingle* p = new PlotSingle( lattice, this );
+
+    p->show();
+    connect( this, SIGNAL( modelClosed() ), p, SLOT( close() ));
+    connect( this, SIGNAL( replotAllChildren() ), p, SLOT( update() ) );
 }

@@ -27,6 +27,8 @@
 
 #include "parameter_spin_box.h"
 
+#include "plot_single.h"
+
 #include "lattice_interface.h"
 
 #include "configuration.h"
@@ -138,6 +140,8 @@ public slots:
     void on_actionShow_Slice_triggered(bool b);
     void on_actionAbout_triggered();
 
+    void on_actionShow_Single_Plot_triggered();
+
     void on_numInitialPushButton_clicked();
 
     void on_actionCopy_to_Clipboard_triggered();
@@ -178,6 +182,9 @@ public slots:
     void replotTab();
     void colorMapChanged(const QwtColorMap&);
     void modelChanged();
+    void modelClosed();
+
+    void replotAllChildren();
 
 private:
     bool showClusterIds_;
