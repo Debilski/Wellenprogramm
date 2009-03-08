@@ -20,3 +20,6 @@ latex/
 *.dylib
 *.pyc
 *~
+moc_*.cpp
+ui_*.h
+
