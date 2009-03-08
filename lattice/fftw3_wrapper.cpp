@@ -83,11 +83,13 @@ Fftw3Wrapper::~Fftw3Wrapper()
 void Fftw3Wrapper::importWisdom(const std::string s)
 {
   FILE *fp;
+
   fp = fopen( s.c_str(), "r" );
   if ( fp != NULL ) {
     fftw_import_wisdom_from_file( fp );
     fclose( fp );
   }
+
 }
 
 /**
@@ -97,8 +99,12 @@ void Fftw3Wrapper::exportWisdom(const std::string s)
 {
   FILE *fp;
   fp = fopen( s.c_str(), "w" );
-  fftw_export_wisdom_to_file( fp );
-  fclose( fp );
+  if ( fp != NULL ) {
+    fftw_export_wisdom_to_file( fp );
+    fclose( fp );
+  } else {
+      std::cerr << "Fehler beim Schreiben von Wisdom. Möglicherweise keine Schreibrechte." << std::endl;
+  }
 }
 
 
