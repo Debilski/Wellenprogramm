@@ -1,119 +1,120 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>plotWindow_2d</class>
- <widget class="QMainWindow" name="plotWindow_2d" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="plotWindow_2d">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>732</width>
+    <width>811</width>
     <height>566</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Wellenprogramm</string>
   </property>
-  <widget class="QWidget" name="centralwidget" >
-   <property name="sizePolicy" >
-    <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_4" >
+   <layout class="QVBoxLayout" name="verticalLayout_4">
     <item>
-     <widget class="QWidget" native="1" name="widget" >
-      <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <widget class="QWidget" name="widget" native="true">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QWidget" native="1" name="buttonWidget" >
-         <layout class="QHBoxLayout" name="horizontalLayout_2" >
+        <widget class="QWidget" name="buttonWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="startStopButton" >
-            <property name="text" >
+           <widget class="QPushButton" name="startStopButton">
+            <property name="text">
              <string>Start</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="clearButton" >
-            <property name="text" >
+           <widget class="QPushButton" name="clearButton">
+            <property name="text">
              <string>Clear</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="numInitialComboBox" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <widget class="QComboBox" name="numInitialComboBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>2</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>3</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>4</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>5</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>6</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>7</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>8</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>9</string>
              </property>
             </item>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="numInitialPushButton" >
-            <property name="text" >
+           <widget class="QPushButton" name="numInitialPushButton">
+            <property name="text">
              <string>Initial</string>
             </property>
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer" >
-            <property name="orientation" >
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>40</width>
               <height>20</height>
@@ -122,26 +123,26 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="simulationTimeLabel" >
-            <property name="minimumSize" >
+           <widget class="QLabel" name="simulationTimeLabel">
+            <property name="minimumSize">
              <size>
               <width>60</width>
               <height>0</height>
              </size>
             </property>
-            <property name="font" >
+            <property name="font">
              <font>
               <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
-            <property name="frameShape" >
+            <property name="frameShape">
              <enum>QFrame::Box</enum>
             </property>
-            <property name="frameShadow" >
+            <property name="frameShadow">
              <enum>QFrame::Sunken</enum>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>0</string>
             </property>
            </widget>
@@ -150,89 +151,89 @@
         </widget>
        </item>
        <item>
-        <widget class="QWidget" native="1" name="infoWidget" >
-         <layout class="QHBoxLayout" name="horizontalLayout_5" >
+        <widget class="QWidget" name="infoWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QLabel" name="clusterNumberLabel" >
-            <property name="minimumSize" >
+           <widget class="QLabel" name="clusterNumberLabel">
+            <property name="minimumSize">
              <size>
               <width>60</width>
               <height>0</height>
              </size>
             </property>
-            <property name="font" >
+            <property name="font">
              <font>
               <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
-            <property name="frameShape" >
+            <property name="frameShape">
              <enum>QFrame::Box</enum>
             </property>
-            <property name="frameShadow" >
+            <property name="frameShadow">
              <enum>QFrame::Sunken</enum>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>0</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="gammaLabel" >
-            <property name="minimumSize" >
+           <widget class="QLabel" name="gammaLabel">
+            <property name="minimumSize">
              <size>
               <width>72</width>
               <height>0</height>
              </size>
             </property>
-            <property name="font" >
+            <property name="font">
              <font>
               <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
-            <property name="frameShape" >
+            <property name="frameShape">
              <enum>QFrame::Box</enum>
             </property>
-            <property name="frameShadow" >
+            <property name="frameShadow">
              <enum>QFrame::Sunken</enum>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>0</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="waveSizeLabel" >
-            <property name="minimumSize" >
+           <widget class="QLabel" name="waveSizeLabel">
+            <property name="minimumSize">
              <size>
               <width>60</width>
               <height>0</height>
              </size>
             </property>
-            <property name="font" >
+            <property name="font">
              <font>
               <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
-            <property name="frameShape" >
+            <property name="frameShape">
              <enum>QFrame::Box</enum>
             </property>
-            <property name="frameShadow" >
+            <property name="frameShadow">
              <enum>QFrame::Sunken</enum>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>0</string>
             </property>
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer_2" >
-            <property name="orientation" >
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>40</width>
               <height>20</height>
@@ -244,19 +245,19 @@
         </widget>
        </item>
        <item>
-        <widget class="QTabWidget" name="plotTabWidget" >
-         <property name="currentIndex" >
+        <widget class="QTabWidget" name="plotTabWidget">
+         <property name="currentIndex">
           <number>1</number>
          </property>
-         <widget class="QWidget" name="tab" >
-          <attribute name="title" >
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
            <string>Tab 1</string>
           </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_4" >
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
-            <widget class="QwtPlot" name="oldgraph" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+            <widget class="QwtPlot" name="oldgraph">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -265,8 +266,8 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_2" >
-          <attribute name="title" >
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
            <string>Tab 2</string>
           </attribute>
          </widget>
@@ -277,202 +278,202 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar" >
-   <property name="enabled" >
+  <widget class="QMenuBar" name="menubar">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="geometry" >
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>732</width>
-     <height>20</height>
+     <width>811</width>
+     <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuMode" >
-    <property name="title" >
+   <widget class="QMenu" name="menuMode">
+    <property name="title">
      <string>&amp;Model</string>
     </property>
-    <addaction name="separator" />
-    <addaction name="actionClose_Window" />
+    <addaction name="separator"/>
+    <addaction name="actionClose_Window"/>
    </widget>
-   <widget class="QMenu" name="menuProgram_Settings" >
-    <property name="title" >
+   <widget class="QMenu" name="menuProgram_Settings">
+    <property name="title">
      <string>Interface Settings</string>
     </property>
-    <widget class="QMenu" name="menuSelect_Colour_Scheme" >
-     <property name="title" >
+    <widget class="QMenu" name="menuSelect_Colour_Scheme">
+     <property name="title">
       <string>Select Colour Scheme</string>
      </property>
-     <addaction name="actionStandard" />
-     <addaction name="actionGrey" />
-     <addaction name="actionJet" />
-     <addaction name="separator" />
-     <addaction name="actionDefault_Colour_Scheme" />
-     <addaction name="actionAdaptive_Scheme" />
-     <addaction name="actionDelayed_Adaptive_Scheme" />
+     <addaction name="actionStandard"/>
+     <addaction name="actionGrey"/>
+     <addaction name="actionJet"/>
+     <addaction name="separator"/>
+     <addaction name="actionDefault_Colour_Scheme"/>
+     <addaction name="actionAdaptive_Scheme"/>
+     <addaction name="actionDelayed_Adaptive_Scheme"/>
     </widget>
-    <addaction name="actionResize_program_window_to_force_update" />
-    <addaction name="actionShow_Curvature" />
-    <addaction name="menuSelect_Colour_Scheme" />
-    <addaction name="actionShow_Slice" />
-    <addaction name="actionEdit_Script" />
+    <addaction name="actionResize_program_window_to_force_update"/>
+    <addaction name="actionShow_Curvature"/>
+    <addaction name="menuSelect_Colour_Scheme"/>
+    <addaction name="actionShow_Slice"/>
+    <addaction name="actionEdit_Script"/>
    </widget>
-   <widget class="QMenu" name="menuCluster_Tracking" >
-    <property name="title" >
+   <widget class="QMenu" name="menuCluster_Tracking">
+    <property name="title">
      <string>Cluster Tracking</string>
     </property>
-    <addaction name="actionShow_Cluster_Ids" />
+    <addaction name="actionShow_Cluster_Ids"/>
    </widget>
-   <widget class="QMenu" name="menuDefects" >
-    <property name="title" >
+   <widget class="QMenu" name="menuDefects">
+    <property name="title">
      <string>Defects</string>
     </property>
-    <addaction name="actionEdit_defects" />
+    <addaction name="actionEdit_defects"/>
    </widget>
-   <widget class="QMenu" name="menuUpdate_Period" >
-    <property name="title" >
+   <widget class="QMenu" name="menuUpdate_Period">
+    <property name="title">
      <string>Update Period</string>
     </property>
-    <addaction name="action25_ms" />
-    <addaction name="action100_ms" />
-    <addaction name="action500_ms" />
-    <addaction name="action1_s" />
-    <addaction name="action5_s" />
+    <addaction name="action25_ms"/>
+    <addaction name="action100_ms"/>
+    <addaction name="action500_ms"/>
+    <addaction name="action1_s"/>
+    <addaction name="action5_s"/>
    </widget>
-   <widget class="QMenu" name="menuAbout" >
-    <property name="title" >
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionAbout" />
+    <addaction name="actionAbout"/>
    </widget>
-   <widget class="QMenu" name="menuField" >
-    <property name="title" >
+   <widget class="QMenu" name="menuField">
+    <property name="title">
      <string>Field</string>
     </property>
-    <addaction name="actionCopy_to_Clipboard" />
-    <addaction name="separator" />
-    <addaction name="actionSave" />
-    <addaction name="actionRecall" />
-    <addaction name="actionDump" />
-    <addaction name="actionUndump" />
-    <addaction name="separator" />
-    <addaction name="actionSave_as_Png" />
-    <addaction name="actionLoad_from_Png" />
+    <addaction name="actionCopy_to_Clipboard"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionRecall"/>
+    <addaction name="actionDump"/>
+    <addaction name="actionUndump"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_as_Png"/>
+    <addaction name="actionLoad_from_Png"/>
    </widget>
-   <addaction name="menuMode" />
-   <addaction name="menuField" />
-   <addaction name="menuProgram_Settings" />
-   <addaction name="menuDefects" />
-   <addaction name="menuCluster_Tracking" />
-   <addaction name="menuUpdate_Period" />
-   <addaction name="menuAbout" />
+   <addaction name="menuMode"/>
+   <addaction name="menuField"/>
+   <addaction name="menuProgram_Settings"/>
+   <addaction name="menuDefects"/>
+   <addaction name="menuCluster_Tracking"/>
+   <addaction name="menuUpdate_Period"/>
+   <addaction name="menuAbout"/>
   </widget>
-  <widget class="QDockWidget" name="simulationWidget" >
-   <property name="features" >
+  <widget class="QDockWidget" name="simulationWidget">
+   <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
-   <property name="windowTitle" >
+   <property name="windowTitle">
     <string>Simulation</string>
    </property>
-   <attribute name="dockWidgetArea" >
+   <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="simulationWidgetContents" >
-    <layout class="QHBoxLayout" name="horizontalLayout_3" >
+   <widget class="QWidget" name="simulationWidgetContents">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <layout class="QFormLayout" name="simulationWidgetFormLayout" >
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label" >
-         <property name="text" >
+      <layout class="QFormLayout" name="simulationWidgetFormLayout">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
           <string>Noise</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>noiseBox</cstring>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QDoubleSpinBox" name="noiseBox" >
-         <property name="decimals" >
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="noiseBox">
+         <property name="decimals">
           <number>6</number>
          </property>
-         <property name="maximum" >
+         <property name="maximum">
           <double>9999999.990000000223517</double>
          </property>
-         <property name="singleStep" >
+         <property name="singleStep">
           <double>0.010000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="label_6" >
-         <property name="text" >
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
           <string>Correlation</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>noise_correlationValue</cstring>
          </property>
         </widget>
        </item>
-       <item row="2" column="1" >
-        <widget class="QSpinBox" name="noise_correlationValue" >
-         <property name="minimum" >
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="noise_correlationValue">
+         <property name="minimum">
           <number>-1</number>
          </property>
-         <property name="maximum" >
+         <property name="maximum">
           <number>10000</number>
          </property>
-         <property name="value" >
+         <property name="value">
           <number>-1</number>
          </property>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <widget class="QLabel" name="label_9" >
-         <property name="text" >
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
           <string>Boundary</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>boundaryConditionsComboBox</cstring>
          </property>
         </widget>
        </item>
-       <item row="3" column="1" >
-        <widget class="QComboBox" name="boundaryConditionsComboBox" >
+       <item row="3" column="1">
+        <widget class="QComboBox" name="boundaryConditionsComboBox">
          <item>
-          <property name="text" >
+          <property name="text">
            <string>Fixed</string>
           </property>
          </item>
          <item>
-          <property name="text" >
+          <property name="text">
            <string>Periodic</string>
           </property>
          </item>
          <item>
-          <property name="text" >
+          <property name="text">
            <string>No Flux</string>
           </property>
          </item>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QDoubleSpinBox" name="timestepValue" >
-         <property name="decimals" >
+       <item row="0" column="1">
+        <widget class="QDoubleSpinBox" name="timestepValue">
+         <property name="decimals">
           <number>7</number>
          </property>
-         <property name="singleStep" >
+         <property name="singleStep">
           <double>0.010000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_7" >
-         <property name="text" >
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
           <string>Timestep</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>timestepValue</cstring>
          </property>
         </widget>
@@ -482,40 +483,40 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="parameterWidget" >
-   <property name="floating" >
+  <widget class="QDockWidget" name="parameterWidget">
+   <property name="floating">
     <bool>true</bool>
    </property>
-   <property name="features" >
+   <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
-   <property name="windowTitle" >
+   <property name="windowTitle">
     <string>Model Properties</string>
    </property>
-   <attribute name="dockWidgetArea" >
+   <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="parameterWidgetContents" >
-    <layout class="QVBoxLayout" name="verticalLayout" >
+   <widget class="QWidget" name="parameterWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QFormLayout" name="parameterWidgetFormLayout" />
+      <layout class="QFormLayout" name="parameterWidgetFormLayout"/>
      </item>
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="sliceWidget" >
-   <property name="enabled" >
+  <widget class="QDockWidget" name="sliceWidget">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="floating" >
+   <property name="floating">
     <bool>true</bool>
    </property>
-   <attribute name="dockWidgetArea" >
+   <attribute name="dockWidgetArea">
     <number>8</number>
    </attribute>
-   <widget class="QWidget" name="sliceWidgetContents" >
-    <widget class="QwtPlot" name="slicePlot" >
-     <property name="geometry" >
+   <widget class="QWidget" name="sliceWidgetContents">
+    <widget class="QwtPlot" name="slicePlot">
+     <property name="geometry">
       <rect>
        <x>9</x>
        <y>9</y>
@@ -526,21 +527,21 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="adaptationParameterWidget" >
-   <property name="features" >
+  <widget class="QDockWidget" name="adaptationParameterWidget">
+   <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
-   <property name="windowTitle" >
+   <property name="windowTitle">
     <string>Adaptation</string>
    </property>
-   <attribute name="dockWidgetArea" >
+   <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="adaptationParameterWidgetContents" >
-    <layout class="QVBoxLayout" name="verticalLayout_3" >
+   <widget class="QWidget" name="adaptationParameterWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <layout class="QFormLayout" name="adaptationParameterWidgetFormLayout" >
-       <property name="fieldGrowthPolicy" >
+      <layout class="QFormLayout" name="adaptationParameterWidgetFormLayout">
+       <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
       </layout>
@@ -549,36 +550,63 @@
     <zorder></zorder>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="extrasWidget" >
-   <property name="features" >
+  <widget class="QDockWidget" name="extrasWidget">
+   <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
-   <property name="windowTitle" >
+   <property name="windowTitle">
     <string>Extra</string>
    </property>
-   <attribute name="dockWidgetArea" >
+   <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="extrasWidgetContents" >
-    <layout class="QVBoxLayout" name="verticalLayout_3" >
+   <widget class="QWidget" name="extrasWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <layout class="QFormLayout" name="extrasWidgetFormLayout" >
-       <property name="fieldGrowthPolicy" >
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QComboBox" name="parameterSetsDropDown">
+         <item>
+          <property name="text">
+           <string>add new…</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="parameterSetsSave">
+         <property name="text">
+          <string>save</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="parameterSetsDelete">
+         <property name="text">
+          <string>delete</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QFormLayout" name="extrasWidgetFormLayout">
+       <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_10" >
-         <property name="text" >
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
           <string>Midpoint Size</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>midpoint_sizeValue</cstring>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QDoubleSpinBox" name="midpoint_sizeValue" >
-         <property name="singleStep" >
+       <item row="0" column="1">
+        <widget class="QDoubleSpinBox" name="midpoint_sizeValue">
+         <property name="singleStep">
           <double>0.100000000000000</double>
          </property>
         </widget>
@@ -588,264 +616,264 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QToolBar" name="toolBar" >
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
     <string>toolBar</string>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionStartStop" />
-   <addaction name="actionClear" />
-   <addaction name="actionSave" />
-   <addaction name="actionRecall" />
-   <addaction name="actionDump" />
-   <addaction name="actionUndump" />
-   <addaction name="actionSave_as_Png" />
-   <addaction name="actionLoad_from_Png" />
-   <addaction name="actionSave_as_Movie_Pngs" />
-   <addaction name="actionExport_as_Matlab_Structure" />
+   <addaction name="actionStartStop"/>
+   <addaction name="actionClear"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionRecall"/>
+   <addaction name="actionDump"/>
+   <addaction name="actionUndump"/>
+   <addaction name="actionSave_as_Png"/>
+   <addaction name="actionLoad_from_Png"/>
+   <addaction name="actionSave_as_Movie_Pngs"/>
+   <addaction name="actionExport_as_Matlab_Structure"/>
   </widget>
-  <action name="actionTest" >
-   <property name="text" >
+  <action name="actionTest">
+   <property name="text">
     <string>test</string>
    </property>
   </action>
-  <action name="actionOpen" >
-   <property name="text" >
+  <action name="actionOpen">
+   <property name="text">
     <string>open</string>
    </property>
   </action>
-  <action name="actionResize_program_window_to_force_update" >
-   <property name="checkable" >
+  <action name="actionResize_program_window_to_force_update">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Resize program window to force update</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+F</string>
    </property>
   </action>
-  <action name="actionShow_Curvature" >
-   <property name="checkable" >
+  <action name="actionShow_Curvature">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="enabled" >
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Show Curvature</string>
    </property>
   </action>
-  <action name="actionShow_Cluster_Ids" >
-   <property name="checkable" >
+  <action name="actionShow_Cluster_Ids">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Show Cluster Ids</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+K</string>
    </property>
   </action>
-  <action name="actionStartStop" >
-   <property name="text" >
+  <action name="actionStartStop">
+   <property name="text">
     <string>Start</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Space</string>
    </property>
   </action>
-  <action name="actionClear" >
-   <property name="text" >
+  <action name="actionClear">
+   <property name="text">
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionSave" >
-   <property name="text" >
+  <action name="actionSave">
+   <property name="text">
     <string>Save</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>binary</string>
    </property>
   </action>
-  <action name="actionRecall" >
-   <property name="text" >
+  <action name="actionRecall">
+   <property name="text">
     <string>Recall</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>binary</string>
    </property>
   </action>
-  <action name="actionDump" >
-   <property name="text" >
+  <action name="actionDump">
+   <property name="text">
     <string>Dump</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>plain text</string>
    </property>
   </action>
-  <action name="actionUndump" >
-   <property name="text" >
+  <action name="actionUndump">
+   <property name="text">
     <string>Undump</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>plain text</string>
    </property>
   </action>
-  <action name="actionSave_as_Png" >
-   <property name="text" >
+  <action name="actionSave_as_Png">
+   <property name="text">
     <string>Save as PNG</string>
    </property>
   </action>
-  <action name="actionLoad_from_Png" >
-   <property name="text" >
+  <action name="actionLoad_from_Png">
+   <property name="text">
     <string>Load from PNG</string>
    </property>
   </action>
-  <action name="actionSave_as_Movie_Pngs" >
-   <property name="text" >
+  <action name="actionSave_as_Movie_Pngs">
+   <property name="text">
     <string>Save as Movie PNGs</string>
    </property>
   </action>
-  <action name="actionEdit_defects" >
-   <property name="text" >
+  <action name="actionEdit_defects">
+   <property name="text">
     <string>Edit defects…</string>
    </property>
   </action>
-  <action name="actionBistabiles" >
-   <property name="text" >
+  <action name="actionBistabiles">
+   <property name="text">
     <string>Bistabiles</string>
    </property>
   </action>
-  <action name="action25_ms" >
-   <property name="checkable" >
+  <action name="action25_ms">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>25 ms</string>
    </property>
   </action>
-  <action name="action100_ms" >
-   <property name="checkable" >
+  <action name="action100_ms">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>100 ms</string>
    </property>
   </action>
-  <action name="action500_ms" >
-   <property name="checkable" >
+  <action name="action500_ms">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>500 ms</string>
    </property>
   </action>
-  <action name="action1_s" >
-   <property name="checkable" >
+  <action name="action1_s">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>1 s</string>
    </property>
   </action>
-  <action name="action5_s" >
-   <property name="checkable" >
+  <action name="action5_s">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>5 s</string>
    </property>
   </action>
-  <action name="actionClose_Window" >
-   <property name="text" >
+  <action name="actionClose_Window">
+   <property name="text">
     <string>Close Window</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionDefault_Colour_Scheme" >
-   <property name="checkable" >
+  <action name="actionDefault_Colour_Scheme">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Default Colour Scheme</string>
    </property>
   </action>
-  <action name="actionAdaptive_Scheme" >
-   <property name="checkable" >
+  <action name="actionAdaptive_Scheme">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Adaptive Scheme</string>
    </property>
   </action>
-  <action name="actionDelayed_Adaptive_Scheme" >
-   <property name="checkable" >
+  <action name="actionDelayed_Adaptive_Scheme">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Delayed Adaptive Scheme</string>
    </property>
   </action>
-  <action name="actionStandard" >
-   <property name="checkable" >
+  <action name="actionStandard">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Standard</string>
    </property>
   </action>
-  <action name="actionGrey" >
-   <property name="checkable" >
+  <action name="actionGrey">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Grey</string>
    </property>
   </action>
-  <action name="actionJet" >
-   <property name="checkable" >
+  <action name="actionJet">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Jet</string>
    </property>
   </action>
-  <action name="actionAbout" >
-   <property name="text" >
+  <action name="actionAbout">
+   <property name="text">
     <string>About</string>
    </property>
   </action>
-  <action name="actionShow_Slice" >
-   <property name="checkable" >
+  <action name="actionShow_Slice">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Show Slice</string>
    </property>
   </action>
-  <action name="actionCopy_to_Clipboard" >
-   <property name="text" >
+  <action name="actionCopy_to_Clipboard">
+   <property name="text">
     <string>Copy to Clipboard</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="actionExport_as_Matlab_Structure" >
-   <property name="text" >
+  <action name="actionExport_as_Matlab_Structure">
+   <property name="text">
     <string>Export as Matlab Structure</string>
    </property>
   </action>
-  <action name="actionEdit_Script" >
-   <property name="text" >
+  <action name="actionEdit_Script">
+   <property name="text">
     <string>Edit Script …</string>
    </property>
   </action>
@@ -855,6 +883,7 @@
    <class>QwtPlot</class>
    <extends>QFrame</extends>
    <header>qwt_plot.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

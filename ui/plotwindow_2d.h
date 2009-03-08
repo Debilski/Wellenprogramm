@@ -11,7 +11,6 @@
 #include <qwt_plot_grid.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_spectrogram.h>
-#include <qwt_plot_spectrogram.h>
 #include <qwt_color_map.h>
 
 #include <qwt_scale_widget.h>
@@ -24,6 +23,9 @@
 
 #include "defects_editor.h"
 #include "script_editor.h"
+#include "plot_view.h"
+
+#include "parameter_spin_box.h"
 
 #include "lattice_interface.h"
 
@@ -35,152 +37,8 @@
  #include "barkley_lattice.h"
  */
 
-class ParameterSpinBox : public QDoubleSpinBox {
-Q_OBJECT
-public:
-    ParameterSpinBox(Parameter< double >* parameterReference, QWidget* parent = 0) :
-        QDoubleSpinBox( parent ), parameter_( parameterReference )
-    {
-        parameterName_ = QString::fromUtf8( parameter_->name.c_str() );
-        update();
-    }
-    void updateReference(Parameter< double >* parameterReference)
-    {
-        parameter_ = parameterReference;
-        parameterName_ = QString::fromUtf8( parameter_->name.c_str() );
-        update();
-    }
-public slots:
-    void updateValue()
-    {
-        double p = parameter_->get();
-        if ( p != this->value() )
-            this->setValue( p );
-    }
-    void update()
-    {
-        this->setProperty( "parameter", QVariant( parameterName_ ) );
-        this->setDecimals( parameter_->decimals() );
-        this->setMaximum( parameter_->max() );
-        this->setMinimum( parameter_->min() );
-        this->setSingleStep( parameter_->stepSizeHint() );
-        this->setValue( parameter_->get() );
-    }
-private:
-    Parameter< double >* parameter_;
-    QString parameterName_;
-};
 
 
-#include "tiny_double_edit.h"
-/**
- * Class that holds Spectrogram, ColorMap and Plot for each tab.
- */
-class PlotView : public QWidget {
-Q_OBJECT
-public:
-    QwtPlotSpectrogram* spectrogram_;
-    QwtLinearColorMap* colorMap_;
-    QwtPlot* plot_;
-    QwtScaleWidget* rightAxis;
-
-    PlotView(const QwtRasterData& spectrogrammData, const QwtColorMap& colorMap, uint component,
-             const QString label, QWidget* parent, bool isFft = false) :
-        QWidget( parent ), component_( component ), isFft_( isFft )
-    {
-        QFont plotFont = QFont( "", 8 );
-        QwtText labelIntensity( label );
-        labelIntensity.setFont( plotFont );
-
-        QHBoxLayout* horizontalLayout = new QHBoxLayout( this );
-        plot_ = new QwtPlot( this );
-        plot_->setAxisFont( QwtPlot::yLeft, plotFont );
-        plot_->setAxisFont( QwtPlot::xBottom, plotFont );
-        horizontalLayout->addWidget( plot_ );
-
-        spectrogram_ = new QwtPlotSpectrogram();
-        spectrogram_->setData( spectrogrammData );
-
-        spectrogram_->setColorMap( colorMap );
-        spectrogram_->attach( plot_ );
-
-        rightAxis = plot_->axisWidget( QwtPlot::yRight );
-        rightAxis->setTitle( labelIntensity );
-        rightAxis->setColorBarEnabled( true );
-        rightAxis->setColorMap( spectrogram_->data().range(), spectrogram_->colorMap() );
-
-        plot_->setAxisScale(
-            QwtPlot::yRight, spectrogram_->data().range().minValue(),
-            spectrogram_->data().range().maxValue() );
-        plot_->enableAxis( QwtPlot::yRight );
-        plot_->setAxisFont( QwtPlot::yRight, plotFont );
-        plot_->plotLayout()->setAlignCanvasToScales( true );
-
-        rightClickMenu.addAction( QString( "Top Value: %1" ).arg(
-            spectrogram_->data().range().maxValue() ), this, "changeTop()" );
-        rightClickMenu.addAction( QString( "Bottom Value: %1" ).arg(
-            spectrogram_->data().range().minValue() ), this, "changeBottom()" );
-
-        rightAxis->setContextMenuPolicy( Qt::CustomContextMenu );
-        connect( rightAxis, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showMenu( const QPoint& ) ) );
-    }
-    QMenu rightClickMenu;
-    ~PlotView()
-    {
-        //delete spectrogram_;
-    }
-    signals:
-    void adaptComponent(uint& component, bool& isFft);
-
-public slots:
-    void replot(int)
-    {
-        replot();
-    }
-    void replot()
-    {
-        if ( isVisible() ) {
-            emit adaptComponent( component_, isFft_ );
-            rightAxis->setColorMap( spectrogram_->data().range(), spectrogram_->colorMap() );
-            plot_->setAxisScale(
-                QwtPlot::yRight, spectrogram_->data().range().minValue(),
-                spectrogram_->data().range().maxValue() );
-
-            plot_->replot();
-        }
-    }
-    void setColorMap(const QwtColorMap& colorMap)
-    {
-        spectrogram_->setColorMap( colorMap );
-        rightAxis->setColorMap( spectrogram_->data().range(), spectrogram_->colorMap() );
-        replot();
-    }
-    void showMenu(const QPoint& p)
-    {
-        std::cout << p.x() << "," << p.y() << std::endl;
-
-        rightClickMenu.popup( rightAxis->mapToGlobal( p ) );
-    }
-    void changeTop()
-    {
-        TinyDoubleEdit tEdit( this, spectrogram_->data().range().maxValue() );
-        if ( tEdit.exec() ) {
-            double c = tEdit.value();
-            std::cout << c;
-        }
-    }
-    void changeBottom()
-    {
-        TinyDoubleEdit tEdit( this, spectrogram_->data().range().minValue() );
-        if ( tEdit.exec() ) {
-            double c = tEdit.value();
-            std::cout << c;
-        }
-    }
-private:
-    bool isFft_;
-    uint component_;
-};
 
 /**
  * Action which stores the Modeltype it shall call
@@ -232,6 +90,8 @@ public:
     void setUpAdaptationParameters();
     void setUpBoundaryConditionsSelector();
     void setUpSlices();
+
+    QVector< QwtDoubleInterval > plotRanges_real, plotRanges_fft;
 
 public slots:
 
@@ -304,10 +164,20 @@ public slots:
 
     void exportAsMatlabStructure(QString fileName, QString structureName, int timeIndex,
                                  bool append = true);
+
+
+    void setUpParameterSets();
+    void updateParametersToSet(int setNum);
+    void on_parameterSetsDropDown_currentIndexChanged(int index);
+    void on_parameterSetsSave_clicked();
+    void on_parameterSetsDelete_clicked();
+
     signals:
     void updateParameters();
+
     void replotTab();
     void colorMapChanged(const QwtColorMap&);
+    void modelChanged();
 
 private:
     bool showClusterIds_;
@@ -338,9 +208,7 @@ private:
 
 protected:
     void closeEvent(QCloseEvent * event);
-public:
 
-    QVector< QwtDoubleInterval > plotRanges_real, plotRanges_fft;
 private:
     QList< QAction* > actionLatticeModels;
 
@@ -350,8 +218,14 @@ private:
     DefectsEditor* defectsEditor;
     QList< Defect< GeneralComponentSystem > > defectsList;
 
-    QMap< QString, Parameter< double >* > latticeParameters;
-    QMap< QString, Parameter< double >* > latticeAdaptationParameters;
+
+    typedef QMap< QString, Parameter< double >* > ParameterMap;
+    typedef QMap< QString,  double > ParameterValueMap;
+
+    ParameterMap latticeParameters;
+    ParameterMap latticeAdaptationParameters;
+
+    QVector< ParameterValueMap > savedParameterSets;
 
     QQueue< QString > movieQueue;
     int realSize_, latticeSize_;
@@ -394,6 +268,9 @@ private:
 
     void writeSettings();
     void readSettings();
+
+    void readParameterSets();
+    void writeParameterSets();
 
 };
 

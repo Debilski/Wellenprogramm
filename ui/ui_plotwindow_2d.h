@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'plotwindow_2d.ui'
 **
-** Created: Wed Mar 4 23:06:09 2009
+** Created: Sun Mar 8 04:49:31 2009
 **      by: Qt User Interface Compiler version 4.4.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -128,6 +128,10 @@ public:
     QDockWidget *extrasWidget;
     QWidget *extrasWidgetContents;
     QVBoxLayout *verticalLayout_31;
+    QHBoxLayout *horizontalLayout_6;
+    QComboBox *parameterSetsDropDown;
+    QPushButton *parameterSetsSave;
+    QPushButton *parameterSetsDelete;
     QFormLayout *extrasWidgetFormLayout;
     QLabel *label_10;
     QDoubleSpinBox *midpoint_sizeValue;
@@ -137,7 +141,7 @@ public:
     {
     if (plotWindow_2d->objectName().isEmpty())
         plotWindow_2d->setObjectName(QString::fromUtf8("plotWindow_2d"));
-    plotWindow_2d->resize(732, 566);
+    plotWindow_2d->resize(811, 566);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
@@ -348,7 +352,7 @@ public:
     menubar = new QMenuBar(plotWindow_2d);
     menubar->setObjectName(QString::fromUtf8("menubar"));
     menubar->setEnabled(true);
-    menubar->setGeometry(QRect(0, 0, 732, 20));
+    menubar->setGeometry(QRect(0, 0, 811, 22));
     menuMode = new QMenu(menubar);
     menuMode->setObjectName(QString::fromUtf8("menuMode"));
     menuProgram_Settings = new QMenu(menubar);
@@ -476,6 +480,26 @@ public:
     extrasWidgetContents->setObjectName(QString::fromUtf8("extrasWidgetContents"));
     verticalLayout_31 = new QVBoxLayout(extrasWidgetContents);
     verticalLayout_31->setObjectName(QString::fromUtf8("verticalLayout_31"));
+    horizontalLayout_6 = new QHBoxLayout();
+    horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
+    parameterSetsDropDown = new QComboBox(extrasWidgetContents);
+    parameterSetsDropDown->setObjectName(QString::fromUtf8("parameterSetsDropDown"));
+
+    horizontalLayout_6->addWidget(parameterSetsDropDown);
+
+    parameterSetsSave = new QPushButton(extrasWidgetContents);
+    parameterSetsSave->setObjectName(QString::fromUtf8("parameterSetsSave"));
+
+    horizontalLayout_6->addWidget(parameterSetsSave);
+
+    parameterSetsDelete = new QPushButton(extrasWidgetContents);
+    parameterSetsDelete->setObjectName(QString::fromUtf8("parameterSetsDelete"));
+
+    horizontalLayout_6->addWidget(parameterSetsDelete);
+
+
+    verticalLayout_31->addLayout(horizontalLayout_6);
+
     extrasWidgetFormLayout = new QFormLayout();
     extrasWidgetFormLayout->setObjectName(QString::fromUtf8("extrasWidgetFormLayout"));
     extrasWidgetFormLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
@@ -678,6 +702,12 @@ public:
     parameterWidget->setWindowTitle(QApplication::translate("plotWindow_2d", "Model Properties", 0, QApplication::UnicodeUTF8));
     adaptationParameterWidget->setWindowTitle(QApplication::translate("plotWindow_2d", "Adaptation", 0, QApplication::UnicodeUTF8));
     extrasWidget->setWindowTitle(QApplication::translate("plotWindow_2d", "Extra", 0, QApplication::UnicodeUTF8));
+    parameterSetsDropDown->clear();
+    parameterSetsDropDown->insertItems(0, QStringList()
+     << QApplication::translate("plotWindow_2d", "add new\342\200\246", 0, QApplication::UnicodeUTF8)
+    );
+    parameterSetsSave->setText(QApplication::translate("plotWindow_2d", "save", 0, QApplication::UnicodeUTF8));
+    parameterSetsDelete->setText(QApplication::translate("plotWindow_2d", "delete", 0, QApplication::UnicodeUTF8));
     label_10->setText(QApplication::translate("plotWindow_2d", "Midpoint Size", 0, QApplication::UnicodeUTF8));
     toolBar->setWindowTitle(QApplication::translate("plotWindow_2d", "toolBar", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

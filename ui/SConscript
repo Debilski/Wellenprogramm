@@ -37,10 +37,12 @@ plotFiles = [
 	'configuration.cpp'
 	]
 
+plotFile = [f for f in Glob('*.cpp') if not str(f).startswith("moc_")]
+print plotFile
 
 if not sys.platform=="darwin" :
     linkflags = "-static-libgcc -ldl -Wl -lstdc++ -Wl,--export-dynamic "
 else:
     linkflags = ""#-static-libgcc -ldl -Wl -lstdc++ "
 
-env.Program('plot', plotFiles, LIBS=["lattice_plugin_registration"]+env["LIBS"], LINKFLAGS = linkflags)#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")
+env.Program('plot', plotFile, LIBS=["lattice_plugin_registration"]+env["LIBS"], LINKFLAGS = linkflags)#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")

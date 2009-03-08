@@ -125,121 +125,7 @@
 
  */
 
-class SpectrogramData : public QwtRasterData {
-    Waveprogram2DPlot::ModelLattice* lattice_;
-    int variable_;
-    Waveprogram2DPlot* programBase;
-public:
-    SpectrogramData(Waveprogram2DPlot::ModelLattice* lattice, int variable = 0,
-                    Waveprogram2DPlot* programBase = 0) :
-        QwtRasterData( QwtDoubleRect( 0., 0., (lattice->sizeX()), (lattice->sizeY()) ) ), lattice_(
-            lattice ), variable_( variable ), programBase( programBase )
-    {
-    }
-    ~SpectrogramData()
-    {
-    }
-    ;
-    // Seltsamer Fehler in Berechnung. Lasse Fkt aus
-    virtual QSize rasterHint(const QwtDoubleRect &) const
-    {
-        return QSize( lattice_->latticeSizeX(), lattice_->latticeSizeY() );
-    }
-
-    virtual QwtRasterData* copy() const
-    {
-        return new SpectrogramData( lattice_, variable_, programBase );
-    }
-
-    virtual QwtDoubleInterval range() const
-    {
-
-        /*double min = lattice_->componentInfos.at( variable_ ).assumedMin;
-         double max = lattice_->componentInfos.at( variable_ ).assumedMax;
-         max = lattice_->getMax( variable_ );
-         //min = lattice_->getMin( variable_ );*/
-
-        return programBase->plotRanges_real[ variable_ ];
-        //return QwtDoubleInterval( min, max );
-    }
-
-    virtual double value(double x, double y) const
-    { //std::cout << "(" << x << ";" <<  y << ") ";
-        // if (y==0) return 1;
-        // return 0;
-        //return x / 16 * 4 - 2;
-
-        //return _lattice->getU((unsigned int) floor(x * (_lattice->latticeSizeX() ) / _lattice->sizeX() ),
-        //                       (unsigned int) floor(y * (_lattice->latticeSizeY() ) / _lattice->sizeY() ));
-        int ix = qRound( x / lattice_->scaleX() );
-        int iy = qRound( y / lattice_->scaleY() );
-
-        //if ( ix >= 0 && ix < 10 && iy >= 0 && iy < 10 )
-        //return _values[ix][iy];
-
-        //assert( ix >= 0 );
-        //assert( iy - 1 >= 0 );
-        //assert( ix < lattice_->latticeSizeX() );
-        //assert( iy - 1 < lattice_->latticeSizeY() );
-
-        return lattice_->getComponentAt( variable_, ix, iy - 1 );
-        //return lattice_->getAt((unsigned int) floor(x / lattice_->scaleX()), (unsigned int) floor(y / lattice_->scaleY()))[ variable_ ];
-    }
-};
-
-
-class SpectrogramDataFft : public QwtRasterData {
-    Waveprogram2DPlot::ModelLattice* lattice_;
-    int variable_;
-    Waveprogram2DPlot* programBase;
-public:
-    SpectrogramDataFft(Waveprogram2DPlot::ModelLattice* lattice, int variable = 0,
-                    Waveprogram2DPlot* programBase = 0) :
-        QwtRasterData( QwtDoubleRect( 0., 0., (lattice->sizeX()), (lattice->sizeY()) ) ), lattice_(
-            lattice ), variable_( variable ), programBase( programBase )
-    {
-    }
-    ~SpectrogramDataFft()
-    {
-    }
-    ;
-    // Seltsamer Fehler in Berechnung. Lasse Fkt aus
-    virtual QSize rasterHint(const QwtDoubleRect &) const
-    {
-        return QSize( lattice_->latticeSizeX(), lattice_->latticeSizeY() );
-    }
-
-    virtual QwtRasterData* copy() const
-    {
-        return new SpectrogramDataFft( lattice_, variable_, programBase );
-    }
-
-    virtual QwtDoubleInterval range() const
-    {
-
-        /*double min = lattice_->componentInfos.at( variable_ ).assumedMin;
-         double max = lattice_->componentInfos.at( variable_ ).assumedMax;
-         max = lattice_->getMax( variable_ );
-         //min = lattice_->getMin( variable_ );*/
-//todo: ranges für fft
-        return programBase->plotRanges_real[ variable_ ];
-        //return QwtDoubleInterval( min, max );
-    }
-
-    virtual double value(double x, double y) const
-    {
-        int ix = qRound( x / lattice_->scaleX() );// % (lattice_->sizeX() / 2);
-        int iy = qRound( y / lattice_->scaleY() );
-
-
-        iy = (iy + lattice_->latticeSizeY() / 2) % lattice_->latticeSizeY();
-        iy = (iy < lattice_->latticeSizeY() / 2) ? iy : lattice_->latticeSizeY() - iy;
-        ix = (ix + lattice_->latticeSizeX() / 2) % lattice_->latticeSizeX();
-
-
-        return std::abs(lattice_->getFftComponentAt( variable_, ix, iy )) ;// sqrt( lattice_->latticeSize() );
-    }
-};
+#include "spectrogram_data.h"
 
 void Waveprogram2DPlot::setTitle()
 {
@@ -398,6 +284,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 void Waveprogram2DPlot::closeEvent(QCloseEvent * event)
 {
     writeSettings();
+    writeParameterSets();
     event->accept();
 }
 
@@ -816,6 +703,9 @@ void Waveprogram2DPlot::setUpModelProperties()
 
     setUpDiffusion();
     setUpParameters();
+
+
+
     setUpAdaptationParameters();
 }
 
@@ -1330,10 +1220,14 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
     setUpBoundaryConditionsSelector();
     setUpSlices();
     setTitle();
+
+    readParameterSets();
 }
 
 void Waveprogram2DPlot::killField()
 {
+    writeParameterSets();
+
     removeTabs();
     if ( lattice && !latticeIdentifier_.empty() ) {
         LatticePluginRegistration::instance()->getDestroyerByName( latticeIdentifier_ )( lattice );
@@ -1823,8 +1717,15 @@ void Waveprogram2DPlot::readSettings()
     QSettings settings;
     settings.beginGroup( "2dPlot" );
     restoreGeometry( settings.value( "geometry" ).toByteArray() );
+
     //resize(settings.value("size", QSize(400, 400)).toSize());
     //move(settings.value("pos", QPoint(200, 200)).toPoint());
+/*
+    QString s = settings.value("dockPositions").toString();
+    QTextStream stream;
+    stream << s;
+        stream >> *mainWindow;
+*/
 
     settings.endGroup();
 
@@ -1837,7 +1738,145 @@ void Waveprogram2DPlot::writeSettings()
     //    settings.setValue("size", size());
     //    settings.setValue("pos", pos());
     settings.setValue( "geometry", saveGeometry() );
+/*
+    QTextStream stream;
 
+            stream << *this;
+            QString s;
+            stream >> s;
+
+            settings.setValue("dockPositions", s);
+*/
     settings.endGroup();
 
+}
+
+
+
+void Waveprogram2DPlot::setUpParameterSets()
+{
+    //    parameterSetsDropDown->clear();
+    //    parameterSetsDropDown->addItem(QString("add new..."));
+
+
+    //if ( savedParameterSets.size() + 1 > parameterSetsDropDown->count() ) {
+    for (int i = parameterSetsDropDown->count(); i < savedParameterSets.size() + 1; ++i) {
+        parameterSetsDropDown->addItem( QString( "Set #%1" ).arg( i ) );
+    }
+
+    //} else if ( savedParameterSets.size() + 1 < parameterSetsDropDown->count() ) {
+
+    for (int i = parameterSetsDropDown->count(); i > savedParameterSets.size() + 1; --i) {
+        parameterSetsDropDown->removeItem( i - 1 );
+    }
+    //}
+}
+
+void Waveprogram2DPlot::updateParametersToSet(int setNum)
+{
+
+}
+
+void Waveprogram2DPlot::on_parameterSetsDropDown_currentIndexChanged(int i)
+{
+    if ( i <= 0 ) {
+        return;
+    } else if ( i <= savedParameterSets.size() ) {
+        ParameterValueMap p = savedParameterSets.at( i - 1 );
+        ParameterValueMap::const_iterator it = p.constBegin();
+        for (; it != p.constEnd(); ++it) {
+            QString k = it.key();
+            double val = it.value();
+            latticeParameters.value( k )->set( val );
+            emit updateParameters();
+        }
+        //latticeParameters = savedParameterSets.at( i - 1 );
+    }
+}
+
+void Waveprogram2DPlot::on_parameterSetsSave_clicked()
+{
+    ParameterValueMap p;
+    ParameterMap::const_iterator it = latticeParameters.constBegin();
+    for (; it != latticeParameters.constEnd(); ++it) {
+        QString k = it.key();
+        double val = it.value()->get();
+        p.insert( k, val );
+    }
+
+    int i = parameterSetsDropDown->currentIndex();
+    if ( i == 0 ) {
+        // Neuen Index anlegen
+        savedParameterSets << p;
+        setUpParameterSets();
+        parameterSetsDropDown->setCurrentIndex( parameterSetsDropDown->count() - 1 );
+    } else if ( i <= savedParameterSets.size() ) {
+        // Alten Index überschreiben
+        savedParameterSets.replace( i - 1, p );
+    }
+}
+
+void Waveprogram2DPlot::on_parameterSetsDelete_clicked()
+{
+    int i = parameterSetsDropDown->currentIndex();
+    if ( i == 0 ) {
+        // Kann ich nicht löschen
+        return;
+    } else if ( i - 1 < savedParameterSets.size() ) {
+        // Entferne gewählten Index.
+        savedParameterSets.remove( i - 1 );
+        setUpParameterSets();
+        parameterSetsDropDown->setCurrentIndex( 0 );
+    }
+}
+
+void Waveprogram2DPlot::readParameterSets()
+{
+    qDebug() << "read Parameter Sets for" << QString( lattice->modelName().c_str() );
+    QSettings settings;
+    settings.beginGroup( "Models" );
+    settings.beginGroup( QString( lattice->modelName().c_str() ) );
+
+    savedParameterSets.clear();
+    int size = settings.beginReadArray( "parameter_sets" );
+    for (int i = 0; i < size; ++i) {
+        settings.setArrayIndex( i );
+        ParameterValueMap p;
+
+        QStringList keys = settings.allKeys();
+        foreach( QString k, keys ) {
+            p.insert( k, settings.value(k).toDouble() );
+        }
+
+        savedParameterSets << p;
+    }
+    settings.endArray();
+    settings.endGroup();
+    settings.endGroup();
+
+    setUpParameterSets();
+}
+
+void Waveprogram2DPlot::writeParameterSets()
+{
+    qDebug() << "write Parameter Sets for" << QString( lattice->modelName().c_str() );
+    QSettings settings;
+    settings.beginGroup( "Models" );
+    settings.beginGroup( QString( lattice->modelName().c_str() ) );
+
+    settings.beginWriteArray( "parameter_sets" );
+    for (int i = 0; i < savedParameterSets.size(); ++i) {
+        settings.setArrayIndex( i );
+        qDebug() << "set #" << i;
+        const ParameterValueMap p = savedParameterSets.at(i);
+        ParameterValueMap::const_iterator it = p.constBegin();
+        for( ; it != p.constEnd(); ++it) {
+            settings.setValue( it.key(), it.value() );
+            qDebug() << it.key() << it.value();
+        }
+
+    }
+    settings.endArray();
+    settings.endGroup();
+    settings.endGroup();
 }

@@ -56,10 +56,20 @@ public:
     Configuration()
     {
         QSettings settings;
-        addOption( "libraryDirectory", "builds/darwin/models", "global/libraryDirectory" ). addCommandLineString(
+
+#ifdef Q_OS_DARWIN
+    QString libPattern = "*lattice.dylib";
+    QString libDir = "builds/darwin/models";
+#else
+    QString libPattern = "*lattice.so";
+    QString libDir = "builds/lomo/models";
+#endif
+
+
+        addOption( "libraryDirectory", libDir, "global/libraryDirectory" ). addCommandLineString(
             "libDir" );
 
-        addOption( "libraryPattern", "*lattice.dylib", "global/libraryPattern" ). addCommandLineString(
+        addOption( "libraryPattern", libPattern, "global/libraryPattern" ). addCommandLineString(
             "libPattern" );
 
     }
