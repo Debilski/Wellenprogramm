@@ -2,7 +2,7 @@
 import os
 
 ## where we find STATIC libraries
-lib_search_path = ['/lib','/usr/lib','/usr/local/lib']
+lib_search_path = ['/lib','/usr/lib','/usr/local/lib','/opt/local/lib']
 
 ## where we should find things to include
 include_search_path =  ['#share','#lattice','#tools','#src','#ui','#models']

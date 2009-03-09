@@ -503,8 +503,10 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 # port qt4-mac:
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include", "qt4")])
                         self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include", "qt4-mac")])
+                        self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include")])
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include", "qt4", module)])
                         self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include", "qt4-mac", module)])
+                        self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include", module)])
 			if module in staticModules :
 				#self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
 				self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])

@@ -51,7 +51,7 @@ BuildDir(target_bin_dir, source_base_dir, duplicate=0)
 
 env.Decider('MD5-timestamp')
 env.Append(CCFLAGS='-Wall -Wextra ')
-env.Append(LIBPATH=[target_models_dir, target_lib_dir, target_bin_dir, '#ui', '/usr/lib/openmpi/lib'])   
+env.Append(LIBPATH=[target_models_dir, target_lib_dir, target_bin_dir, '#ui', '/usr/lib/openmpi/lib', lib_search_path])   
 # env.Append(LIBS=['gomp'])
 
 ## Special Libraries
@@ -70,7 +70,7 @@ if int(release):
 
 
 env.Tool('qt4', toolpath=['./ui'])
-
+#env.Tool('qt')
 
 env['CXXFILESUFFIX']='.cpp'
 if not "linux-default" in build_base_dir :
