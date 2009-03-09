@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>480</width>
     <height>300</height>
    </rect>
   </property>
@@ -71,6 +71,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="copyButton">
+         <property name="text">
+          <string>copy</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
@@ -101,5 +108,22 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>copyButton</sender>
+   <signal>clicked()</signal>
+   <receiver>actionCopy_to_Clipboard</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>430</x>
+     <y>30</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
