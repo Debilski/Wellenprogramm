@@ -575,7 +575,11 @@ void Waveprogram2DPlot::setUpTabs()
         plotTabWidget->addTab( tab, name );
     }
 
+
+
     for (uint component = 0; component < lattice->numberOfVariables(); ++component) {
+        // Kein FFT
+        continue;
 
         QString label;
         if ( !lattice->componentInfos[ component ].physicalQuantity().empty() ) {
