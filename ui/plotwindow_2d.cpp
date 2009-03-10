@@ -280,6 +280,23 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     matlabExportIndex_ = 0;
 
     readSettings();
+
+    // Könnte man in extra Klasse auslagern.
+    connect( simulationTimeLabel, SIGNAL( customContextMenuRequested(const QPoint&) ), this, SLOT(showTimeMenu(const QPoint&)) );
+    simulationTimeLabel->setContextMenuPolicy( Qt::CustomContextMenu );
+    simulationTimeLabelRightClickMenu.addAction( QString( "Reset" ), this, SLOT(resetTime()) );
+
+}
+
+void Waveprogram2DPlot::showTimeMenu(const QPoint& p)
+{
+    simulationTimeLabelRightClickMenu.popup( simulationTimeLabel->mapToGlobal( p ) );
+}
+
+void Waveprogram2DPlot::resetTime()
+{
+    lattice->setTime( 0 );
+    simulationTimeLabel->setNum( lattice->time() );
 }
 
 void Waveprogram2DPlot::closeEvent(QCloseEvent * event)
@@ -1357,14 +1374,29 @@ void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString struct
                                                 int timeIndex, bool append /*= true*/)
 {
     QString text;
+    text += QString( "Time_%1{%2} = %3\n" ).arg( structureName ).arg( timeIndex ).arg(
+        lattice->time(), 0, 'f', 4 );
     for (int component = 0; component < lattice->numberOfVariables(); ++component) {
         text += QString( "%1{%2,%3} = " ).arg( structureName ).arg( timeIndex ).arg( component + 1 );
         text += QString( "[" );
 
         double value = lattice->getComponentAt( component, 16, 16 );
+        text += QString( "%1, " ).arg( value, 0, 'f', 4 );
+        value = lattice->getComponentAt( component, 17, 16 );
+        text += QString( "%1, " ).arg( value, 0, 'f', 4 );
+        value = lattice->getComponentAt( component, 18, 16 );
+        text += QString( "%1, " ).arg( value, 0, 'f', 4 );
 
+
+        value = lattice->getComponentAt( component, 30, 32 );
+        text += QString( "%1, " ).arg( value, 0, 'f', 4 );
+        value = lattice->getComponentAt( component, 31, 32 );
+        text += QString( "%1, " ).arg( value, 0, 'f', 4 );
+        value = lattice->getComponentAt( component, 32, 32 );
         text += QString( "%1" ).arg( value, 0, 'f', 4 );
+
         text += QString( "];\n" );
+
         /*
          for (int j = 0; j < lattice->latticeSizeY(); ++j) {
          text += QString( "[" );

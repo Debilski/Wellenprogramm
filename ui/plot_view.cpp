@@ -49,9 +49,9 @@ QWidget( parent ), component_( component ), isFft_( isFft )
     plot_->plotLayout()->setAlignCanvasToScales( true );
 
     rightClickMenu.addAction( QString( "Top Value: %1" ).arg(
-            spectrogram_->data().range().maxValue() ), this, "changeTop()" );
+            spectrogram_->data().range().maxValue() ), this, SLOT(changeTop()) );
     rightClickMenu.addAction( QString( "Bottom Value: %1" ).arg(
-            spectrogram_->data().range().minValue() ), this, "changeBottom()" );
+            spectrogram_->data().range().minValue() ), this, SLOT(changeBottom()) );
 
     rightAxis->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( rightAxis, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showMenu( const QPoint& ) ) );

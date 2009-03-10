@@ -176,7 +176,12 @@ public slots:
     void on_parameterSetsSave_clicked();
     void on_parameterSetsDelete_clicked();
 
+    void showTimeMenu(const QPoint& p);
+    void resetTime();
+
     signals:
+
+
     void updateParameters();
 
     void replotTab();
@@ -278,6 +283,8 @@ private:
 
     void readParameterSets();
     void writeParameterSets();
+
+    QMenu simulationTimeLabelRightClickMenu;
 
 };
 
