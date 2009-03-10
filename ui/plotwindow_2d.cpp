@@ -209,6 +209,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     colourMapMode = defaultColourMapMode;
 
     setupUi( this ); // this sets up GUI
+
+    // setAttribute( Qt::WA_DeleteOnClose );
     sliceWidget->setVisible( false );
 
     //    setAttribute( Qt::WA_MacMetalStyle );
@@ -282,6 +284,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
 void Waveprogram2DPlot::closeEvent(QCloseEvent * event)
 {
+    loopStop();
     writeSettings();
     writeParameterSets();
     event->accept();

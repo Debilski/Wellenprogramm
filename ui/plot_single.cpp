@@ -12,6 +12,7 @@ PlotSingle::PlotSingle(LatticeInterface* lattice, QWidget* parent) :
 {
     setupUi( this );
     setAttribute( Qt::WA_DeleteOnClose );
+    setWindowTitle( "Lattice Element" );
 
     updateIntervallSpinBox->setValue( 0.05 );
     updateIntervallSpinBox->setDecimals( 3 );
@@ -61,8 +62,12 @@ void PlotSingle::closeEvent(QCloseEvent* event)
     event->accept();
 }
 
+/**
+ * Liest neue Werte aus der Lattice und schreibt den Plot neu.
+ */
 void PlotSingle::update()
 {
+    // Sollte eigentlich nicht notwendigsein. Als Workaround jedoch noch drin.
     if ( lattice_ == 0 )
         return;
 
