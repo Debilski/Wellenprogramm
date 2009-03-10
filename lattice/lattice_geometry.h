@@ -88,14 +88,39 @@ public:
     LatticePoint surfaceToLatticePoint(const SurfacePoint& s) const;
 
     SurfacePoint centrePoint() const;
+
+    bool hasValidGeometry() const;
+
+    void initGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
 private:
-    const int sizeX_, sizeY_;
-    const int latticeSizeX_, latticeSizeY_;
-    const long latticeSize_;
-    const double scaleX_, scaleY_;
-    const int boxesPerLengthX_, boxesPerLengthY_;
+     int sizeX_, sizeY_;
+     int latticeSizeX_, latticeSizeY_;
+     long latticeSize_;
+     double scaleX_, scaleY_;
+     int boxesPerLengthX_, boxesPerLengthY_;
 
 };
+
+inline void LatticeGeometry::initGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY)
+{
+    sizeX_ = sizeX;
+    sizeY_ = sizeY;
+    latticeSizeX_ = latticeSizeX;
+    latticeSizeY_ = latticeSizeY;
+
+    latticeSize_ = (latticeSizeX * latticeSizeY);
+    scaleX_ = (static_cast< double > ( sizeX ) / static_cast< double > ( latticeSizeX ));
+    scaleY_ = (static_cast< double > ( sizeY ) / static_cast< double > ( latticeSizeY ));
+    boxesPerLengthX_ = (latticeSizeX / sizeX);
+    boxesPerLengthY_ = (latticeSizeY / sizeY);
+}
+
+
+
+
+inline bool LatticeGeometry::hasValidGeometry() const {
+    return true;
+}
 
 inline int LatticeGeometry::sizeX() const
 {

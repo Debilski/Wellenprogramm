@@ -533,6 +533,12 @@ class FractionalLinearOperatorClass {
 
 #define LATTICE_INTERFACE_VERSION 2
 
+#include <boost/noncopyable.hpp>
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+  TypeName(const TypeName&);               \
+  void operator=(const TypeName&)
+
+
 /**
  * LatticeInterface allows for virtual access to lattice methods,
  * without knowing anything about the number of parameters at compile time.
@@ -546,7 +552,7 @@ class FractionalLinearOperatorClass {
  * Besser wäre es, eine Option einzubauen, die steuert, ob auch unnötige FFT schon zu Anfang initialisiert
  * werden sollen, oder ob die Felder erst bei Bedarf erstellt werden sollen.
  */
-class LatticeInterface : public LatticeGeometry {
+class LatticeInterface : public LatticeGeometry /*, private boost::noncopyable */ {
 public:
 
     LatticeInterface(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
@@ -789,6 +795,9 @@ public:
 
     virtual void adaptParameters() = 0;
     /*virtual*/ ComponentInfos componentInfos;
+
+private:
+    DISALLOW_COPY_AND_ASSIGN(LatticeInterface);
 };
 
 /**

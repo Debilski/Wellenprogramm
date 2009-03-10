@@ -29,6 +29,16 @@ struct _tvec< 0 > {
     typedef void TinyVectorWithZero;
 };
 
+
+/**
+ * This class is intended to call the needed substeps in the integration process.
+ */
+template<typename T_model>
+class LatticeIntegrator : public Lattice< T_model >{
+
+};
+
+
 /**
  * This Class provides the actual integration.
  *
