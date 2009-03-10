@@ -16,6 +16,9 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/bind.hpp>
 
+//TODO Much refactoring is needed
+
+
 template<int N>
 struct _tvec {
     typedef blitz::TinyVector< double, N > TinyVectorWithZero;
