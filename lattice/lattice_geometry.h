@@ -1,30 +1,38 @@
+/**
+ * Wellenprogramm
+ *
+ * Rike-Benjamin Schuppner
+ */
+
+
+
 #ifndef LATTICE_GEOMETRY_H
 #define LATTICE_GEOMETRY_H
-#include <iostream>
+
 #include <cmath>
 #include <vector>
 
 /**
  * Symbolises a point on the internal lattice.
  */
-struct LatticePoint
-{
+struct LatticePoint {
     int x;
     int y;
-    LatticePoint() : x(0), y(0)
-    {}
-    LatticePoint( int x, int y ) : x(x), y(y)
-    {}
+    LatticePoint() :
+        x( 0 ), y( 0 )
+    {
+    }
+    LatticePoint(int x, int y) :
+        x( x ), y( y )
+    {
+    }
 
-}
-;
-
+};
 
 /**
  * Symbolises a point on the ‘real’ surface of the system.
  */
-struct SurfacePoint
-{
+struct SurfacePoint {
     double x;
     double y;
 
@@ -37,15 +45,12 @@ struct SurfacePoint
 
 };
 
-
-
 /**
  * Basic class that stores the dimensions of the system.
  *
  * Add: More Iterators
  */
-class LatticeGeometry
-{
+class LatticeGeometry {
 public:
     LatticeGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
     LatticeGeometry(const LatticeGeometry& geometry);
@@ -73,14 +78,14 @@ public:
 
     LatticeGeometry geometry() const;
 
-    SurfacePoint indexToSurfacePoint( int index ) const;
-    LatticePoint indexToLatticePoint( int index ) const;
+    SurfacePoint indexToSurfacePoint(int index) const;
+    LatticePoint indexToLatticePoint(int index) const;
 
-    int index( const LatticePoint& l ) const;
-    int index( const SurfacePoint& l ) const;
+    int index(const LatticePoint& l) const;
+    int index(const SurfacePoint& l) const;
 
-    SurfacePoint latticeToSurfacePoint( const LatticePoint& l ) const;
-    LatticePoint surfaceToLatticePoint( const SurfacePoint& s ) const;
+    SurfacePoint latticeToSurfacePoint(const LatticePoint& l) const;
+    LatticePoint surfaceToLatticePoint(const SurfacePoint& s) const;
 
     SurfacePoint centrePoint() const;
 private:
@@ -137,22 +142,25 @@ inline int LatticeGeometry::latticeSizeY() const
     return latticeSizeY_;
 }
 
-inline SurfacePoint LatticeGeometry::indexToSurfacePoint( int index ) const {
+inline SurfacePoint LatticeGeometry::indexToSurfacePoint(int index) const
+{
     return latticeToSurfacePoint( indexToLatticePoint( index ) );
 }
-inline LatticePoint LatticeGeometry::indexToLatticePoint( int index ) const {
-    return LatticePoint(indexToX( index ), indexToY( index) );
+inline LatticePoint LatticeGeometry::indexToLatticePoint(int index) const
+{
+    return LatticePoint( indexToX( index ), indexToY( index ) );
 }
 
-inline int LatticeGeometry::index( const LatticePoint& l ) const {
+inline int LatticeGeometry::index(const LatticePoint& l) const
+{
     return index( l.x, l.y );
 }
-inline int LatticeGeometry::index( const SurfacePoint& l ) const {
+inline int LatticeGeometry::index(const SurfacePoint& l) const
+{
     return index( surfaceToLatticePoint( l ) );
 }
 
-
-inline SurfacePoint LatticeGeometry::latticeToSurfacePoint( const LatticePoint& l ) const
+inline SurfacePoint LatticeGeometry::latticeToSurfacePoint(const LatticePoint& l) const
 {
     SurfacePoint s;
     s.x = l.x * scaleX_;
@@ -160,13 +168,15 @@ inline SurfacePoint LatticeGeometry::latticeToSurfacePoint( const LatticePoint& 
     return s;
 }
 
-inline LatticePoint LatticeGeometry::surfaceToLatticePoint( const SurfacePoint& s ) const
+inline LatticePoint LatticeGeometry::surfaceToLatticePoint(const SurfacePoint& s) const
 {
-    return LatticePoint( (int) floor( s.x / scaleX_ + 0.5 ), (int) floor( s.y / scaleY_ + 0.5 ) );
+    return LatticePoint(
+        static_cast< int > ( floor( s.x / scaleX_ + 0.5 ) ), static_cast< int > ( floor( s.y
+            / scaleY_ + 0.5 ) ) );
 }
 
-
-inline SurfacePoint LatticeGeometry::centrePoint() const {
+inline SurfacePoint LatticeGeometry::centrePoint() const
+{
     SurfacePoint sp = { sizeX() / 2.0, sizeY() / 2.0 };
     return sp;
 }
@@ -176,54 +186,48 @@ inline SurfacePoint LatticeGeometry::centrePoint() const {
  */
 inline LatticeGeometry LatticeGeometry::geometry() const
 {
-    LatticeGeometry g(*this);
+    LatticeGeometry g( *this );
     return g;
 }
 
 /**
  * Constructs a geometry from given sizes.
  */
-inline LatticeGeometry::LatticeGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY)
-        : sizeX_( sizeX ),
-        sizeY_( sizeY ),
-        latticeSizeX_( latticeSizeX ),
-        latticeSizeY_( latticeSizeY ),
-        latticeSize_( latticeSizeX * latticeSizeY ),
-        scaleX_( (double)sizeX / (double)latticeSizeX ),
-        scaleY_( (double)sizeY / (double)latticeSizeY ),
-        boxesPerLengthX_( latticeSizeX/sizeX ),
-        boxesPerLengthY_( latticeSizeY/sizeY )
-{}
+inline LatticeGeometry::LatticeGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
+    sizeX_( sizeX ), sizeY_( sizeY ), latticeSizeX_( latticeSizeX ), latticeSizeY_( latticeSizeY ),
+        latticeSize_( latticeSizeX * latticeSizeY ), scaleX_( static_cast< double > ( sizeX )
+            / static_cast< double > ( latticeSizeX ) ), scaleY_( static_cast< double > ( sizeY )
+            / static_cast< double > ( latticeSizeY ) ), boxesPerLengthX_( latticeSizeX / sizeX ),
+        boxesPerLengthY_( latticeSizeY / sizeY )
+{
+}
 
 /**
  * Copys a geometry from another system
  */
-inline LatticeGeometry::LatticeGeometry(const LatticeGeometry& geometry):
-    sizeX_( geometry.sizeX_ ),
-        sizeY_( geometry.sizeY_ ),
-        latticeSizeX_( geometry.latticeSizeX_ ),
-        latticeSizeY_( geometry.latticeSizeY_ ),
-        latticeSize_( geometry.latticeSizeX_ * geometry.latticeSizeY_ ),
-        scaleX_( (double)geometry.sizeX_ / (double)geometry.latticeSizeX_ ),
-        scaleY_( (double)geometry.sizeY_ / (double)geometry.latticeSizeY_ ),
-        boxesPerLengthX_( geometry.latticeSizeX_/geometry.sizeX_ ),
-        boxesPerLengthY_( geometry.latticeSizeY_/geometry.sizeY_ )
-{}
+inline LatticeGeometry::LatticeGeometry(const LatticeGeometry& geometry) :
+    sizeX_( geometry.sizeX_ ), sizeY_( geometry.sizeY_ ), latticeSizeX_( geometry.latticeSizeX_ ),
+        latticeSizeY_( geometry.latticeSizeY_ ), latticeSize_( geometry.latticeSizeX_
+            * geometry.latticeSizeY_ ), scaleX_( static_cast< double > ( geometry.sizeX_ )
+            / static_cast< double > ( geometry.latticeSizeX_ ) ), scaleY_(
+            static_cast< double > ( geometry.sizeY_ )
+                / static_cast< double > ( geometry.latticeSizeY_ ) ), boxesPerLengthX_(
+            geometry.latticeSizeX_ / geometry.sizeX_ ), boxesPerLengthY_( geometry.latticeSizeY_
+            / geometry.sizeY_ )
+{
+}
 
 inline long int LatticeGeometry::index(int i, int j) const
 {
 
-    int l = j + i * (latticeSizeY_);        // i: y direction, j: x direction
-    //  cout << "(i:" << i << ";j:" << j << ";ind:" << l << ") " << flush;
+    int l = j + i * (latticeSizeY_); // i: y direction, j: x direction
     return l;
 }
 
 inline long int LatticeGeometry::indexPeriodic(int i, int j) const
 /* Index mit periodischen Randbedg. */
 {
-//    i = ((i % (latticeSizeX_)) + (latticeSizeX_)) % (latticeSizeX_);
-//    j = ((j % (latticeSizeY_)) + (latticeSizeY_)) % (latticeSizeY_);
-    long int k = index(i, j);
+    long int k = index( i, j );
     return (k >= latticeSize_ || k < 0) ? (((k % latticeSize_) + latticeSize_) % latticeSize_) : k;
 }
 
@@ -241,45 +245,48 @@ inline double LatticeGeometry::euklidianDistance(double ax, double ay, double bx
 {
     double xdist = (ax - bx < sizeX_ / 2) ? (ax - bx) : (sizeX_ - (ax - bx));
     double ydist = (ay - by < sizeY_ / 2) ? (ay - by) : (sizeY_ - (ay - by));
-    double dist = sqrt( (xdist)*(xdist) + (ydist)*(ydist) );
+    double dist = sqrt( (xdist) * (xdist) + (ydist) * (ydist) );
     return dist;
 }
 
 inline double LatticeGeometry::euklidianDistance(const SurfacePoint& a, const SurfacePoint& b) const
 {
-    return euklidianDistance(a.x, a.y, b.x, b.y);
+    return euklidianDistance( a.x, a.y, b.x, b.y );
 }
 
 inline double LatticeGeometry::latticeDistance(const LatticePoint& a, const LatticePoint& b) const
 {
-    return sqrt( (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y) );
+    return sqrt( (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) );
 }
-#include <iostream>
+
 
 class LatticeIterator {
     const LatticeGeometry* latticeGeometry_;
     int currentIndex_;
-    std::vector<LatticePoint> polygon_;
-    typedef std::vector<LatticePoint>::const_iterator T_iter;
+    std::vector< LatticePoint > polygon_;
+    typedef std::vector< LatticePoint >::const_iterator T_iter;
 public:
-    LatticeIterator( const LatticeGeometry* latticeGeometry , std::vector<SurfacePoint> polygon)
-    : latticeGeometry_ (latticeGeometry), currentIndex_(0)
+    LatticeIterator(const LatticeGeometry* latticeGeometry, std::vector< SurfacePoint > polygon) :
+        latticeGeometry_( latticeGeometry ), currentIndex_( 0 )
     {
-        for ( std::vector<SurfacePoint>::const_iterator it = polygon.begin(); it != polygon.end(); ++it ) {
+        for (std::vector< SurfacePoint >::const_iterator it = polygon.begin(); it != polygon.end(); ++it)
+        {
             LatticePoint p;
             p = latticeGeometry_->surfaceToLatticePoint( *it );
             polygon_.push_back( p );
         }
     }
-    int index() {
+    int index()
+    {
         return currentIndex_;
     }
     void operator++()
     {
         do {
-        currentIndex_++;
+            currentIndex_++;
 
-        } while ( ! isInsidePolygon(latticeGeometry_->indexToLatticePoint(currentIndex_)) && ! isDone() );
+        } while (!isInsidePolygon( latticeGeometry_->indexToLatticePoint( currentIndex_ ) )
+            && !isDone());
     }
     bool isDone()
     {
@@ -288,7 +295,6 @@ public:
 private:
     bool isInsidePolygon(LatticePoint p)
     {
-
         unsigned int xnew, ynew;
         unsigned int xold, yold;
         unsigned int x1, y1;
@@ -296,35 +302,37 @@ private:
         bool inside = false;
 
         unsigned int npoints = polygon_.size();
-        if (npoints < 3) {
-             return false;
+        if ( npoints < 3 ) {
+            return false;
         }
-        xold=polygon_[npoints-1].x;
-        yold=polygon_[npoints-1].y;
-        for (unsigned int i=0 ; i < npoints ; i++) {
-             xnew=polygon_[i].x;
-             ynew=polygon_[i].y;
-             if (xnew > xold) {
-                  x1=xold;
-                  x2=xnew;
-                  y1=yold;
-                  y2=ynew;
-             }
-             else {
-                  x1=xnew;
-                  x2=xold;
-                  y1=ynew;
-                  y2=yold;
-             }
-             if (((long)xnew < (long)p.x) == ((long)p.x <= (long)xold)          /* edge "open" at one end */
-              && ((long)p.y-(long)y1)*(long)(x2-x1)
-               < ((long)y2-(long)y1)*(long)(p.x-x1)) {
-                  inside=!inside;
-             }
-             xold=xnew;
-             yold=ynew;
+        xold = polygon_[ npoints - 1 ].x;
+        yold = polygon_[ npoints - 1 ].y;
+        for (unsigned int i = 0; i < npoints; i++) {
+            xnew = polygon_[ i ].x;
+            ynew = polygon_[ i ].y;
+            if ( xnew > xold ) {
+                x1 = xold;
+                x2 = xnew;
+                y1 = yold;
+                y2 = ynew;
+            } else {
+                x1 = xnew;
+                x2 = xold;
+                y1 = ynew;
+                y2 = yold;
+            }
+            if ( (static_cast< long > ( xnew ) < static_cast< long > ( p.x ))
+                == (static_cast< long > ( p.x ) <= static_cast< long > ( xold )) /* edge "open" at one end */
+            && (static_cast< long > ( p.y ) - static_cast< long > ( y1 ))
+                * static_cast< long > ( x2 - x1 ) < (static_cast< long > ( y2 )
+                - static_cast< long > ( y1 )) * static_cast< long > ( p.x - x1 ) )
+            {
+                inside = !inside;
+            }
+            xold = xnew;
+            yold = ynew;
         }
-        return(inside);
+        return (inside);
 
     }
 };
