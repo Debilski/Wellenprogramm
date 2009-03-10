@@ -19,6 +19,7 @@
 //TODO Much refactoring is needed
 
 
+
 template<int N>
 struct _tvec {
     typedef blitz::TinyVector< double, N > TinyVectorWithZero;
@@ -35,6 +36,31 @@ struct _tvec< 0 > {
  */
 template<typename T_model>
 class LatticeIntegrator : public Lattice< T_model >{
+
+    /*
+     * Erstes Schema:
+     * - Abfragen, ob strikt oder ob mehrere steps auf einmal gehen.
+     * - Aufrufe:
+     *   - Virtual
+     *   - CRTP
+     *   - boost-signals
+     * - Abfragen, ob man variable Zeitschritte hat oder diese fest ist (Game of Life)
+     * - Views hinzufügen?
+     * - Initial Conditions verbessern
+     * - Wie mit allgemeiner Diffusion umgehen?
+     *
+     *
+     * mainloop
+     *
+     *
+     * before_integration
+     *
+     * integrate
+     * - step
+     *
+     * after_integration
+     *
+     */
 
 };
 
