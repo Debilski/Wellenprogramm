@@ -48,11 +48,11 @@ class LatticeIntegrator : public Lattice< T_model >{
      * - Views hinzufügen?
      * - Initial Conditions verbessern
      * - Wie mit allgemeiner Diffusion umgehen?
-     *
+     * - Implicit
      *
      * mainloop
      *
-     *
+     * normalise
      * before_integration
      *
      * integrate
@@ -64,6 +64,11 @@ class LatticeIntegrator : public Lattice< T_model >{
 
 };
 
+
+template<typename T_model>
+class SI_LatticeIntegrator : public LatticeIntegrator< T_model >{
+
+};
 
 /**
  * This Class provides the actual integration.
