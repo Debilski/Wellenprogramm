@@ -101,6 +101,21 @@ public:
     {
         return FhnKSystem( -1, 0, 0 );
     }
+
+    inline long int view(int position) const
+    {
+        long int r, g, b;
+        if ( isFhn( indexToX( position ), indexToY( position ) ) ) {
+            if ( lattice[0].data()[position] < 0 )
+                r = g = b = 0;
+            else
+                r = g = b = 255;
+        } else {
+            g = b = 0;
+            r = lattice[2].data()[position] * 2;
+        }
+        return r * 256 * 256 + g * 256 + b;
+    }
 protected:
     void executeDiffusion(DiffusionStepWidth stepSize, bool advanceInTime = true)
     {
@@ -215,7 +230,7 @@ protected:
     /**
      * Gibt aus, ob das System an dieser Stelle ein FHN ist oder nicht
      */
-    inline bool isFhn(int x, int y)
+    inline bool isFhn(int x, int y) const
     {
         return isFhnField( x, y );
     }
@@ -271,7 +286,6 @@ public:
         registerParameter( &beta );
         registerParameter( &gamma );
         registerParameter( &tau_l );
-
     }
 
     inline double Psi(double x)
