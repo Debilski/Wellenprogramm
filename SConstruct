@@ -13,7 +13,11 @@ env = Environment(ENV = {'PATH' : "/home/rikebs/bin:"+os.environ['PATH'],
                          })#CXX = 'mpicxx.openmpi')
 
 #env.Replace(CXX = "icc")
-#env.Replace(CXX = "ccache colorgcc -x c++")
+
+# ccache als Option machen
+env.Replace(CXX = "ccache g++ ")
+
+
 # setup the include paths where FLTK and silc should live
 env.Append(CPPPATH=include_search_path +['/opt/local/include']) #, '/usr/lib/openmpi/include'])
 
