@@ -12,12 +12,36 @@ ScriptEditor::ScriptEditor(QWidget* parent) :
 {
     setupUi( this );
     readSettings();
+    connect( onceScriptPushButton, SIGNAL( clicked() ), this, SLOT( executeOnceScript() ) );
+    initEngine();
 }
 
-void ScriptEditor::closeEvent(QCloseEvent * event)
+void ScriptEditor::initEngine()
+{
+    latticeScripter_ = new LatticeScripter();
+    QScriptValue objectValue = engine_.newQObject( latticeScripter_ );
+    engine_.globalObject().setProperty( "lattice", objectValue );
+}
+
+void ScriptEditor::closeEvent(QCloseEvent* event)
 {
     writeSettings();
     event->accept();
+}
+
+void ScriptEditor::executeLoopScript()
+{
+    if ( !loopScriptCheckBox->isChecked() )
+        return;
+    QString programm = loopScriptEdit->toPlainText();
+    engine_.evaluate( programm );
+}
+
+void ScriptEditor::executeOnceScript()
+{
+    qDebug() << "Script Once";
+    QString programm = onceScriptEdit->toPlainText();
+    qDebug() << engine_.evaluate( programm ).toVariant();
 }
 
 void ScriptEditor::readSettings()
@@ -52,6 +76,22 @@ void ScriptEditor::readSettings()
 
     settings.endGroup();
 
+    settings.beginGroup( "Scripts" );
+    variant.clear();
+    variant = settings.value( "executeLoop" );
+    if ( variant.isValid() ) {
+        QString text = variant.toString();
+        loopScriptEdit->setPlainText( text );
+    }
+
+    variant.clear();
+    variant = settings.value( "executeOnce" );
+    if ( variant.isValid() ) {
+        QString text = variant.toString();
+        onceScriptEdit->setPlainText( text );
+    }
+    settings.endGroup();
+
 }
 
 void ScriptEditor::writeSettings()
@@ -72,6 +112,12 @@ void ScriptEditor::writeSettings()
             splitters.append( i );
     settings.setValue( "outputSplitter", splitters );
     splitters.clear();
+
+    settings.endGroup();
+
+    settings.beginGroup( "Scripts" );
+    settings.setValue( "executeLoop", loopScriptEdit->toPlainText() );
+    settings.setValue( "executeOnce", onceScriptEdit->toPlainText() );
 
     settings.endGroup();
 
