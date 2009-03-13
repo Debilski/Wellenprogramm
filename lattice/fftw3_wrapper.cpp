@@ -9,23 +9,15 @@
 
 #include "fftw3_wrapper.h"
 
-//
-// this is a yabo(r) trick to ensure
-// the singleton destruction on
-// program termination
-//
+
+
+#include "singleton_helper.h"
+
 
 /**
- * Hilfsklasse, deren einzige Aufgabe es ist, dass sie beim Zerstören auch den
- * Fftw3Wrapper zerstört.
+ * Zerstört beim Beenden Fftw3Wrapper.
  */
-class Fftw3WrapperCleaner {
-public:
-  ~Fftw3WrapperCleaner()
-  {
-    Fftw3Wrapper::destroy();
-  }
-} Fftw3WrapperCleanerInst;
+SingletonCleaner< Fftw3Wrapper > Fftw3WrapperCleanerInst;
 
 //
 // static members

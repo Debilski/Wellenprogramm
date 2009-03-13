@@ -29,7 +29,7 @@
         LatticePluginRegistration* i;                                                               \
     public:                                                                                         \
         model_class##_proxy()                                                                       \
-        {               std::cout << "hi from " << #model_class << "_proxy !" << std::endl;         \
+        {               std::cout << "hi from " << #model_class << "_proxy!" << std::endl;         \
             i = LatticePluginRegistration::instance();                                              \
             i->registerModel( model_name , model_class##_maker, model_class##_destroyer );          \
         }                                                                                           \

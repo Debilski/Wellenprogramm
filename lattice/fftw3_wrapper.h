@@ -12,6 +12,7 @@
 #include <fftw3.h>
 #include <blitz/array.h>
 
+
 /**
  * Singleton class for initialising FFTW and setting up FFTW plans with blitz::Arrays.
  *

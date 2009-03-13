@@ -7,25 +7,13 @@
 
 
 #include "lattice_plugin_registration.h"
+#include "singleton_helper.h"
 
-//
-// this is a yabo(r) trick to ensure
-// the singleton destruction on
-// program termination
-//
 
 /**
- * Hilfsklasse, deren einzige Aufgabe es ist, dass sie beim Zerstören auch
- * LatticePluginRegistration zerstört.
+ * Zerstört beim Beenden LatticePluginRegistration.
  */
-class LatticePluginRegistrationCleaner {
-public:
-  ~LatticePluginRegistrationCleaner()
-  {
-      LatticePluginRegistration::destroy();
-  }
-} LatticePluginRegistrationCleanerInst;
-
+SingletonCleaner< LatticePluginRegistration > LatticePluginRegistrationCleanerInst;
 
 //
 // static members
