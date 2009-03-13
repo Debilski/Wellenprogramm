@@ -371,12 +371,24 @@
     <addaction name="actionSave_as_Png"/>
     <addaction name="actionLoad_from_Png"/>
    </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <widget class="QMenu" name="menuDock_Windows">
+     <property name="title">
+      <string>Dock Windows</string>
+     </property>
+    </widget>
+    <addaction name="menuDock_Windows"/>
+   </widget>
    <addaction name="menuMode"/>
    <addaction name="menuField"/>
    <addaction name="menuProgram_Settings"/>
    <addaction name="menuDefects"/>
    <addaction name="menuCluster_Tracking"/>
    <addaction name="menuUpdate_Period"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QDockWidget" name="simulationWidget">
@@ -498,7 +510,7 @@
     <bool>true</bool>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>Model Properties</string>
@@ -539,10 +551,10 @@
   </widget>
   <widget class="QDockWidget" name="adaptationParameterWidget">
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
-    <string>Adaptation</string>
+    <string>Adaptation Properties</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -562,7 +574,7 @@
   </widget>
   <widget class="QDockWidget" name="extrasWidget">
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>Settings</string>
@@ -906,6 +918,11 @@
   <action name="actionShow_Single_Plot">
    <property name="text">
     <string>Show Single Plot</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>.</string>
    </property>
   </action>
  </widget>

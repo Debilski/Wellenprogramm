@@ -267,6 +267,15 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     updatePeriodTime_ = 25;
     setUpUpdatePeriodMenu();
     defectsEditor = 0;
+
+    // menuWindow->addAction( simulationWidget->toggleViewAction() );
+
+    parameterWidget->toggleViewAction()->setText("Model Properties");
+    menuDock_Windows->addAction( parameterWidget->toggleViewAction() );
+    adaptationParameterWidget->toggleViewAction()->setText("Adaptation Properties");
+    menuDock_Windows->addAction( adaptationParameterWidget->toggleViewAction() );
+    menuDock_Windows->addAction( extrasWidget->toggleViewAction() );
+
     this->show();
 
     replot();
@@ -702,7 +711,7 @@ void Waveprogram2DPlot::setUpModelProperties()
     //  if (parameterWidgetFormLayout)
     //    delete parameterWidgetFormLayout;
     if ( lattice ) {
-        adaptationParameterWidget->setWindowTitle( QString( "%1 Properties" ).arg(
+        adaptationParameterWidget->setWindowTitle( QString( "%1 Adaptation Properties" ).arg(
             lattice->modelName().c_str() ) );
     }
     adaptationParameterWidgetContents = new QWidget();
