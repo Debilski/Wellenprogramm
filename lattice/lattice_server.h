@@ -22,6 +22,7 @@ public:
         virtual const std::string &getName() const = 0;
         /// Create a renderer
         virtual std::auto_ptr< LatticeInterface > createRenderer(int x, int y, int lx, int ly) = 0;
+        virtual void destroy( LatticeInterface* l) = 0;
     };
 
     /// Destructor
@@ -71,6 +72,9 @@ class lattice_class##_LatticeDriver : public LatticeServer::LatticeDriver {     
     /* Create a renderer */                                                         \
     std::auto_ptr<LatticeInterface> createRenderer(int x,int y,int lx, int ly) {    \
       return std::auto_ptr<LatticeInterface>(new lattice_class(x,y,lx,ly));         \
+    }                                                                               \
+    void destroy(LatticeInterface* l) {                                             \
+      delete l;                                                                     \
     }                                                                               \
 };
 

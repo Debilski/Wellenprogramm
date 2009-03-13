@@ -8,18 +8,18 @@
 #ifndef SPECTROGRAM_DATA_H_
 #define SPECTROGRAM_DATA_H_
 
-#include "lattice_interface.h"
+#include "lattice_controller.h"
 #include "plotwindow_2d.h"
 
 class SpectrogramData : public QwtRasterData {
-    Waveprogram2DPlot::ModelLattice* lattice_;
+    LatticeController* latticeController_;
     int variable_;
     Waveprogram2DPlot* programBase;
 public:
-    SpectrogramData(Waveprogram2DPlot::ModelLattice* lattice, int variable = 0,
+    SpectrogramData(LatticeController* latticeController, int variable = 0,
                     Waveprogram2DPlot* programBase = 0) :
-        QwtRasterData( QwtDoubleRect( 0., 0., (lattice->sizeX()), (lattice->sizeY()) ) ), lattice_(
-            lattice ), variable_( variable ), programBase( programBase )
+        QwtRasterData( QwtDoubleRect( 0., 0., (latticeController->sizeX()), (latticeController->sizeY()) ) ), latticeController_(
+            latticeController ), variable_( variable ), programBase( programBase )
     {
     }
     ~SpectrogramData()
@@ -29,12 +29,12 @@ public:
     // Seltsamer Fehler in Berechnung. Lasse Fkt aus
     virtual QSize rasterHint(const QwtDoubleRect &) const
     {
-        return QSize( lattice_->latticeSizeX(), lattice_->latticeSizeY() );
+        return QSize( latticeController_->latticeSizeX(), latticeController_->latticeSizeY() );
     }
 
     virtual QwtRasterData* copy() const
     {
-        return new SpectrogramData( lattice_, variable_, programBase );
+        return new SpectrogramData( latticeController_, variable_, programBase );
     }
 
     virtual QwtDoubleInterval range() const
@@ -57,8 +57,8 @@ public:
 
         //return _lattice->getU((unsigned int) floor(x * (_lattice->latticeSizeX() ) / _lattice->sizeX() ),
         //                       (unsigned int) floor(y * (_lattice->latticeSizeY() ) / _lattice->sizeY() ));
-        int ix = qRound( x / lattice_->scaleX() );
-        int iy = qRound( y / lattice_->scaleY() );
+        int ix = qRound( x / latticeController_->lattice()->scaleX() );
+        int iy = qRound( y / latticeController_->lattice()->scaleY() );
 
         //if ( ix >= 0 && ix < 10 && iy >= 0 && iy < 10 )
         //return _values[ix][iy];
@@ -68,21 +68,21 @@ public:
         //assert( ix < lattice_->latticeSizeX() );
         //assert( iy - 1 < lattice_->latticeSizeY() );
 
-        return lattice_->getComponentAt( variable_, ix, iy - 1 );
+        return latticeController_->lattice()->getComponentAt( variable_, ix, iy - 1 );
         //return lattice_->getAt((unsigned int) floor(x / lattice_->scaleX()), (unsigned int) floor(y / lattice_->scaleY()))[ variable_ ];
     }
 };
 
 
 class SpectrogramDataFft : public QwtRasterData {
-    Waveprogram2DPlot::ModelLattice* lattice_;
+    LatticeController* latticeController_;
     int variable_;
     Waveprogram2DPlot* programBase;
 public:
-    SpectrogramDataFft(Waveprogram2DPlot::ModelLattice* lattice, int variable = 0,
+    SpectrogramDataFft(LatticeController* latticeController, int variable = 0,
                     Waveprogram2DPlot* programBase = 0) :
-        QwtRasterData( QwtDoubleRect( 0., 0., (lattice->sizeX()), (lattice->sizeY()) ) ), lattice_(
-            lattice ), variable_( variable ), programBase( programBase )
+        QwtRasterData( QwtDoubleRect( 0., 0., (latticeController->sizeX()), (latticeController->sizeY()) ) ), latticeController_(
+            latticeController ), variable_( variable ), programBase( programBase )
     {
     }
     ~SpectrogramDataFft()
@@ -92,12 +92,12 @@ public:
     // Seltsamer Fehler in Berechnung. Lasse Fkt aus
     virtual QSize rasterHint(const QwtDoubleRect &) const
     {
-        return QSize( lattice_->latticeSizeX(), lattice_->latticeSizeY() );
+        return QSize( latticeController_->latticeSizeX(), latticeController_->latticeSizeY() );
     }
 
     virtual QwtRasterData* copy() const
     {
-        return new SpectrogramDataFft( lattice_, variable_, programBase );
+        return new SpectrogramDataFft( latticeController_, variable_, programBase );
     }
 
     virtual QwtDoubleInterval range() const
@@ -114,16 +114,16 @@ public:
 
     virtual double value(double x, double y) const
     {
-        int ix = qRound( x / lattice_->scaleX() );// % (lattice_->sizeX() / 2);
-        int iy = qRound( y / lattice_->scaleY() );
+        int ix = qRound( x / latticeController_->lattice()->scaleX() );// % (lattice_->sizeX() / 2);
+        int iy = qRound( y / latticeController_->lattice()->scaleY() );
 
 
-        iy = (iy + lattice_->latticeSizeY() / 2) % lattice_->latticeSizeY();
-        iy = (iy < lattice_->latticeSizeY() / 2) ? iy : lattice_->latticeSizeY() - iy;
-        ix = (ix + lattice_->latticeSizeX() / 2) % lattice_->latticeSizeX();
+        iy = (iy + latticeController_->latticeSizeY() / 2) % latticeController_->latticeSizeY();
+        iy = (iy < latticeController_->latticeSizeY() / 2) ? iy : latticeController_->latticeSizeY() - iy;
+        ix = (ix + latticeController_->latticeSizeX() / 2) % latticeController_->latticeSizeX();
 
 
-        return std::abs(lattice_->getFftComponentAt( variable_, ix, iy )) ;// sqrt( lattice_->latticeSize() );
+        return std::abs(latticeController_->lattice()->getFftComponentAt( variable_, ix, iy )) ;// sqrt( lattice_->latticeSize() );
     }
 };
 

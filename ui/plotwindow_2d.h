@@ -31,6 +31,8 @@
 
 #include "lattice_interface.h"
 
+#include "lattice_controller.h"
+
 #include "configuration.h"
 //#include "rds_lattice.h"
 /*
@@ -72,7 +74,6 @@ public:
     Waveprogram2DPlot(QMainWindow * parent = 0, int realSize = 128, int latticeSize = 128);
     ~Waveprogram2DPlot();
 
-    typedef LatticeInterface ModelLattice;
 
     void loopStart();
     void loopStop();
@@ -97,8 +98,6 @@ public:
 
 public slots:
 
-    void step();
-    void step(int num);
 
     void replot();
 
@@ -215,7 +214,8 @@ private:
 
     // FHNModel *fhnmodel;
 
-    ModelLattice * lattice;
+    std::auto_ptr<LatticeController> lc_;
+    LatticeController* latticeController_;
     std::string latticeIdentifier_;
 
 protected:
@@ -285,10 +285,6 @@ private:
     void writeParameterSets();
 
     QMenu simulationTimeLabelRightClickMenu;
-
-
-
-    PluginKernel TheKernel;
 };
 
 #endif
