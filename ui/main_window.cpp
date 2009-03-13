@@ -20,6 +20,11 @@ MainWindow::MainWindow(QMainWindow *parent)
     metalist << (templist << 8 << 8); templist.clear();
 
     metalist << (templist << 32 << 32); templist.clear();
+    metalist << (templist << 22 << 22); templist.clear();
+    metalist << (templist << 26 << 26); templist.clear();
+    metalist << (templist << 30 << 30); templist.clear();
+
+
     metalist << (templist << 16 << 32); templist.clear();
     metalist << (templist << 64 << 64); templist.clear();
     metalist << (templist << 16 << 1024); templist.clear();

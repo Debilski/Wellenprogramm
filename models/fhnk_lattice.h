@@ -10,7 +10,6 @@
 
 #include "../lattice/rds_lattice.h"
 
-
 THREE_COMPONENT_SYSTEM(FhnKSystem, x, y, z)
 
 class FhnKLattice4;
@@ -82,16 +81,17 @@ public:
             int numNeighbours = 0;
             for (int i = -1; i <= 1; ++i) {
                 for (int j = -1; j <= 1; ++j) {
-                    if ( !isFhn( indexToX( pos ) + i, indexToY( pos ) + j ) && !(j == 0 && i == 0) && (i*j==0)) {
-                        z_sum += lattice[2]( indexToX( pos ) + i, indexToY( pos ) + j );
+                    if ( !isFhn( indexToX( pos ) + i, indexToY( pos ) + j ) && !(j == 0 && i == 0)
+                        && (i * j == 0) )
+                    {
+                        z_sum += lattice[ 2 ]( indexToX( pos ) + i, indexToY( pos ) + j );
                         ++numNeighbours;
                     }
                 }
             }
 
-
             double x = 1. / epsilon() * (sys.x() - sys.x() * sys.x() * sys.x() / 3.0 - sys.y());
-            double y = 1. / tau( sys.x() ) * (sys.x() + a() - C_z() * z_sum/numNeighbours );//sys.z());
+            double y = 1. / tau( sys.x() ) * (sys.x() + a() - C_z() * z_sum / numNeighbours);//sys.z());
             double z = sys.z();
             return FhnKSystem( x, y, 0 );
         } else
@@ -106,13 +106,13 @@ public:
     {
         long int r, g, b;
         if ( isFhn( indexToX( position ), indexToY( position ) ) ) {
-            if ( lattice[0].data()[position] < 0 )
+            if ( lattice[ 0 ].data()[ position ] < 0 )
                 r = g = b = 0;
             else
                 r = g = b = 255;
         } else {
             g = b = 0;
-            r = lattice[2].data()[position] * 2;
+            r = lattice[ 2 ].data()[ position ] * 2;
         }
         return r * 256 * 256 + g * 256 + b;
     }
@@ -132,26 +132,27 @@ protected:
 
         /* Hack für reflektierende Randbedingungen */
         if ( Base::boundaryCondition_ == NoFluxBoundary ) {
-        for (int x = 1; x < Base::latticeSizeX() - 1; ++x) {
-            lattice[ 2 ]( x, 0 ) = lattice[ 2 ]( x, 1 );
-            lattice[ 2 ]( x, Base::latticeSizeX() - 1 ) = lattice[ 2 ]( x, Base::latticeSizeX() - 2 );
-        }
+            for (int x = 1; x < Base::latticeSizeX() - 1; ++x) {
+                lattice[ 2 ]( x, 0 ) = lattice[ 2 ]( x, 1 );
+                lattice[ 2 ]( x, Base::latticeSizeX() - 1 ) = lattice[ 2 ]( x, Base::latticeSizeX()
+                    - 2 );
+            }
 
-        for (int y = 1; y < Base::latticeSizeY() - 1; ++y) {
-                    lattice[ 2 ]( 0, y ) = lattice[ 2 ]( 1, y );
-                    lattice[ 2 ]( Base::latticeSizeY() - 1, y ) = lattice[ 2 ]( Base::latticeSizeY() - 2, y );
-                }
+            for (int y = 1; y < Base::latticeSizeY() - 1; ++y) {
+                lattice[ 2 ]( 0, y ) = lattice[ 2 ]( 1, y );
+                lattice[ 2 ]( Base::latticeSizeY() - 1, y ) = lattice[ 2 ]( Base::latticeSizeY()
+                    - 2, y );
+            }
         }
         /* Hack-Ende */
         blitz::Array< double, 2 > diffMatrix( Base::lattice[ 2 ].shape() );
         diffMatrix = 0;
-        for (int x = 0; x < Base::latticeSizeX() ; ++x) {
-            for (int y = 0; y < Base::latticeSizeY() ; ++y) {
+        for (int x = 0; x < Base::latticeSizeX(); ++x) {
+            for (int y = 0; y < Base::latticeSizeY(); ++y) {
                 if ( isFhn( x, y ) ) {
                     diffMatrix( x, y ) = 0;
                     continue;
                 }
-
 
                 if ( x == 0 || x == (Base::latticeSizeX() - 1) || y == 0 || y
                     == (Base::latticeSizeY() - 1) )
@@ -175,11 +176,14 @@ protected:
         int numNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( isFhn( x + i, y + j ) && !(j == 0 && i == 0) && !(x + i == 0) && !(x + i == 0) && (i*j==0) )
+                if ( isFhn( x + i, y + j ) && !(j == 0 && i == 0) && !(x + i == 0) && !(x + i == 0)
+                    && (i * j == 0) )
+                {
                     ++numNeighbours;
-                res += Psi( lattice[ 0 ](
-                    Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                        Base::indexPeriodic( x + i, y + j ) ) ) );
+                    res += Psi( lattice[ 0 ](
+                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
+                            Base::indexPeriodic( x + i, y + j ) ) ) );
+                }
             }
         }
         return alpha() * res;// / numNeighbours;;
@@ -191,11 +195,12 @@ protected:
         int numNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) && (i*j==0) )
+                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) && (i * j == 0) ) {
                     ++numNeighbours;
-                res += (lattice[ 2 ](
-                    Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                        Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                    res += (lattice[ 2 ](
+                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
+                            Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                }
             }
         }
         return gamma() * res;// / numNeighbours;
@@ -204,22 +209,28 @@ protected:
     void toInitial(int number)
     {
         isFhnField = false;
+        for (int i = 2; i < latticeSizeX() - 3; ++i) {
+            for (int j = 2; j < latticeSizeY() - 3; ++j) {
+                if ( number == 1 ) {
+                    isFhnField( i, j ) = (i % 2 == 0 && j % 2 == 0);
+                }
+            }
+        }
         for (int i = 5; i < latticeSizeX() - 6; ++i) {
             for (int j = 5; j < latticeSizeY() - 6; ++j) {
 
                 if ( number == 0 ) {
                     isFhnField( i, j ) = (i % 2 == 0 && j % 2 == 0);
                 }
-
-                if ( number == 1 ) {
-                    isFhnField( i, j ) = ( rand() % 4 == 0 );
-                }
-
                 if ( number == 2 ) {
-                    isFhnField( i, j ) = (i % 3 == 0 && j % 3 == 0);
+                    isFhnField( i, j ) = (rand() % 4 == 0);
                 }
 
                 if ( number == 3 ) {
+                    isFhnField( i, j ) = (i % 3 == 0 && j % 3 == 0);
+                }
+
+                if ( number == 4 ) {
                     isFhnField( i, j ) = (i % 3 != 0 && j % 3 != 0);
                 }
 
@@ -304,16 +315,16 @@ public:
             int numNeighbours = 0;
             for (int i = -1; i <= 1; ++i) {
                 for (int j = -1; j <= 1; ++j) {
-                    if ( !isFhn( indexToX( pos ) + i, indexToY( pos ) + j ) && !(j == 0 && i == 0) /*&& (i*j==0)*/) {
-                        z_sum += lattice[2]( indexToX( pos ) + i, indexToY( pos ) + j );
+                    if ( !isFhn( indexToX( pos ) + i, indexToY( pos ) + j ) && !(j == 0 && i == 0) /*&& (i*j==0)*/)
+                    {
+                        z_sum += lattice[ 2 ]( indexToX( pos ) + i, indexToY( pos ) + j );
                         ++numNeighbours;
                     }
                 }
             }
 
-
             double x = 1. / epsilon() * (sys.x() - sys.x() * sys.x() * sys.x() / 3.0 - sys.y());
-            double y = 1. / tau( sys.x() ) * (sys.x() + a() - C_z() * z_sum/numNeighbours );//sys.z());
+            double y = 1. / tau( sys.x() ) * (sys.x() + a() - C_z() * z_sum / numNeighbours);//sys.z());
             double z = sys.z();
             return FhnKSystem( x, y, 0 );
         } else
@@ -339,26 +350,27 @@ protected:
 
         /* Hack für reflektierende Randbedingungen */
         if ( Base::boundaryCondition_ == NoFluxBoundary ) {
-        for (int x = 1; x < Base::latticeSizeX() - 1; ++x) {
-            lattice[ 2 ]( x, 0 ) = lattice[ 2 ]( x, 1 );
-            lattice[ 2 ]( x, Base::latticeSizeX() - 1 ) = lattice[ 2 ]( x, Base::latticeSizeX() - 2 );
-        }
+            for (int x = 1; x < Base::latticeSizeX() - 1; ++x) {
+                lattice[ 2 ]( x, 0 ) = lattice[ 2 ]( x, 1 );
+                lattice[ 2 ]( x, Base::latticeSizeX() - 1 ) = lattice[ 2 ]( x, Base::latticeSizeX()
+                    - 2 );
+            }
 
-        for (int y = 1; y < Base::latticeSizeY() - 1; ++y) {
-                    lattice[ 2 ]( 0, y ) = lattice[ 2 ]( 1, y );
-                    lattice[ 2 ]( Base::latticeSizeY() - 1, y ) = lattice[ 2 ]( Base::latticeSizeY() - 2, y );
-                }
+            for (int y = 1; y < Base::latticeSizeY() - 1; ++y) {
+                lattice[ 2 ]( 0, y ) = lattice[ 2 ]( 1, y );
+                lattice[ 2 ]( Base::latticeSizeY() - 1, y ) = lattice[ 2 ]( Base::latticeSizeY()
+                    - 2, y );
+            }
         }
         /* Hack-Ende */
         blitz::Array< double, 2 > diffMatrix( Base::lattice[ 2 ].shape() );
         diffMatrix = 0;
-        for (int x = 0; x < Base::latticeSizeX() ; ++x) {
-            for (int y = 0; y < Base::latticeSizeY() ; ++y) {
+        for (int x = 0; x < Base::latticeSizeX(); ++x) {
+            for (int y = 0; y < Base::latticeSizeY(); ++y) {
                 if ( isFhn( x, y ) ) {
                     diffMatrix( x, y ) = 0;
                     continue;
                 }
-
 
                 if ( x == 0 || x == (Base::latticeSizeX() - 1) || y == 0 || y
                     == (Base::latticeSizeY() - 1) )
@@ -382,11 +394,13 @@ protected:
         int numNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( isFhn( x + i, y + j ) && !(j == 0 && i == 0) && !(x + i == 0) && !(x + i == 0) /*&& (i*j==0)*/ )
+                if ( isFhn( x + i, y + j ) && !(j == 0 && i == 0) && !(x + i == 0) && !(x + i == 0) /*&& (i*j==0)*/)
+                {
                     ++numNeighbours;
-                res += Psi( lattice[ 0 ](
-                    Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                        Base::indexPeriodic( x + i, y + j ) ) ) );
+                    res += Psi( lattice[ 0 ](
+                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
+                            Base::indexPeriodic( x + i, y + j ) ) ) );
+                }
             }
         }
         return alpha() * res;// / numNeighbours;;
@@ -398,11 +412,12 @@ protected:
         int numNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) /*&& (i*j==0)*/ )
+                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) /*&& (i*j==0)*/) {
                     ++numNeighbours;
-                res += (lattice[ 2 ](
-                    Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                        Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                    res += (lattice[ 2 ](
+                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
+                            Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                }
             }
         }
         return gamma() * res;// / numNeighbours;
@@ -419,7 +434,7 @@ protected:
                 }
 
                 if ( number == 1 ) {
-                    isFhnField( i, j ) = ( rand() % 4 == 0 );
+                    isFhnField( i, j ) = (rand() % 4 == 0);
                 }
 
                 if ( number == 2 ) {
@@ -508,8 +523,6 @@ public:
     {
         if ( isFhn( indexToX( pos ), indexToY( pos ) ) ) {
 
-
-
             double x = 1. / epsilon() * (sys.x() - sys.x() * sys.x() * sys.x() / 3.0 - sys.y());
             double y = 1. / tau( sys.x() ) * (sys.x() + a() - C_z() * sys.z());
             double z = sys.z();
@@ -537,22 +550,23 @@ protected:
 
         /* Hack für reflektierende Randbedingungen */
         if ( Base::boundaryCondition_ == NoFluxBoundary ) {
-        for (int x = 1; x < Base::latticeSizeX() - 1; ++x) {
-            lattice[ 2 ]( x, 0 ) = lattice[ 2 ]( x, 1 );
-            lattice[ 2 ]( x, Base::latticeSizeX() - 1 ) = lattice[ 2 ]( x, Base::latticeSizeX() - 2 );
-        }
+            for (int x = 1; x < Base::latticeSizeX() - 1; ++x) {
+                lattice[ 2 ]( x, 0 ) = lattice[ 2 ]( x, 1 );
+                lattice[ 2 ]( x, Base::latticeSizeX() - 1 ) = lattice[ 2 ]( x, Base::latticeSizeX()
+                    - 2 );
+            }
 
-        for (int y = 1; y < Base::latticeSizeY() - 1; ++y) {
-                    lattice[ 2 ]( 0, y ) = lattice[ 2 ]( 1, y );
-                    lattice[ 2 ]( Base::latticeSizeY() - 1, y ) = lattice[ 2 ]( Base::latticeSizeY() - 2, y );
-                }
+            for (int y = 1; y < Base::latticeSizeY() - 1; ++y) {
+                lattice[ 2 ]( 0, y ) = lattice[ 2 ]( 1, y );
+                lattice[ 2 ]( Base::latticeSizeY() - 1, y ) = lattice[ 2 ]( Base::latticeSizeY()
+                    - 2, y );
+            }
         }
         /* Hack-Ende */
         blitz::Array< double, 2 > diffMatrix( Base::lattice[ 2 ].shape() );
         diffMatrix = 0;
-        for (int x = 0; x < Base::latticeSizeX() ; ++x) {
-            for (int y = 0; y < Base::latticeSizeY() ; ++y) {
-
+        for (int x = 0; x < Base::latticeSizeX(); ++x) {
+            for (int y = 0; y < Base::latticeSizeY(); ++y) {
 
                 if ( x == 0 || x == (Base::latticeSizeX() - 1) || y == 0 || y
                     == (Base::latticeSizeY() - 1) )
@@ -576,11 +590,14 @@ protected:
         int numNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( isFhn( x + i, y + j ) /*&& !(j == 0 && i == 0) && !(x + i == 0) && !(x + i == 0)*/ && (i*j==0) )
+                if ( isFhn( x + i, y + j )
+                /*&& !(j == 0 && i == 0) && !(x + i == 0) && !(x + i == 0)*/&& (i * j == 0) )
+                {
                     ++numNeighbours;
-                res += Psi( lattice[ 0 ](
-                    Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                        Base::indexPeriodic( x + i, y + j ) ) ) );
+                    res += Psi( lattice[ 0 ](
+                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
+                            Base::indexPeriodic( x + i, y + j ) ) ) );
+                }
             }
         }
         return alpha() * res;// / numNeighbours;;
@@ -592,11 +609,13 @@ protected:
         int numNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) && (i*j==0) )
-                    ++numNeighbours;
-                res += (lattice[ 2 ](
-                    Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                        Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                {
+                    if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) && (i * j == 0) )
+                        ++numNeighbours;
+                    res += (lattice[ 2 ](
+                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
+                            Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                }
             }
         }
         return gamma() * res;// / numNeighbours;
@@ -613,7 +632,7 @@ protected:
                 }
 
                 if ( number == 1 ) {
-                    isFhnField( i, j ) = ( rand() % 4 == 0 );
+                    isFhnField( i, j ) = (rand() % 4 == 0);
                 }
 
                 if ( number == 2 ) {
@@ -729,23 +748,23 @@ protected:
 
         /* Hack für reflektierende Randbedingungen */
         if ( Base::boundaryCondition_ == NoFluxBoundary ) {
-        for (int x = 1; x < Base::latticeSizeX() - 1; ++x) {
-            lattice[ 2 ]( x, 0 ) = lattice[ 2 ]( x, 1 );
-            lattice[ 2 ]( x, Base::latticeSizeX() - 1 ) = lattice[ 2 ]( x, Base::latticeSizeX() - 2 );
-        }
+            for (int x = 1; x < Base::latticeSizeX() - 1; ++x) {
+                lattice[ 2 ]( x, 0 ) = lattice[ 2 ]( x, 1 );
+                lattice[ 2 ]( x, Base::latticeSizeX() - 1 ) = lattice[ 2 ]( x, Base::latticeSizeX()
+                    - 2 );
+            }
 
-        for (int y = 1; y < Base::latticeSizeY() - 1; ++y) {
-                    lattice[ 2 ]( 0, y ) = lattice[ 2 ]( 1, y );
-                    lattice[ 2 ]( Base::latticeSizeY() - 1, y ) = lattice[ 2 ]( Base::latticeSizeY() - 2, y );
-                }
+            for (int y = 1; y < Base::latticeSizeY() - 1; ++y) {
+                lattice[ 2 ]( 0, y ) = lattice[ 2 ]( 1, y );
+                lattice[ 2 ]( Base::latticeSizeY() - 1, y ) = lattice[ 2 ]( Base::latticeSizeY()
+                    - 2, y );
+            }
         }
         /* Hack-Ende */
         blitz::Array< double, 2 > diffMatrix( Base::lattice[ 2 ].shape() );
         diffMatrix = 0;
-        for (int x = 0; x < Base::latticeSizeX() ; ++x) {
-            for (int y = 0; y < Base::latticeSizeY() ; ++y) {
-
-
+        for (int x = 0; x < Base::latticeSizeX(); ++x) {
+            for (int y = 0; y < Base::latticeSizeY(); ++y) {
 
                 if ( x == 0 || x == (Base::latticeSizeX() - 1) || y == 0 || y
                     == (Base::latticeSizeY() - 1) )
@@ -769,11 +788,12 @@ protected:
         int numNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( isFhn( x + i, y + j )  /*&& (i*j==0)*/ )
+                if ( isFhn( x + i, y + j ) /*&& (i*j==0)*/) {
                     ++numNeighbours;
-                res += Psi( lattice[ 0 ](
-                    Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                        Base::indexPeriodic( x + i, y + j ) ) ) );
+                    res += Psi( lattice[ 0 ](
+                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
+                            Base::indexPeriodic( x + i, y + j ) ) ) );
+                }
             }
         }
         return alpha() * res;// / numNeighbours;;
@@ -785,11 +805,12 @@ protected:
         int numNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) /*&& (i*j==0)*/ )
+                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) /*&& (i*j==0)*/) {
                     ++numNeighbours;
-                res += (lattice[ 2 ](
-                    Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                        Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                    res += (lattice[ 2 ](
+                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
+                            Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                }
             }
         }
         return gamma() * res;// / numNeighbours;
@@ -806,7 +827,7 @@ protected:
                 }
 
                 if ( number == 1 ) {
-                    isFhnField( i, j ) = ( rand() % 4 == 0 );
+                    isFhnField( i, j ) = (rand() % 4 == 0);
                 }
 
                 if ( number == 2 ) {
@@ -829,6 +850,5 @@ protected:
         return isFhnField( x, y );
     }
 };
-
 
 #endif /* FHNK_LATTICE_H_ */
