@@ -79,7 +79,7 @@ class lattice_class##_LatticeDriver : public LatticeServer::LatticeDriver {     
 extern "C" int getEngineVersion() {                                                 \
 return 1;                                                                           \
 }                                                                                   \
-extern "C"  void registerPlugin(Kernel &K) {
+extern "C"  void registerPlugin(PluginKernel &K) {
 
 #define REGISTER_PLUGINS_END      }
 
