@@ -51,7 +51,7 @@ public:
     }
     Option(const QString& name, QVariant defaultValue, const QString& settingsKey) :
         name_( name ), defaultValue_( defaultValue ), settingsKey_( settingsKey ), saveToConfig_(
-            false ), changedByUser_( false )
+            true ), changedByUser_( false )
     {
         qDebug() << "Created Option" << name;
     }

@@ -5,4 +5,7 @@ Import('env', 'progressbar', 'target_bin_dir')
 
 lattice_plugin_registration = env.Library('lattice_plugin_registration', ['lattice_plugin_registration.cpp'])
 
+plugin = env.Library('plugin', ['plugin.cpp'])
+
+
 lattice = env.Library('lattice', ['rds_helper.cpp', 'cluster_counter.cpp', 'noise_generator.cpp', 'noise_lattice.cpp', 'fftw3_wrapper.cpp'])

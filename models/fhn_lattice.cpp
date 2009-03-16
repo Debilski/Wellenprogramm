@@ -75,9 +75,14 @@ void FhnLattice::adaptParameters()
 
 }
 
-LATTICE_REGISTER_MODEL2( "FhnLattice", FhnLattice )
+DEFINE_LATTICE_DRIVER2( "FhnLattice", FhnLattice )
 
-LATTICE_REGISTER_MODEL2( "FhnHeartLattice", FhnHeartLattice )
+DEFINE_LATTICE_DRIVER2( "FhnHeartLattice", FhnHeartLattice )
 
-LATTICE_REGISTER_MODEL2( "GameofLife", GameOfLife )
+DEFINE_LATTICE_DRIVER2( "GameofLife", GameOfLife )
 
+REGISTER_PLUGINS_BEGIN
+REGISTER_PLUGIN(FhnLattice)
+REGISTER_PLUGIN(GameOfLife)
+REGISTER_PLUGIN(FhnHeartLattice)
+REGISTER_PLUGINS_END

@@ -18,7 +18,7 @@ SingletonCleaner< LatticePluginRegistration > LatticePluginRegistrationCleanerIn
 //
 // static members
 //
-LatticePluginRegistration* LatticePluginRegistration::instance_ = 0;
+std::auto_ptr<LatticePluginRegistration> LatticePluginRegistration::instance_ ;
 int LatticePluginRegistration::refCount_ = 0;
 
 
@@ -36,11 +36,11 @@ void LatticePluginRegistration::release()
  * Zerstört den Wrapper
  */
 void LatticePluginRegistration::destroy()
-{
+{/*
   if ( instance_ != 0 ) {
     delete (instance_);
     instance_ = 0;
-  }
+  }*/
 }
 
 

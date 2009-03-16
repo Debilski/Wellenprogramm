@@ -52,7 +52,7 @@ Option& Configuration::addOption(const QString& name, const QVariant& defaultVal
                                  const QString& settingsKey)
 {
     std::cout << "----" << qPrintable( defaultValue.toString() ) << std::endl;
-    Option newOption( name, defaultValue );
+    Option newOption( name, defaultValue, settingsKey );
     return optionList.insert( name, newOption ).value();
 
 }

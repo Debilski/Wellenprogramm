@@ -47,7 +47,7 @@
 #include "lattice.h"
 #include "lattice_integrator.h"
 
-#include "lattice_plugin_registration.h"
-
+//#include "lattice_plugin_registration.h"
+#include "plugin_kernel.h"
 
 #endif /* RDS_LATTICE_H_ */

@@ -45,4 +45,4 @@ if not sys.platform=="darwin" :
 else:
     linkflags = ""#-static-libgcc -ldl -Wl -lstdc++ "
 
-env.Program('plot', plotFile, LIBS=["lattice_plugin_registration"]+env["LIBS"], LINKFLAGS = linkflags)#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")
+env.Program('plot', plotFile, LIBS=["plugin"]+env["LIBS"], LINKFLAGS = linkflags)#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")

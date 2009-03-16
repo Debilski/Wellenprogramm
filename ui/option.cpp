@@ -82,9 +82,12 @@ void Option::read()
 
 void Option::write()
 {
-    if ( !(saveToConfig_ && changedByUser_) )
-        return;
+    if ( !(saveToConfig_ && changedByUser_) ) {
 
+        qDebug() << "Do not write value" << settingsKey_ << value_ << saveToConfig_ << changedByUser_;
+        return;
+    }
+    qDebug() << "Write value" << settingsKey_ << value_;
     QSettings settings;
     settings.setValue( settingsKey_, value_ );
 

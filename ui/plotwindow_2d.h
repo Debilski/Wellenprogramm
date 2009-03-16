@@ -286,6 +286,9 @@ private:
 
     QMenu simulationTimeLabelRightClickMenu;
 
+
+
+    Kernel TheKernel;
 };
 
 #endif

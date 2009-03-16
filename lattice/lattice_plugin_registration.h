@@ -58,13 +58,14 @@ public:
 
     static LatticePluginRegistration* instance()
     {
-        std::cout << "Instance " << instance_ << std::endl;
-        if ( instance_ == 0 ) // if first time ...
+        std::cout << "Instance " << instance_.get() << std::endl;
+        if ( instance_.get() == 0 ) // if first time ...
         {
-            instance_ = new LatticePluginRegistration(); // ... create a new 'solo' instance
+            std::auto_ptr<LatticePluginRegistration> tmp(new LatticePluginRegistration() );
+            instance_ = tmp; // ... create a new 'solo' instance
         }
         refCount_++; //increase reference counter
-        return instance_;
+        return instance_.get();
     }
 
     void registerModel(std::string name, LatticeMakerFnc maker, LatticeDestroyerFnc destroyer);
@@ -76,6 +77,7 @@ public:
     static void destroy();
     ~LatticePluginRegistration();
 protected:
+
     /**
      * Hält die Maker-Funktionen in einer std::map.
      *
@@ -86,7 +88,7 @@ protected:
         return f;
     }
 
-    static LatticePluginRegistration* instance_;
+    static std::auto_ptr<LatticePluginRegistration> instance_;
     static int refCount_;
     LatticePluginRegistration(); // verhindert, das ein Objekt von außerhalb von N erzeugt wird.
     // protected, wenn man von der Klasse noch erben möchte

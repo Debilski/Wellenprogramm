@@ -164,17 +164,19 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     QList< void * > dl_list; // list to hold handles
     // for dynamic libs
 
+
     foreach (const QFileInfo &libInfo, libs) {
             std::cout << "Found library: " << qPrintable(libInfo.filePath()) << std::endl;
             char name[ 1024 ];
             std::strcpy( name, qPrintable( libInfo.filePath() ));
-
+            TheKernel.loadPlugin(libInfo.filePath().toStdString());
+/*
             void* dlib = dlopen( name, RTLD_NOW );
             if ( dlib == NULL ) {
                 std::cerr << dlerror() << std::endl;
                 exit( -1 );
             }
-            dl_list << dlib;
+            dl_list << dlib;*/
         }
 
     /*
@@ -1084,12 +1086,24 @@ void Waveprogram2DPlot::setUpActions()
     QList< QAction * > availableActions = menuMode->actions();
 
     ModelAction* action;
-    std::list< std::string > models = LatticePluginRegistration::instance()->models();
+
+    LatticeServer& LS = TheKernel.getLatticeServer();
+    for (size_t DriverIndex = 0; DriverIndex < LS.getDriverCount(); ++DriverIndex) {
+        action = new ModelAction(
+            QString::fromStdString( LS.getDriver( DriverIndex ).getName() ), LS.getDriver(
+                DriverIndex ).getName(), this );
+        menuMode->insertAction( availableActions.first(), action );
+        connect( action, SIGNAL( modelTriggered(std::string) ), this, SLOT( changeModel(std::string) ) );
+    }
+
+
+
+/*    std::list< std::string > models = LatticePluginRegistration::instance()->models();
     for (std::list< std::string >::const_iterator it = models.begin(); it != models.end(); ++it) {
         action = new ModelAction( QString( (*it).c_str() ), (*it), this );
         menuMode->insertAction( availableActions.first(), action );
         connect( action, SIGNAL( modelTriggered(std::string) ), this, SLOT( changeModel(std::string) ) );
-    }
+    }*/
 
 #if 0
 
@@ -1152,11 +1166,24 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
 
      */
 
-    std::list< std::string > m = LatticePluginRegistration::instance()->models();
+//    std::list< std::string > m = LatticePluginRegistration::instance()->models();
     int n = 0;
     bool modelExists = false;
-    latticeIdentifier_ = m.front();
+//    latticeIdentifier_ = m.front();
 
+    LatticeServer& LS = TheKernel.getLatticeServer();
+    for(size_t i=0; i<LS.getDriverCount(); ++i) {
+        std::string s = LS.getDriver(i).getName();
+        std::cout << s.c_str() << std::endl;
+        if (LS.getDriver(i).getName() == model) {
+            n = i;
+            config( "last_model" ).setValue(QVariant(QString::fromStdString(model)));
+        }
+    }
+
+    qDebug() << config("last_model").value();
+    config.write();
+    /*
     for (std::list< std::string >::iterator it = m.begin(); it != m.end(); ++it) {
         if ( *it == model ) {
             modelExists = true;
@@ -1167,11 +1194,15 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
         //std::cout << (*it).c_str() << std::endl;
         qDebug() << "Model:" << n << (*it).c_str();
     }
-
+*/
     //latticeIdentifier_ = model;
+
+    lattice = TheKernel.getLatticeServer().getDriver(n).createRenderer(
+        realSize_, realSize_, latticeSize_, latticeSize_ ).release();
+/*
     lattice = LatticePluginRegistration::instance()->getMakerByName( latticeIdentifier_ )(
         realSize_, realSize_, latticeSize_, latticeSize_ );
-
+*/
     lattice->setDiffusion( 0, 1. );
     lattice->clear();
     if ( parent != 0 ) {
@@ -1275,7 +1306,7 @@ void Waveprogram2DPlot::killField()
 
     removeTabs();
     if ( lattice && !latticeIdentifier_.empty() ) {
-        LatticePluginRegistration::instance()->getDestroyerByName( latticeIdentifier_ )( lattice );
+        //LatticePluginRegistration::instance()->getDestroyerByName( latticeIdentifier_ )( lattice );
         lattice = 0;
         latticeIdentifier_.clear();
     }
@@ -1807,7 +1838,7 @@ void Waveprogram2DPlot::writeSettings()
      settings.setValue("dockPositions", s);
      */
     settings.endGroup();
-
+    config.write();
 }
 
 void Waveprogram2DPlot::setUpParameterSets()
