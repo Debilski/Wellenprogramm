@@ -288,7 +288,7 @@ private:
 
 
 
-    Kernel TheKernel;
+    PluginKernel TheKernel;
 };
 
 #endif

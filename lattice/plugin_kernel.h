@@ -15,28 +15,29 @@
 #include <map>
 
 /// The engine's system core
-class Kernel {
-  public:
+class PluginKernel {
+public:
     /// Access the lattice server
-     LatticeServer &getLatticeServer() { return m_LatticeServer; }
-
-    /// Loads a plugin
-     void loadPlugin(const std::string &sFilename) {
-      if(m_LoadedPlugins.find(sFilename) == m_LoadedPlugins.end())
-        m_LoadedPlugins.insert(PluginMap::value_type(
-          sFilename,
-          Plugin(sFilename)
-        )).first->second.registerPlugin(*this);
+    LatticeServer &getLatticeServer()
+    {
+        return latticeServer_;
     }
 
-  private:
+    /// Loads a plugin
+    void loadPlugin(const std::string &sFilename)
+    {
+        if ( loadedPlugins_.find( sFilename ) == loadedPlugins_.end() )
+            loadedPlugins_.insert( PluginMap::value_type( sFilename, Plugin( sFilename ) ) ).first->second.registerPlugin(
+                *this );
+    }
+
+private:
     /// Map of plugins by their associated file names
-    typedef std::map<std::string, Plugin> PluginMap;
+    typedef std::map< std::string, Plugin > PluginMap;
 
-    PluginMap      m_LoadedPlugins;  ///< All plugins currently loaded
+    PluginMap loadedPlugins_; ///< All plugins currently loaded
 
-    LatticeServer m_LatticeServer; ///< The graphics server
+    LatticeServer latticeServer_; ///< The graphics server
 };
-
 
 #endif /* PLUGIN_KERNEL_H_ */

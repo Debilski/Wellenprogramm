@@ -8,51 +8,53 @@
 #ifndef LATTICE_SERVER_H_
 #define LATTICE_SERVER_H_
 
-
 /// Manages graphics related stuff
 class LatticeServer {
-  public:
+public:
     /// Engine graphics driver
     class LatticeDriver {
-      public:
+    public:
         /// Destructor
-        virtual ~LatticeDriver() {}
+        virtual ~LatticeDriver()
+        {
+        }
         /// Get name of the Lattice driver
         virtual const std::string &getName() const = 0;
         /// Create a renderer
-        virtual std::auto_ptr<LatticeInterface> createRenderer(int x,int y,int lx,int ly) = 0;
+        virtual std::auto_ptr< LatticeInterface > createRenderer(int x, int y, int lx, int ly) = 0;
     };
 
     /// Destructor
-    ~LatticeServer() {
-      for(LatticeDriverVector::reverse_iterator It = m_LatticeDrivers.rbegin();
-          It != m_LatticeDrivers.rend();
-          ++It)
-        delete *It;
+    ~LatticeServer()
+    {
+        for (LatticeDriverVector::reverse_iterator It = LatticeDrivers_.rbegin(); It
+            != LatticeDrivers_.rend(); ++It)
+            delete *It;
     }
 
     /// Allows plugins to add new Lattice drivers
-     void addLatticeDriver(std::auto_ptr<LatticeDriver> GD) {
-      m_LatticeDrivers.push_back(GD.release());
+    void addLatticeDriver(std::auto_ptr< LatticeDriver > GD)
+    {
+        LatticeDrivers_.push_back( GD.release() );
     }
 
     /// Get the total number of registered Lattice drivers
-     size_t getDriverCount() const {
-      return m_LatticeDrivers.size();
+    size_t getDriverCount() const
+    {
+        return LatticeDrivers_.size();
     }
     /// Access a driver by its index
-     LatticeDriver &getDriver(size_t Index) {
-      return *m_LatticeDrivers.at(Index);
+    LatticeDriver &getDriver(size_t Index)
+    {
+        return *LatticeDrivers_.at( Index );
     }
 
-  private:
+private:
     /// A vector of Lattice drivers
-    typedef std::vector<LatticeDriver *> LatticeDriverVector;
+    typedef std::vector< LatticeDriver * > LatticeDriverVector;
 
-    LatticeDriverVector m_LatticeDrivers; ///< All available Lattice drivers
+    LatticeDriverVector LatticeDrivers_; ///< All available Lattice drivers
 };
-
-
 
 #define DEFINE_LATTICE_DRIVER2(lattice_name,lattice_class)                          \
 class lattice_class##_LatticeDriver : public LatticeServer::LatticeDriver {         \
@@ -72,7 +74,6 @@ class lattice_class##_LatticeDriver : public LatticeServer::LatticeDriver {     
     }                                                                               \
 };
 
-
 #define REGISTER_PLUGINS_BEGIN                                                      \
 /* Retrieve the engine version we're going to expect */                             \
 extern "C" int getEngineVersion() {                                                 \
@@ -87,13 +88,11 @@ extern "C"  void registerPlugin(Kernel &K) {
         std::auto_ptr<LatticeServer::LatticeDriver>(new lattice_class##_LatticeDriver())    \
       );
 
-
 #define LATTICE_REGISTER_MODEL2(lattice_name,lattice_class)                         \
 DEFINE_LATTICE_DRIVER2(lattice_name,lattice_class)                                  \
 /* Tells us to register our functionality to an engine kernel */                    \
 REGISTER_PLUGINS_BEGIN                                                              \
 REGISTER_PLUGIN(lattice_class)                                                      \
 REGISTER_PLUGINS_END
-
 
 #endif /* LATTICE_SERVER_H_ */

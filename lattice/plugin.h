@@ -11,15 +11,15 @@
 #include <string>
 #include <memory>
 
-class Kernel;
+class PluginKernel;
 
 /// Representation of a plugin
 class Plugin {
 public:
     /// Initialize and load plugin
-    Plugin(const std::string &sFilename);
+    Plugin(const std::string& sFilename);
     /// Copy existing plugin instance
-    Plugin(const Plugin &Other);
+    Plugin(const Plugin& Other);
     /// Unload a plugin
     ~Plugin();
 
@@ -30,32 +30,28 @@ public:
     /// Query the plugin for its expected engine version
     int getEngineVersion() const
     {
-        return m_pfnGetEngineVersion();
+        return pfnGetEngineVersion_();
     }
 
     /// Register the plugin to a kernel
-    void registerPlugin(Kernel &K)
+    void registerPlugin(PluginKernel& K)
     {
-        m_pfnRegisterPlugin( K );
+        pfnRegisterPlugin_( K );
     }
 
 private:
     /// Too lazy to this now...
-    Plugin &operator =(const Plugin &Other);
+    Plugin &operator =(const Plugin& Other);
 
     /// Signature for the version query function
     typedef int fnGetEngineVersion();
     /// Signature for the plugin's registration function
-    typedef void fnRegisterPlugin(Kernel &);
+    typedef void fnRegisterPlugin(PluginKernel&);
 
-    void* m_hDLL; ///< Win32 DLL handle
-    size_t *m_pDLLRefCount; ///< Number of references to the DLL
-    fnGetEngineVersion *m_pfnGetEngineVersion; ///< Version query function
-    fnRegisterPlugin *m_pfnRegisterPlugin; ///< Plugin registration function
+    void* libHandle_; ///< Win32 DLL handle
+    size_t *libRefCount_; ///< Number of references to the DLL
+    fnGetEngineVersion *pfnGetEngineVersion_; ///< Version query function
+    fnRegisterPlugin *pfnRegisterPlugin_; ///< Plugin registration function
 };
-
-
-
-
 
 #endif /* PLUGIN_H_ */
