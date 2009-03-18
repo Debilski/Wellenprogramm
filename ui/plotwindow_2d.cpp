@@ -39,7 +39,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     // LatticeController vllt ohne Zeiger, aber auf jeden Fall besser einbauen als so!
     lc_.reset( new LatticeController() );
     latticeController_ = lc_.get();
-
+    connect( latticeController_, SIGNAL( changed() ), this, SLOT( replot() ) );
+    connect( latticeController_, SIGNAL( changed() ), this, SLOT( updateLabels() ) );
 
     colourMapType = standardColourMap;
     colourMapMode = defaultColourMapMode;
@@ -159,7 +160,7 @@ void Waveprogram2DPlot::on_actionClose_Window_triggered()
 
 void Waveprogram2DPlot::on_actionEdit_Script_triggered()
 {
-    scriptEditor = new ScriptEditor( this );
+    scriptEditor = new ScriptEditor( this, latticeController_ );
     scriptEditor->show();
     scriptEditor->raise();
     scriptEditor->activateWindow();
@@ -1357,6 +1358,12 @@ bool Waveprogram2DPlot::adaptationMode()
  }
  */
 
+void Waveprogram2DPlot::updateLabels()
+{
+    simulationTimeLabel->setNum( latticeController_->lattice()->time() );
+    clusterNumberLabel->setNum( latticeController_->lattice()->numberOfClusters() );
+}
+
 void Waveprogram2DPlot::loop()
 {
     while (loopruns) {
@@ -1381,9 +1388,7 @@ void Waveprogram2DPlot::loop()
              */
             //std::cout << latticeController_->lattice()->time() << std::endl;
 
-            simulationTimeLabel->setNum( latticeController_->lattice()->time() );
-
-            clusterNumberLabel->setNum( latticeController_->lattice()->numberOfClusters() );
+            updateLabels();
         }
         if ( actionResize_program_window_to_force_update->isChecked() ) {
             static int resizeCount = 0;

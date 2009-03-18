@@ -26,7 +26,6 @@ Configuration::Configuration()
         "libPattern" );
 
     addOption( "lastModel", "FhnLattice", "global/lastModel" ). addCommandLineString( "model" );
-
 }
 
 Option& Configuration::operator()(const QString& name)

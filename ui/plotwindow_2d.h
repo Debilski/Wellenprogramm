@@ -104,6 +104,7 @@ public slots:
     void toggleStartStop();
 
     void updateDefects();
+    void updateLabels();
 
     void on_clearButton_clicked();
     void on_noiseBox_valueChanged(double d);

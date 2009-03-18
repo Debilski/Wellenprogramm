@@ -7,9 +7,15 @@
 
 #include "lattice_scripter.h"
 
-LatticeScripter::LatticeScripter()
+LatticeScripter::LatticeScripter(QObject* latticeController) :
+    QObject( latticeController )
 {
-
+    QScriptValue objectValue = engine_.newQObject( latticeController );
+    engine_.globalObject().setProperty( "lattice", objectValue );
 }
 
-
+QScriptValue LatticeScripter::evaluate(const QString& program)
+{
+    QScriptValue res = engine_.evaluate( program );
+    emit result(res);
+}

@@ -9,8 +9,8 @@
 #define SCRIPT_EDITOR_H_
 
 #include <QtGui>
-#include <QtScript>
 
+#include "lattice_controller.h"
 #include "lattice_scripter.h"
 
 #include "ui_script_editor.h"
@@ -23,14 +23,15 @@
 class ScriptEditor : public QDialog, private Ui::scriptEditor {
 Q_OBJECT
 public:
-    ScriptEditor(QWidget* parent = 0);
+    ScriptEditor(QWidget* parent, LatticeController* latticeController);
 
 public slots:
     void executeLoopScript();
     void executeOnceScript();
+    void showResult(QScriptValue val);
 
 protected:
-    void closeEvent ( QCloseEvent* event );
+    void closeEvent(QCloseEvent* event);
 
 private:
     void readSettings();
@@ -38,7 +39,6 @@ private:
     void initEngine();
 
     LatticeScripter* latticeScripter_;
-    QScriptEngine engine_;
 };
 
 #endif /* SCRIPT_EDITOR_H_ */

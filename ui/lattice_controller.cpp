@@ -15,16 +15,27 @@ const LatticeInterface* LatticeController::lattice() const
     return lattice_.get();
 }
 
+/**
+ * Liefert einen Zeiger auf die aktuelle Lattice zurück.
+ */
 LatticeInterface* LatticeController::lattice()
 {
     return lattice_.get();
 }
 
+/**
+ * Prüft, ob eine aktuelle Lattice initialisiert ist.
+ */
 bool LatticeController::isValid()
 {
     return lattice_.get() != 0;
 }
 
+/**
+ * Legt einen LatticeController zu einem gegebenen Elternobjekt an.
+ *
+ * Das Elternobjekt sorgt gegebenenfalls für das Zerstören des Controllers.
+ */
 LatticeController::LatticeController(QObject* parent)
 : QObject(parent), lattice_( 0 ), stepsAtOnce_( 1 )
 {
@@ -48,6 +59,8 @@ LatticeController::LatticeController(QObject* parent)
             std::cout << "Found library: " << qPrintable(libInfo.filePath()) << std::endl;
             TheKernel.loadPlugin(libInfo.filePath().toStdString());
     }
+
+    latticeScripter_ = new LatticeScripter( this );
 }
 
 LatticeController::~LatticeController()
@@ -55,6 +68,10 @@ LatticeController::~LatticeController()
 
 }
 
+/**
+ * Lädt eine neue Lattice aus einem Plugin und initialisiert sie mit der angegebenen Größe.
+ *
+ */
 bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int latticeSizeX, int latticeSizeY)
 {
 
@@ -77,6 +94,9 @@ bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int 
     return modelExists;
 }
 
+/**
+ * Zerstört die Lattice.
+ */
 void LatticeController::destroy()
 {
     lattice_.reset(0);
@@ -89,6 +109,7 @@ void LatticeController::destroy()
 void LatticeController::stepOnce()
 {
     lattice_.get()->step();
+    emit changed();
 }
 
 /**
@@ -97,7 +118,7 @@ void LatticeController::stepOnce()
  */
 void LatticeController::stepUntil(double time)
 {
-
+    emit changed();
 }
 
 /**
@@ -129,12 +150,19 @@ std::list<std::string> LatticeController::getModelNames() {
 
 void LatticeController::stepMany() {
     stepNum( stepsAtOnce_ );
+    emit changed();
 }
 
 void LatticeController::stepNum(int n) {
     lattice_.get()->step(n);
+    emit changed();
 }
 
 void LatticeController::loop() {
 
+}
+
+LatticeScripter* const LatticeController::getLatticeScripter() const
+{
+    return latticeScripter_;
 }

@@ -7,20 +7,20 @@
 
 #include "script_editor.h"
 
-ScriptEditor::ScriptEditor(QWidget* parent) :
-    QDialog( parent )
+ScriptEditor::ScriptEditor(QWidget* parent, LatticeController* latticeController) :
+    QDialog( parent ), latticeScripter_( latticeController->getLatticeScripter() )
 {
     setupUi( this );
     readSettings();
     connect( onceScriptPushButton, SIGNAL( clicked() ), this, SLOT( executeOnceScript() ) );
-    initEngine();
+    connect(
+        latticeScripter_, SIGNAL( result( QScriptValue )), this,
+        SLOT( showResult( QScriptValue ) ) );
 }
 
-void ScriptEditor::initEngine()
+void ScriptEditor::showResult( QScriptValue val)
 {
-    latticeScripter_ = new LatticeScripter();
-    QScriptValue objectValue = engine_.newQObject( latticeScripter_ );
-    engine_.globalObject().setProperty( "lattice", objectValue );
+    outputScriptEdit->appendPlainText( val.toVariant().toString() );
 }
 
 void ScriptEditor::closeEvent(QCloseEvent* event)
@@ -34,14 +34,14 @@ void ScriptEditor::executeLoopScript()
     if ( !loopScriptCheckBox->isChecked() )
         return;
     QString programm = loopScriptEdit->toPlainText();
-    engine_.evaluate( programm );
+    latticeScripter_->evaluate( programm );
 }
 
 void ScriptEditor::executeOnceScript()
 {
     qDebug() << "Script Once";
     QString programm = onceScriptEdit->toPlainText();
-    qDebug() << engine_.evaluate( programm ).toVariant();
+    qDebug() << latticeScripter_->evaluate( programm ).toVariant();
 }
 
 void ScriptEditor::readSettings()

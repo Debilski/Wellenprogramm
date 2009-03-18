@@ -9,12 +9,18 @@
 #define LATTICE_SCRIPTER_H_
 
 #include <QtCore>
+#include <QtScript>
 
 class LatticeScripter : public QObject {
-    Q_OBJECT
+Q_OBJECT
 public:
-    LatticeScripter();
+    LatticeScripter(QObject* latticeController);
+public slots:
+    QScriptValue evaluate(const QString& program);
+    signals:
+    void result( QScriptValue );
+private:
+    QScriptEngine engine_;
 };
-
 
 #endif /* LATTICE_SCRIPT_H_ */
