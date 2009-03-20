@@ -11,6 +11,7 @@
 #include "lattice_server.h"
 #include "plugin.h"
 
+#include <stdexcept>
 #include <string>
 #include <map>
 
