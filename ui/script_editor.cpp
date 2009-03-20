@@ -11,6 +11,7 @@ ScriptEditor::ScriptEditor(QWidget* parent, LatticeController* latticeController
     QDialog( parent ), latticeScripter_( latticeController->getLatticeScripter() )
 {
     setupUi( this );
+    setAttribute( Qt::WA_DeleteOnClose );
     readSettings();
     connect( onceScriptPushButton, SIGNAL( clicked() ), this, SLOT( executeOnceScript() ) );
     connect(
@@ -120,5 +121,4 @@ void ScriptEditor::writeSettings()
     settings.setValue( "executeOnce", onceScriptEdit->toPlainText() );
 
     settings.endGroup();
-
 }

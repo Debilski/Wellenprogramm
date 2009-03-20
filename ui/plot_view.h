@@ -16,7 +16,7 @@
 #include <qwt_plot_spectrogram.h>
 #include <qwt_color_map.h>
 #include <qwt_scale_widget.h>
-
+#include <qwt_polygon.h>
 
 /**
  * Class that holds Spectrogram, ColorMap and Plot for each tab.
@@ -42,6 +42,9 @@ public slots:
     void showMenu(const QPoint& p);
     void changeTop();
     void changeBottom();
+    void registerMouseEvent(const QwtDoublePoint &pos);
+    signals:
+    void selected(const uint&, const QPointF& );
 private:
     unsigned int component_;
     bool isFft_;

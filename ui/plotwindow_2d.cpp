@@ -434,6 +434,7 @@ void Waveprogram2DPlot::setUpTabs()
         //! Sendet an potenziell zu viele Tabs…
         connect( plotTabWidget, SIGNAL( currentChanged(int) ), tab, SLOT( replot(int) ) );
 
+        connect( tab, SIGNAL( selected(const uint&, const QPointF& )) , latticeController_, SLOT(setToFixpoint(const uint&, const QPointF&)));
         QString name = QString( "%1 (%2)" ).arg( QString::fromStdString(
             latticeController_->lattice()->componentInfos[ component ].name() ), QString::fromStdString(
             latticeController_->lattice()->componentInfos[ component ].shortName() ) );

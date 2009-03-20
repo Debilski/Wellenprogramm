@@ -9,6 +9,19 @@
 
 #include "tiny_double_edit.h"
 
+#include "qwt_plot_picker.h"
+class Painter: public QwtPlotPicker {
+    public:
+        Painter(int xAxis, int yAxis, QwtPlotCanvas *canvas):
+        QwtPlotPicker(xAxis, yAxis, canvas)
+    {
+            setSelectionFlags(QwtPicker::PointSelection | QwtPicker::ClickSelection);
+
+            setTrackerMode(QwtPicker::ActiveOnly);
+            setRubberBand(QwtPicker::NoRubberBand);
+    }
+};
+
 /**
  * \class PlotView
  * \brief Class that holds Spectrogram, ColorMap and Plot for each tab.
@@ -36,6 +49,14 @@ QWidget( parent ), component_( component ), isFft_( isFft )
     spectrogram_->setColorMap( colorMap );
     spectrogram_->attach( plot_ );
 
+    Painter* painter = new Painter( QwtPlot::xBottom, QwtPlot::yLeft,
+            plot_->canvas());
+    painter->setTrackerPen(QColor(Qt::white));
+
+    painter->setEnabled(true);
+
+    connect(painter, SIGNAL(selected(const QwtDoublePoint &)), this, SLOT(registerMouseEvent(const QwtDoublePoint&)));
+
     rightAxis = plot_->axisWidget( QwtPlot::yRight );
     rightAxis->setTitle( labelIntensity );
     rightAxis->setColorBarEnabled( true );
@@ -55,6 +76,12 @@ QWidget( parent ), component_( component ), isFft_( isFft )
 
     rightAxis->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( rightAxis, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showMenu( const QPoint& ) ) );
+}
+
+void PlotView::registerMouseEvent(const QwtDoublePoint & p)
+{
+    qDebug() << p;
+    emit selected(component_, p);
 }
 
 PlotView::~PlotView()

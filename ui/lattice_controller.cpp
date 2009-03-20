@@ -166,3 +166,9 @@ LatticeScripter* const LatticeController::getLatticeScripter() const
 {
     return latticeScripter_;
 }
+
+void LatticeController::setToFixpoint(uint component, const QPointF& realPoint)
+{
+    lattice_.get()->setSpotAtComponent(realPoint.x(), realPoint.y(), 1.0, 0, component, true);
+    emit changed();
+}

@@ -63,6 +63,7 @@ public slots:
     void stepUntil(double time);
     void startLoop();
     void stopLoop();
+    void setToFixpoint(uint component, const QPointF& realPoint);
 signals:
     /**
      * Wird aufgerufen, wenn das Modell sich verändert hat.
