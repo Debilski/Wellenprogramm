@@ -216,6 +216,11 @@ public:
         return modelName_;
     }
 
+    std::string modelInformation() const
+        {
+            return modelInformation_;
+        }
+
     SurfacePoint centreOfMass(uint component) const;
     SurfacePoint centreOfExcitation(uint component) const;
 
@@ -291,6 +296,11 @@ protected:
      * holds the name of the model
      */
     std::string modelName_;
+
+    /**
+         * holds some more Information about the model
+         */
+        std::string modelInformation_;
 
     //Components fixpoint_;
 

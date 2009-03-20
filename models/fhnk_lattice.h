@@ -858,7 +858,7 @@ class FhnKLattice_laplace;
  * Helper Class for additional but dependend Information
  */
 template<>
-struct Metainfo< FhnKLattice__laplace > : MetainfoBase {
+struct Metainfo< FhnKLattice_laplace > : MetainfoBase {
     typedef FhnKSystem Components;
     static const int number_of_Noise_Variables = 1;
     template<int N> struct NoiseMapping {
@@ -870,25 +870,27 @@ struct Metainfo< FhnKLattice__laplace > : MetainfoBase {
     static const bool OPTIMISE_NO_CLUSTER_COUNT = true;
     static const bool OPTIMISE_NO_EXTERNAL_FORCE = true;
 };
-template<> struct Metainfo< FhnKLattice__laplace >::NoiseMapping< secondComponent > {
+template<> struct Metainfo< FhnKLattice_laplace >::NoiseMapping< secondComponent > {
     enum {
         value = firstComponent
     };
 };
 
 
+
 //META(FhnLattice, TwoComponentSystem)
-class FhnKLattice__laplace : public SIIP_LatticeIntegrator< FhnKLattice__laplace > {
+class FhnKLattice_laplace : public SIIP_LatticeIntegrator< FhnKLattice_laplace > {
 public:
     Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l;
     blitz::Array< bool, 2 > isFhnField;
-    FhnKLattice__laplace(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnKLattice_z4 > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnKLattice_laplace(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
+        SIIP_LatticeIntegrator< FhnKLattice_laplace > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
                 0.2, "gamma" ), tau_l( 2.0, "tau_l" ), isFhnField( latticeSizeX, latticeSizeY )
     {
-        modelName_ = "FhnKLattice global z 4er";
+        modelName_ = "FhnKLattice laplace";
+        modelInformation_ = "FHN-K-Modell mit 8-er Nachbarschaft und Abstandsgewichtung.";
 
         componentInfos[ 0 ] = ComponentInfo( "Aktivator", "x", -2.2, 2.5 );
         componentInfos[ 1 ] = ComponentInfo( "Inhibitor", "y", -2.2, 2.5 );
@@ -904,7 +906,6 @@ public:
         registerParameter( &beta );
         registerParameter( &gamma );
         registerParameter( &tau_l );
-
     }
 
     inline double Psi(double x)
@@ -915,17 +916,44 @@ public:
     {
         return tau_l() + (tau_r() - tau_l()) * Psi( x );
     }
+
     inline FhnKSystem step_f(FhnKSystem sys, long int pos)
     {
         if ( isFhn( indexToX( pos ), indexToY( pos ) ) ) {
 
+            double z_sum = 0;
+            double sumNeighbours = 0;
+            for (int i = -1; i <= 1; ++i) {
+                for (int j = -1; j <= 1; ++j) {
+                    int neighbourX = indexToX( pos ) + i;
+                    int neighbourY = indexToY( pos ) + j;
+                    // Nehme nur Nicht-Fhn-Stellen mit und schließe sich selbst aus
+                    if ( !isFhn( neighbourX, neighbourY ) && !(j == 0 && i == 0) ) {
+                        // direkte Nachbarn
+                        if ( i * j == 0 ) {
+                            z_sum += lattice[ 2 ]( neighbourX, neighbourY );
+                            sumNeighbours += 1.0;
+                        } // Eck-Nachbarn
+                        else {
+                            z_sum += lattice[ 2 ]( neighbourX, neighbourY ) / std::sqrt( 2 );
+                            sumNeighbours += 1.0 / std::sqrt( 2 );
+                        }
+                    }
+                }
+            }
+
             double x = 1. / epsilon() * (sys.x() - sys.x() * sys.x() * sys.x() / 3.0 - sys.y());
-            double y = 1. / tau( sys.x() ) * (sys.x() + a() - C_z() * sys.z());
+            double y = 1. / tau( sys.x() ) * (sys.x() + a() - C_z() * z_sum / sumNeighbours);//sys.z());
             double z = sys.z();
             return FhnKSystem( x, y, 0 );
         } else
             return FhnKSystem( 0, 0, 0 );
     }
+
+
+
+
+
     inline FhnKSystem fixpoint(int) const
     {
         return FhnKSystem( -1, 0, 0 );
@@ -963,7 +991,10 @@ protected:
         diffMatrix = 0;
         for (int x = 0; x < Base::latticeSizeX(); ++x) {
             for (int y = 0; y < Base::latticeSizeY(); ++y) {
-
+                if ( isFhn( x, y ) ) {
+                    diffMatrix( x, y ) = 0;
+                    continue;
+                }
                 if ( x == 0 || x == (Base::latticeSizeX() - 1) || y == 0 || y
                     == (Base::latticeSizeY() - 1) )
                 {
@@ -983,38 +1014,65 @@ protected:
     inline double nb1_periodic(int x, int y)
     {
         double res = 0;
-        int numNeighbours = 0;
+        double sumNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                if ( isFhn( x + i, y + j )
-                /*&& !(j == 0 && i == 0) && !(x + i == 0) && !(x + i == 0)*/&& (i * j == 0) )
-                {
-                    ++numNeighbours;
-                    res += Psi( lattice[ 0 ](
-                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                            Base::indexPeriodic( x + i, y + j ) ) ) );
+                // Nehme nur Fhn-Stellen
+                if ( isFhn( x + i, y + j ) ) {
+                    int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
+                    int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
+                    // Wenn nächster = direkter Nachbar
+                    if ( i * j == 0 ) {
+                        sumNeighbours += 1.0;
+                        res += Psi( lattice[ 0 ]( neighbourX , neighbourY ));
+                    }
+                    // Wenn Ecknachbar
+                    else {
+                        sumNeighbours += 1.0 / std::sqrt( 2 );
+                        res += Psi( lattice[ 0 ]( neighbourX , neighbourY )) / std::sqrt( 2 );
+                    }
                 }
             }
         }
-        return alpha() * res;// / numNeighbours;;
+        // Normieren
+        if ( sumNeighbours != 0 ) {
+            res = res / sumNeighbours;
+        }
+        return alpha() * res;
     }
 
     inline double nb2_periodic(int x, int y)
     {
         double res = 0;
-        int numNeighbours = 0;
+        double sumNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
-                {
-                    if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) && (i * j == 0) )
-                        ++numNeighbours;
-                    res += (lattice[ 2 ](
-                        Base::indexToX( Base::indexPeriodic( x + i, y + j ) ), Base::indexToY(
-                            Base::indexPeriodic( x + i, y + j ) ) )) - lattice[ 2 ]( x, y );
+                // Nehme nur Nicht-Fhn-Stellen mit und schließe sich selbst aus
+                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) ) {
+                    {
+                        int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
+                        int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
+                        // Wenn nächster = direkter Nachbar
+                        if ( i * j == 0 ) {
+                            sumNeighbours += 1.0;
+                            res += lattice[ 2 ]( neighbourX, neighbourY );
+                        }
+                        // Wenn Ecknachbar
+                        else {
+                            sumNeighbours += 1.0 / std::sqrt(2);
+                            res += lattice[ 2 ]( neighbourX, neighbourY ) / std::sqrt(2);
+                        }
+                    }
                 }
             }
         }
-        return gamma() * res;// / numNeighbours;
+        // Normieren
+        if (sumNeighbours != 0) {
+            res = res / sumNeighbours;
+        }
+        // Mittelpunkt abziehen
+        res -= lattice[ 2 ]( x, y );
+        return res * gamma();
     }
 
     void toInitial(int number)

@@ -133,8 +133,17 @@ void Waveprogram2DPlot::setTitle()
         setWindowTitle( QString::fromUtf8(
             "‘%1’: Simulate a field size of %2×%2 on a lattice of %3×%3 " ).arg(
             lattice->modelName().c_str() ).arg( lattice->sizeX() ).arg( lattice->latticeSizeX() ) );
+        if ( lattice->modelInformation().empty() ) {
+            informationGroupBox->hide();
+            infoTextLabel->clear();
+        } else {
+            informationGroupBox->show();
+            infoTextLabel->setText( QString::fromStdString( lattice->modelInformation() ) );
+        }
     } else {
         setWindowTitle( QString::fromUtf8( "Wellenprogramm: No Model loaded" ) );
+        informationGroupBox->hide();
+                    infoTextLabel->clear();
     }
 }
 

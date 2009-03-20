@@ -769,6 +769,7 @@ public:
     //Parameter< double > gamma;
 
     virtual std::string modelName() const = 0;
+    virtual std::string modelInformation() const = 0;
 
     virtual SurfacePoint centreOfMass(uint component) const = 0;
     virtual SurfacePoint centreOfExcitation(uint component) const = 0;

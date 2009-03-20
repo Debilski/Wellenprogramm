@@ -41,6 +41,8 @@ struct SurfacePoint
 
 /**
  * Basic class that stores the dimensions of the system.
+ *
+ * Add: More Iterators
  */
 class LatticeGeometry
 {
