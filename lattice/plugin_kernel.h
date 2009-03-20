@@ -26,9 +26,14 @@ public:
     /// Loads a plugin
     void loadPlugin(const std::string &sFilename)
     {
+        try {
         if ( loadedPlugins_.find( sFilename ) == loadedPlugins_.end() )
             loadedPlugins_.insert( PluginMap::value_type( sFilename, Plugin( sFilename ) ) ).first->second.registerPlugin(
                 *this );
+        }
+        catch (std::runtime_error e) {
+            std::cout << e.what() << "\n" << "Ignoring " << sFilename.c_str() << " due to error.\n";
+        }
     }
 
 private:

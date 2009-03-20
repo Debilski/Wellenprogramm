@@ -77,7 +77,7 @@ class lattice_class##_LatticeDriver : public LatticeServer::LatticeDriver {     
 #define REGISTER_PLUGINS_BEGIN                                                      \
 /* Retrieve the engine version we're going to expect */                             \
 extern "C" int getEngineVersion() {                                                 \
-return 1;                                                                           \
+return LATTICE_INTERFACE_VERSION;                                                   \
 }                                                                                   \
 extern "C"  void registerPlugin(PluginKernel &K) {
 

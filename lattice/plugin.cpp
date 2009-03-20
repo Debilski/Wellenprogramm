@@ -12,6 +12,8 @@
 #include <iostream>
 #include <dlfcn.h>
 
+#include "lattice_interface.h"
+
 /** Loads the specified plugin as a dynamic library and locates
  the plugin's exported functions
 
@@ -40,6 +42,8 @@ Plugin::Plugin(const std::string& sFilename)
         if ( !pfnGetEngineVersion_ || !pfnRegisterPlugin_ )
             throw std::runtime_error( std::string( "'" ) + sFilename + "' is not a valid plugin" );
 
+        if ( getEngineVersion() !=  LATTICE_INTERFACE_VERSION )
+            throw std::runtime_error( std::string( "'" ) + sFilename + "' has not been compiled to the last version of the interface" );
         // Initialize a new DLL reference counter
         libRefCount_ = new size_t( 1 );
     } catch (...) {

@@ -531,7 +531,7 @@ class FractionalLinearOperatorClass {
 
 
 
-
+#define LATTICE_INTERFACE_VERSION 2
 
 /**
  * LatticeInterface allows for virtual access to lattice methods,
