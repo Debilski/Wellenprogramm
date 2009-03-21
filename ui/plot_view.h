@@ -43,6 +43,7 @@ public slots:
     void changeTop();
     void changeBottom();
     void registerMouseEvent(const QwtDoublePoint &pos);
+    void registerMouseEvent(const QwtArray< QwtDoublePoint > &pa);
     signals:
     void selected(const uint&, const QPointF& );
 private:

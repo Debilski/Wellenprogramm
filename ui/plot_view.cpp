@@ -84,6 +84,11 @@ void PlotView::registerMouseEvent(const QwtDoublePoint & p)
     emit selected(component_, p);
 }
 
+void PlotView::registerMouseEvent(const QwtArray< QwtDoublePoint > &pa) {
+    qDebug() << "called";
+    qDebug() << pa;
+}
+
 PlotView::~PlotView()
 {
     //delete spectrogram_;
