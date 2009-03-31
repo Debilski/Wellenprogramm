@@ -25,7 +25,10 @@ class PlotView : public QWidget {
 Q_OBJECT
 public:
     QwtPlotSpectrogram* spectrogram_;
+    QwtPlotSpectrogram* spectrogram2_;
+    QwtPlotSpectrogram* spectrogram3_;
     QwtLinearColorMap* colorMap_;
+    QwtAlphaColorMap* colorMapAlpha_;
     QwtPlot* plot_;
     QwtScaleWidget* rightAxis;
 

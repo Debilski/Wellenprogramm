@@ -47,7 +47,24 @@ QWidget( parent ), component_( component ), isFft_( isFft )
     spectrogram_->setData( spectrogrammData );
 
     spectrogram_->setColorMap( colorMap );
+    colorMapAlpha_ = new QwtAlphaColorMap();
+    spectrogram_->setColorMap( *colorMapAlpha_ );
+    //spectrogram_->setAlpha(150);
     spectrogram_->attach( plot_ );
+
+    //spectrogram2_ = new QwtPlotSpectrogram();
+    //spectrogram2_->setData( spectrogrammData );
+
+    //colorMapAlpha_ = new QwtAlphaColorMap();
+    //spectrogram2_->setColorMap( *colorMapAlpha_ );
+    //spectrogram2_->attach( plot_ );
+
+
+    //     spectrogram3_ = new QwtPlotSpectrogram();
+//    spectrogram3_->setData( spectrogrammData );
+
+//    spectrogram3_->setColorMap( colorMap );
+//    spectrogram3_->attach( plot_ );
 
     Painter* painter = new Painter( QwtPlot::xBottom, QwtPlot::yLeft,
             plot_->canvas());

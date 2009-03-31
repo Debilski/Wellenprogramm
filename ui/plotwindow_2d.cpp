@@ -42,7 +42,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     connect( latticeController_, SIGNAL( changed() ), this, SLOT( replot() ) );
     connect( latticeController_, SIGNAL( changed() ), this, SLOT( updateLabels() ) );
 
-    colourMapType = standardColourMap;
+
     colourMapMode = defaultColourMapMode;
 
     setupUi( this ); // this sets up GUI
@@ -113,6 +113,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     menuDock_Windows->addAction( adaptationParameterWidget->toggleViewAction() );
     menuDock_Windows->addAction( extrasWidget->toggleViewAction() );
 
+    setUnifiedTitleAndToolBarOnMac(true);
     this->show();
 
     replot();
@@ -191,14 +192,23 @@ void Waveprogram2DPlot::updateDefects()
 
 void Waveprogram2DPlot::setUpColourSchemeMenu()
 {
-
-    changeColourSchemeGroup = new QActionGroup( this );
-    changeColourSchemeGroup->addAction( actionStandard );
-    changeColourSchemeGroup->addAction( actionGrey );
-    changeColourSchemeGroup->addAction( actionJet );
-    actionStandard->setChecked( true );
+    changeColourSchemeGroup = new QActionGroup(this);
+    foreach ( ColourMaps::T_identifier pair, colourMaps_.colourMapNames()) {
+        QAction* action = new QAction( pair.second, changeColourSchemeGroup);
+        action->setCheckable(true);
+        action->setData( pair.first );
+        if (pair.first == ColourMaps::standardColourMap) {
+            action->setChecked(true);
+        }
+        menuSelect_Colour_Scheme->addAction(action);
+        changeColourSchemeGroup->addAction(action);
+    }
     connect( changeColourSchemeGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( updateColourScheme( QAction* )) );
 
+    menuSelect_Colour_Scheme->addSeparator();
+    menuSelect_Colour_Scheme->addAction(actionDefault_Colour_Scheme);
+    menuSelect_Colour_Scheme->addAction(actionAdaptive_Scheme);
+    menuSelect_Colour_Scheme->addAction(actionDelayed_Adaptive_Scheme);
     changeColourSchemeModeGroup = new QActionGroup( this );
     changeColourSchemeModeGroup->addAction( actionDefault_Colour_Scheme );
     changeColourSchemeModeGroup->addAction( actionAdaptive_Scheme );
@@ -215,18 +225,14 @@ void Waveprogram2DPlot::updateColourSchemeMode(QAction* a)
         colourMapMode = adaptiveColourMapMode;
     if ( a == actionDelayed_Adaptive_Scheme )
         colourMapMode = delayedAdaptiveColourMapMode;
+
     setUpColorMap();
 }
 
 void Waveprogram2DPlot::updateColourScheme(QAction* a)
 {
-    if ( a == actionStandard )
-        colourMapType = standardColourMap;
-    if ( a == actionGrey )
-        colourMapType = greyColourMap;
-    if ( a == actionJet )
-        colourMapType = jetColourMap;
-    setUpColorMap();
+    // blöder Hack
+    emit colorMapChanged(  colourMaps_.getColourMap( static_cast<ColourMaps::ColourMapTypes>( a->data().value<int>() ) ) );
 }
 
 void Waveprogram2DPlot::setUpUpdatePeriodMenu()
@@ -275,49 +281,7 @@ void Waveprogram2DPlot::setUpSlices()
 
 void Waveprogram2DPlot::setUpColorMap()
 {
-    //colourMapType = greyColourMap;
-    switch (colourMapType) {
-        case greyColourMap:
-            colorMap = QwtLinearColorMap( Qt::black, Qt::white );
-            break;
-        case jetColourMap:
-            double pos;
-            colorMap = QwtLinearColorMap( QColor( 0, 0, 189 ), QColor( 132, 0, 0 ) );
-            pos = 1.0 / 13.0 * 1.0;
-            colorMap.addColorStop( pos, QColor( 0, 0, 255 ) );
-            pos = 1.0 / 13.0 * 2.0;
-            colorMap.addColorStop( pos, QColor( 0, 66, 255 ) );
-            pos = 1.0 / 13.0 * 3.0;
-            colorMap.addColorStop( pos, QColor( 0, 132, 255 ) );
-            pos = 1.0 / 13.0 * 4.0;
-            colorMap.addColorStop( pos, QColor( 0, 189, 255 ) );
-            pos = 1.0 / 13.0 * 5.0;
-            colorMap.addColorStop( pos, QColor( 0, 255, 255 ) );
-            pos = 1.0 / 13.0 * 6.0;
-            colorMap.addColorStop( pos, QColor( 66, 255, 189 ) );
-            pos = 1.0 / 13.0 * 7.0;
-            colorMap.addColorStop( pos, QColor( 132, 255, 132 ) );
-            pos = 1.0 / 13.0 * 8.0;
-            colorMap.addColorStop( pos, QColor( 189, 255, 66 ) );
-            pos = 1.0 / 13.0 * 9.0;
-            colorMap.addColorStop( pos, QColor( 255, 255, 0 ) );
-            pos = 1.0 / 13.0 * 10.0;
-            colorMap.addColorStop( pos, QColor( 255, 189, 0 ) );
-            pos = 1.0 / 13.0 * 12.0;
-            colorMap.addColorStop( pos, QColor( 255, 66, 0 ) );
-            pos = 1.0 / 13.0 * 13.0;
-            colorMap.addColorStop( pos, QColor( 189, 0, 0 ) );
-            break;
-        case standardColourMap:
-        default:
-            colorMap = QwtLinearColorMap( Qt::darkBlue, Qt::darkRed ); // -2.2, 2.5
-            colorMap.addColorStop( 0.0426, Qt::darkCyan ); // u = -2
-            colorMap.addColorStop( 0.1277, Qt::cyan ); // u = -1.6
-            colorMap.addColorStop( 0.5532, Qt::green ); // u = 0.4
-            colorMap.addColorStop( 0.8085, Qt::yellow ); // u = 1.6
-            colorMap.addColorStop( 0.8936, Qt::red ); // u = 2
-    }
-    emit colorMapChanged( colorMap );
+    emit colorMapChanged( colourMaps_.getColourMap() );
 }
 
 void Waveprogram2DPlot::removeTabs()
@@ -422,7 +386,7 @@ void Waveprogram2DPlot::setUpTabs()
             label = QString( "Intensity" );
         }
         PlotView* tab = new PlotView(
-            SpectrogramData( latticeController_, component, this ), colorMap, component, label, plotTabWidget );
+            SpectrogramData( latticeController_, component, this ), colourMaps_.getColourMap(), component, label, plotTabWidget );
 
         plotViewVector_ << tab;
         // tab->plot_->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -458,7 +422,7 @@ void Waveprogram2DPlot::setUpTabs()
             label = QString( "Intensity" );
         }
         PlotView* tab = new PlotView(
-            SpectrogramDataFft( latticeController_, component, this ), colorMap, component, label,
+            SpectrogramDataFft( latticeController_, component, this ), colourMaps_.getColourMap(), component, label,
             plotTabWidget, true );
 
         plotViewVector_ << tab;
@@ -1165,7 +1129,7 @@ void Waveprogram2DPlot::on_actionSave_as_Png_triggered()
         for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
             for (int j = 0; j < latticeController_->lattice()->latticeSizeY(); ++j) {
                 image.setPixel(
-                    i, j, colorMap.color( QwtDoubleInterval( -2.2, 2.5 ), latticeController_->lattice()->getComponentAt(
+                    i, j, colourMaps_.getColourMap().color( QwtDoubleInterval( -2.2, 2.5 ), latticeController_->lattice()->getComponentAt(
                         component, i, j ) ).rgb() );
             }
         }
@@ -1272,7 +1236,7 @@ void Waveprogram2DPlot::savePng(QString filename)
                             plotViewVector_[ save_component ]->spectrogram_->data().range(),
                             latticeController_->lattice()->getComponentAt( save_component, i, j ) ).rgb() );
                 } else {
-                    image.setPixel( i, j, colorMap.color(
+                    image.setPixel( i, j, colourMaps_.getColourMap().color(
                         QwtDoubleInterval( -2.2, 2.5 ), latticeController_->lattice()->getComponentAt(
                             save_component, i, j ) ).rgb() );
                 }

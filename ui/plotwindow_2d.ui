@@ -314,13 +314,6 @@
      <property name="title">
       <string>Select Colour Scheme</string>
      </property>
-     <addaction name="actionStandard"/>
-     <addaction name="actionGrey"/>
-     <addaction name="actionJet"/>
-     <addaction name="separator"/>
-     <addaction name="actionDefault_Colour_Scheme"/>
-     <addaction name="actionAdaptive_Scheme"/>
-     <addaction name="actionDelayed_Adaptive_Scheme"/>
     </widget>
     <addaction name="actionResize_program_window_to_force_update"/>
     <addaction name="actionShow_Curvature"/>
@@ -877,30 +870,6 @@
    </property>
    <property name="text">
     <string>Delayed Adaptive Scheme</string>
-   </property>
-  </action>
-  <action name="actionStandard">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Standard</string>
-   </property>
-  </action>
-  <action name="actionGrey">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Grey</string>
-   </property>
-  </action>
-  <action name="actionJet">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Jet</string>
    </property>
   </action>
   <action name="actionAbout">
