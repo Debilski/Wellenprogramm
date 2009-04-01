@@ -114,6 +114,7 @@ private:
     QList< QPair< ColourMapTypes, QString > > colourMapNames_;
 };
 
+
 Q_DECLARE_METATYPE(ColourMaps::ColourMapTypes)
 /**
  * Action which stores the Modeltype it shall call
@@ -163,8 +164,6 @@ public:
     void setUpAdaptationParameters();
     void setUpBoundaryConditionsSelector();
     void setUpSlices();
-
-    QVector< QwtDoubleInterval > plotRanges_real, plotRanges_fft;
 
 public slots:
 
@@ -230,8 +229,6 @@ public slots:
     void updateColourScheme(QAction* a);
     void updateColourSchemeMode(QAction* a);
 
-    void adaptRange(uint& component, bool& isFft);
-
     //void adaptValues();
     void updateUpdatePeriod(QAction* a);
 
@@ -252,7 +249,7 @@ signals:
     void updateParameters();
 
     void replotTab();
-    void colorMapChanged(const QwtColorMap&);
+    void colorMapChanged(const QwtColorMap&, ColourMapAdaptationModes);
     void modelChanged();
     void modelClosed();
 
@@ -328,11 +325,7 @@ private:
     int updatePeriodTime_;
     void setUpUpdatePeriodMenu();
 
-    enum ColourMapModes {
-        defaultColourMapMode, adaptiveColourMapMode, delayedAdaptiveColourMapMode
-    };
-
-    ColourMapModes colourMapMode;
+    ColourMapAdaptationModes colourMapMode;
 
     QCheckBox *adaptationModeCheckBox;
 

@@ -232,7 +232,7 @@ void Waveprogram2DPlot::updateColourSchemeMode(QAction* a)
 void Waveprogram2DPlot::updateColourScheme(QAction* a)
 {
     // blöder Hack
-    emit colorMapChanged(  colourMaps_.getColourMap( static_cast<ColourMaps::ColourMapTypes>( a->data().value<int>() ) ) );
+    emit colorMapChanged(  colourMaps_.getColourMap( static_cast<ColourMaps::ColourMapTypes>( a->data().value<int>() ) ), colourMapMode );
 }
 
 void Waveprogram2DPlot::setUpUpdatePeriodMenu()
@@ -281,7 +281,7 @@ void Waveprogram2DPlot::setUpSlices()
 
 void Waveprogram2DPlot::setUpColorMap()
 {
-    emit colorMapChanged( colourMaps_.getColourMap() );
+    emit colorMapChanged( colourMaps_.getColourMap(), colourMapMode );
 }
 
 void Waveprogram2DPlot::removeTabs()
@@ -304,73 +304,11 @@ void Waveprogram2DPlot::removeTabs()
     }
 }
 
-void Waveprogram2DPlot::setUpRanges()
-{
-    plotRanges_real.clear();
-    plotRanges_real.resize( latticeController_->lattice()->numberOfVariables() );
-    std::cout << latticeController_->lattice()->numberOfVariables();
-    for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component) {
-        double max;
-        double min;
-
-        max = latticeController_->lattice()->componentInfos[ component ].assumedMax();
-        min = latticeController_->lattice()->componentInfos[ component ].assumedMin();
-        if ( min >= max ) {
-            max = 2.5;
-            min = -2.2;
-        }
-        plotRanges_real[ component ] = QwtDoubleInterval( min, max );
-    }
-}
-
-void Waveprogram2DPlot::adaptRange(uint& component, bool& isFft)
-{
-    double max;
-    double min;
-
-    max = latticeController_->lattice()->componentInfos[ component ].assumedMax();
-    min = latticeController_->lattice()->componentInfos[ component ].assumedMin();
-    if ( min >= max ) {
-        max = 2.5;
-        min = -2.2;
-    }
-    if ( colourMapMode == adaptiveColourMapMode ) {
-        max = latticeController_->lattice()->getMax( component );
-        min = latticeController_->lattice()->getMin( component );
-
-        max = std::floor( max * 5.0 + 1 ) / 5.0;
-        min = std::ceil( min * 5.0 - 1 ) / 5.0;
-    }
-
-    if ( colourMapMode == delayedAdaptiveColourMapMode ) {
-        double oldMax = plotRanges_real[ component ].maxValue();
-        double oldMin = plotRanges_real[ component ].minValue();
-
-        // Neuen Wert abschätzen
-        max = latticeController_->lattice()->getMax( component );
-        min = latticeController_->lattice()->getMin( component );
-
-        // Wenn Abweichung nicht zu größer 1: alten Wert behalten, sonst auf 0.2 runden
-        if ( max < oldMax && max > oldMax - 1 ) {
-            max = oldMax;
-        } else {
-            max = std::floor( max * 5.0 + 1 ) / 5.0;
-        }
-        if ( min > oldMin && min < oldMin + 1 ) {
-            min = oldMin;
-        } else {
-            min = std::ceil( min * 5.0 - 1 ) / 5.0;
-        }
-    }
-    plotRanges_real[ component ] = QwtDoubleInterval( min, max );
-}
-
 void Waveprogram2DPlot::setUpTabs()
 {
     QFont plotFont = QFont( "", 8 );
     QwtText labelIntensity( "Intensity" );
     labelIntensity.setFont( plotFont );
-    setUpRanges();
     disconnect( this, SIGNAL( replotTab() ), 0, 0 );
     disconnect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), 0, 0 );
     plotViewVector_.clear();
@@ -385,75 +323,38 @@ void Waveprogram2DPlot::setUpTabs()
         } else {
             label = QString( "Intensity" );
         }
-        PlotView* tab = new PlotView(
-            SpectrogramData( latticeController_, component, this ), colourMaps_.getColourMap(), component, label, plotTabWidget );
+        //PlotView* tab = new PlotView(
+        //    SpectrogramData( latticeController_, component, this ), colourMaps_.getColourMap(), component, label, plotTabWidget );
 
-        plotViewVector_ << tab;
-        // tab->plot_->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-        connect( tab, SIGNAL( adaptComponent(uint&, bool&) ), this, SLOT( adaptRange(uint&, bool&) ) );
-        connect( this, SIGNAL( replotTab() ), tab, SLOT( replot() ) );
+        PlotStackLayer* layer = new PlotStackLayer(latticeController_);
+        layer->spectrogram()->setData( SpectrogramData( latticeController_, component, layer ) );
+        layer->spectrogram()->setColorMap( colourMaps_.getColourMap() );
+        layer->component = component;
 
-        connect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), tab, SLOT( setColorMap( const QwtColorMap& )));
+        PlotStack plotStack;
+        plotStack.append(layer);
+
+        PlotView* view = new PlotView(plotStack, label, plotTabWidget );
+
+
+
+        plotViewVector_ << view;
+
+        connect( this, SIGNAL( replotTab() ), view, SLOT( replot() ) );
+
+        connect( this, SIGNAL( colorMapChanged( const QwtColorMap&, ColourMapAdaptationModes )), view, SLOT( setColorMap( const QwtColorMap&, ColourMapAdaptationModes )));
         //! Sendet an potenziell zu viele Tabs…
-        connect( plotTabWidget, SIGNAL( currentChanged(int) ), tab, SLOT( replot(int) ) );
+        connect( plotTabWidget, SIGNAL( currentChanged(int) ), view, SLOT( replot(int) ) );
 
-        connect( tab, SIGNAL( selected(const uint&, const QPointF& )) , latticeController_, SLOT(setToFixpoint(const uint&, const QPointF&)));
+        connect( view, SIGNAL( selected(const uint&, const QPointF& )) , latticeController_, SLOT(setToFixpoint(const uint&, const QPointF&)));
         QString name = QString( "%1 (%2)" ).arg( QString::fromStdString(
             latticeController_->lattice()->componentInfos[ component ].name() ), QString::fromStdString(
             latticeController_->lattice()->componentInfos[ component ].shortName() ) );
 
-        plotTabWidget->addTab( tab, name );
+        plotTabWidget->addTab( view, name );
     }
-
-
-
-    for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component) {
-        // Kein FFT
-        continue;
-
-        QString label;
-        if ( !latticeController_->lattice()->componentInfos[ component ].physicalQuantity().empty() ) {
-            label = QString( "%1 / %2" );
-            label = label.arg(
-                latticeController_->lattice()->componentInfos[ component ].physicalQuantity().c_str(),
-                latticeController_->lattice()->componentInfos[ component ].physicalUnitSymbol().c_str() );
-        } else {
-            label = QString( "Intensity" );
-        }
-        PlotView* tab = new PlotView(
-            SpectrogramDataFft( latticeController_, component, this ), colourMaps_.getColourMap(), component, label,
-            plotTabWidget, true );
-
-        plotViewVector_ << tab;
-        // tab->plot_->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-
-        connect( tab, SIGNAL( adaptComponent(uint&, bool&) ), this, SLOT( adaptRange(uint&, bool&) ) );
-        connect( this, SIGNAL( replotTab() ), tab, SLOT( replot() ) );
-
-        connect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), tab, SLOT( setColorMap( const QwtColorMap& )));
-        //! Sendet an potenziell zu viele Tabs…
-        connect( plotTabWidget, SIGNAL( currentChanged(int) ), tab, SLOT( replot(int) ) );
-
-        QString name = QString( "Fourier %1 (%2)" ).arg( QString::fromStdString(
-            latticeController_->lattice()->componentInfos[ component ].name() ), QString::fromStdString(
-            latticeController_->lattice()->componentInfos[ component ].shortName() ) );
-
-        plotTabWidget->addTab( tab, name );
-    }
-
     plotTabWidget->show();
-
-    /*  for (uint component=0; component < latticeController_->lattice()->number_of_Variables; ++component) {
-     PlotView* tab = new PlotView();
-     tab->plot_ = new QwtPlot(tab);
-     tab->spectrogram_ = new QwtPlotSpectrogram();
-     tab->spectrogram_->setData(SpectrogramData(lattice, component));
-     tab->spectrogram_->attach(tab->plot_);
-
-     QString name = QString("%1 (%2)").arg(QString::fromStdString(latticeController_->lattice()->componentNames[component]),QString::fromStdString(latticeController_->lattice()->componentNamesShort[component]));
-     plotTabWidget->addTab(tab, name);
-     }*/
 }
 
 void Waveprogram2DPlot::setUpDiffusion()
@@ -1151,8 +1052,8 @@ void Waveprogram2DPlot::on_actionLoad_from_Png_triggered()
         QHash< QRgb, double > reversableMap;
         for (int i = 0; i < 100000; ++i) {
             double d = -2.5 + (2.5 - (-2.5)) / 100000. * i;
-            QRgb rgbval = plotViewVector_[ 0 ]->spectrogram_->colorMap().color(
-                plotViewVector_[ 0 ]->spectrogram_->data().range(), d ).rgb();
+            QRgb rgbval = plotViewVector_[ 0 ]->firstSpectrogram()->colorMap().color(
+                plotViewVector_[ 0 ]->firstSpectrogram()->data().range(), d ).rgb();
             reversableMap.insert( rgbval, d );
         }
         /*QHash<QRgb, double> reversableMap_inhib;
@@ -1232,8 +1133,8 @@ void Waveprogram2DPlot::savePng(QString filename)
 
                 if ( plotViewVector_.size() > 0 ) {
                     image.setPixel(
-                        i, j, plotViewVector_[ save_component ]->spectrogram_->colorMap().color(
-                            plotViewVector_[ save_component ]->spectrogram_->data().range(),
+                        i, j, plotViewVector_[ save_component ]->firstSpectrogram()->colorMap().color(
+                            plotViewVector_[ save_component ]->firstSpectrogram()->data().range(),
                             latticeController_->lattice()->getComponentAt( save_component, i, j ) ).rgb() );
                 } else {
                     image.setPixel( i, j, colourMaps_.getColourMap().color(
