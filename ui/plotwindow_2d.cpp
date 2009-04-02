@@ -29,8 +29,6 @@ void Waveprogram2DPlot::setTitle()
     }
 }
 
-#include <dlfcn.h>
-
 Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int latticeSize) :
     QMainWindow( parent ), realSize_( realSize ), latticeSize_( latticeSize ), parent( parent )
 {
