@@ -353,8 +353,8 @@ void Waveprogram2DPlot::setUpTabs()
         connect( plotTabWidget, SIGNAL( currentChanged(int) ), view, SLOT( replot(int) ) );
 
         connect(
-            view, SIGNAL( selected(const uint&, const QPointF& )), latticeController_,
-            SLOT(setToFixpoint(const uint&, const QPointF&)) );
+            view, SIGNAL( selected(const uint&, const QPointF& )), this,
+            SLOT(paint(const uint&, const QPointF&)) );
         QString name = QString( "%1 (%2)" ).arg(
             QString::fromStdString(
                 latticeController_->lattice()->componentInfos[ component ].name() ),
@@ -445,6 +445,18 @@ void Waveprogram2DPlot::setUpTabs()
         plotTabWidget->addTab( view, name );
     }
     plotTabWidget->show();
+}
+
+
+void Waveprogram2DPlot::paint(const uint& component, const QPointF& point)
+{
+    if ( paintDockWidget->isVisible() ) {
+        if ( paintFixpointCheckbox->isChecked() ) {
+            latticeController_->setToFixpoint(component, point, paintSizeSpinBox->value() );
+        } else {
+            latticeController_->setComponentAt(component, point, paintSizeSpinBox->value(), paintValueSpinBox->value() );
+        }
+    }
 }
 
 void Waveprogram2DPlot::setUpDiffusion()

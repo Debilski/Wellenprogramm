@@ -163,6 +163,7 @@ public slots:
 
     void showTimeMenu(const QPoint& p);
     void resetTime();
+    void paint(const uint& component, const QPointF& point) ;
 
 signals:
 
