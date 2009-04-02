@@ -14,10 +14,10 @@
 class SpectrogramData : public QwtRasterData {
     LatticeController* latticeController_;
     int variable_;
-    PlotStackLayer* plotStackLayer_;
+    PlotLayer* plotStackLayer_;
 public:
     SpectrogramData(LatticeController* latticeController, int variable = 0,
-                    PlotStackLayer* plotStackLayer = 0) :
+                    PlotLayer* plotStackLayer = 0) :
         QwtRasterData( QwtDoubleRect( 0., 0., (latticeController->sizeX()), (latticeController->sizeY()) ) ), latticeController_(
             latticeController ), variable_( variable ), plotStackLayer_( plotStackLayer )
     {
@@ -44,7 +44,9 @@ public:
     {
         int ix = qRound( x / latticeController_->lattice()->scaleX() );
         int iy = qRound( y / latticeController_->lattice()->scaleY() );
-        return latticeController_->lattice()->getComponentAt( variable_, ix, iy - 1 );
+        double val = latticeController_->lattice()->getComponentAt( variable_, ix, iy - 1 );
+        if (val == -1.0) return -100;
+        return val;
     }
 };
 

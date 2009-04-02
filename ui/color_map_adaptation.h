@@ -1,5 +1,5 @@
 /*
- * colour_map_adaptation.h
+ * color_map_adaptation.h
  *
  *  Created on: 02.04.2009
  *      Author: rikebs
@@ -9,8 +9,8 @@
 #define COLOUR_MAP_ADAPTATION_H_
 
 
-enum ColourMapAdaptationModes {
-    defaultColourMapMode, adaptiveColourMapMode, delayedAdaptiveColourMapMode
+enum ColorMapAdaptationModes {
+    defaultColorMapMode, adaptiveColorMapMode, delayedAdaptiveColorMapMode
 };
 
 class ColorMapAdaptationMode {

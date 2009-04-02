@@ -19,91 +19,26 @@
 #include <qwt_polygon.h>
 
 #include "lattice_controller.h"
-
-#include "colour_map_adaptation.h"
-
-class PlotStackLayer {
-public:
-    uint component;
-
-    void attach(QwtPlot* plot)
-    {
-        spectrogram_->attach( plot );
-    }
-    PlotStackLayer(LatticeController* latticeController) :
-        latticeController_( latticeController )
-    {
-        spectrogram_ = new QwtPlotSpectrogram();
-        adaptationMode_ = new DefaultColorMapAdaptationMode();
-    }
-    ~PlotStackLayer()
-    {
-        delete adaptationMode_;
-        delete spectrogram_;
-    }
-    void adaptRange()
-    {
-        adaptationMode_->adaptRange(
-            latticeController_->lattice()->getMin( component ),
-            latticeController_->lattice()->getMax( component ) );
-    }
-
-    void setAdaptationMode(const ColorMapAdaptationMode& mode)
-    {
-        delete adaptationMode_;
-        adaptationMode_ = mode.copy();
-    }
-    QwtDoubleInterval range() const
-    {
-        return adaptationMode_->range();
-    }
-
-    QwtPlotSpectrogram* spectrogram() const
-    {
-        return spectrogram_;
-    }
-    void setColorMap(const QwtColorMap& colorMap, ColourMapAdaptationModes mode)
-    {
-        switch (mode) {
-            case adaptiveColourMapMode:
-                setAdaptationMode( AdaptiveColorMapAdaptationMode() );
-                break;
-            case delayedAdaptiveColourMapMode:
-                setAdaptationMode( DelayedAdaptiveColorMapAdaptationMode() );
-                break;
-            case defaultColourMapMode:
-            default:
-                double min =
-                    latticeController_->lattice()->componentInfos[ component ].assumedMin();
-                double max =
-                    latticeController_->lattice()->componentInfos[ component ].assumedMax();
-                setAdaptationMode( DefaultColorMapAdaptationMode( QwtDoubleInterval( min, max ) ) );
-        }
-        spectrogram()->setColorMap( colorMap );
-    }
-private:
-    LatticeController* latticeController_;
-    QwtPlotSpectrogram* spectrogram_;
-    ColorMapAdaptationMode* adaptationMode_;
-};
+#include "plot_layer.h"
+#include "color_map_adaptation.h"
 
 class PlotStack {
 public:
-    QList< PlotStackLayer* > plotStack_;
+    QList< PlotLayer* > plotStack_;
     void attach(QwtPlot* plot)
     {
-        foreach( PlotStackLayer* p, plotStack_ )
+        foreach( PlotLayer* p, plotStack_ )
             {
                 p->attach( plot );
             }
     }
-    void append(PlotStackLayer* pL)
+    void append(PlotLayer* pL)
     {
         plotStack_.append( pL );
     }
     void adaptRange()
     {
-        foreach( PlotStackLayer* p, plotStack_ )
+        foreach( PlotLayer* p, plotStack_ )
             {
                 p->adaptRange();
             }
@@ -139,7 +74,9 @@ public:
 public slots:
     void replot(int);
     void replot();
-    void setColorMap(const QwtColorMap& colorMap, ColourMapAdaptationModes mode);
+    void setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes mode);
+    void setColorMap(const QwtColorMap& colorMap);
+    void setColorMapMode(ColorMapAdaptationModes mode);
     void showMenu(const QPoint& p);
     void changeTop();
     void changeBottom();

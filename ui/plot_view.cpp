@@ -112,7 +112,22 @@ void PlotView::replot()
     }
 }
 
-void PlotView::setColorMap(const QwtColorMap& colorMap, ColourMapAdaptationModes mode)
+void PlotView::setColorMap(const QwtColorMap& colorMap)
+{
+    plotStack_.plotStack_.first()->setColorMap( colorMap );
+    rightAxis->setColorMap( plotStack_.plotStack_.first()->spectrogram()->data().range(), plotStack_.plotStack_.first()->spectrogram()->colorMap() );
+    replot();
+}
+
+void PlotView::setColorMapMode(ColorMapAdaptationModes mode)
+{
+    qDebug() << "Yess";
+    plotStack_.plotStack_.first()->setColorMapMode( mode );
+    rightAxis->setColorMap( plotStack_.plotStack_.first()->spectrogram()->data().range(), plotStack_.plotStack_.first()->spectrogram()->colorMap() );
+    replot();
+}
+
+void PlotView::setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes mode)
 {
     plotStack_.plotStack_.first()->setColorMap( colorMap, mode );
     rightAxis->setColorMap( plotStack_.plotStack_.first()->spectrogram()->data().range(), plotStack_.plotStack_.first()->spectrogram()->colorMap() );

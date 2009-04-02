@@ -11,7 +11,6 @@
 #include <qwt_plot_grid.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_spectrogram.h>
-#include <qwt_color_map.h>
 
 #include <qwt_scale_widget.h>
 #include <qwt_scale_draw.h>
@@ -35,7 +34,7 @@
 
 #include "configuration.h"
 
-#include "colour_maps.h"
+#include "color_maps.h"
 
 /**
  * Action which stores the Modeltype it shall call
@@ -147,8 +146,8 @@ public slots:
     bool adaptationMode();
     void adaptationMode(bool b);
 
-    void updateColourScheme(QAction* a);
-    void updateColourSchemeMode(QAction* a);
+    void updateColorScheme(QAction* a);
+    void updateColorSchemeMode(QAction* a);
 
     //void adaptValues();
     void updateUpdatePeriod(QAction* a);
@@ -170,7 +169,11 @@ signals:
     void updateParameters();
 
     void replotTab();
-    void colorMapChanged(const QwtColorMap&, ColourMapAdaptationModes);
+
+    void colorMapChanged(const QwtColorMap&);
+    void colorMapModeChanged(ColorMapAdaptationModes);
+    void colorMapChanged(const QwtColorMap&, ColorMapAdaptationModes);
+
     void modelChanged();
     void modelClosed();
 
@@ -202,7 +205,7 @@ private:
     LatticeController* latticeController_;
     std::string latticeIdentifier_;
 
-    ColourMaps colourMaps_;
+    ColorMaps colorMaps_;
 
 protected:
     void closeEvent(QCloseEvent * event);
@@ -236,17 +239,17 @@ private:
 
     QMap< int, QString > boundaryConditionIdentifier;
 
-    void setUpColourSchemeMenu();
+    void setUpColorSchemeMenu();
 
-    QActionGroup* changeColourSchemeGroup;
-    QActionGroup* changeColourSchemeModeGroup;
+    QActionGroup* changeColorSchemeGroup;
+    QActionGroup* changeColorSchemeModeGroup;
 
     QActionGroup* updatePeriodGroup;
 
     int updatePeriodTime_;
     void setUpUpdatePeriodMenu();
 
-    ColourMapAdaptationModes colourMapMode;
+    ColorMapAdaptationModes colorMapMode;
 
     QCheckBox *adaptationModeCheckBox;
 
