@@ -183,6 +183,8 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent * event);
+    void saveViews(const QString& name, uint num);
+    void saveViews(const QString& name);
 
 private:
     bool showClusterIds_;
