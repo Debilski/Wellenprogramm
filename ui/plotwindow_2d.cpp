@@ -59,6 +59,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     adaptationMode_ = false;
     loopruns = false;
 
+
     boundaryConditionIdentifier[ FixedBoundary ] = "Fixed Boundary";
     boundaryConditionIdentifier[ PeriodicBoundary ] = "Periodic Boundary";
     boundaryConditionIdentifier[ NoFluxBoundary ] = "Reflecting Boundary";
@@ -117,6 +118,9 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     menuDock_Windows->addAction( extrasWidget->toggleViewAction() );
 
     setUnifiedTitleAndToolBarOnMac( true );
+
+    setUpDockWindows();
+
     this->show();
 
     replot();
@@ -137,7 +141,6 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
         SLOT(showTimeMenu(const QPoint&)) );
     simulationTimeLabel->setContextMenuPolicy( Qt::CustomContextMenu );
     simulationTimeLabelRightClickMenu.addAction( QString( "Reset" ), this, SLOT(resetTime()) );
-
 }
 
 void Waveprogram2DPlot::showTimeMenu(const QPoint& p)
@@ -281,9 +284,13 @@ void Waveprogram2DPlot::updateUpdatePeriod(QAction* a)
         timer->start();
 }
 
+#include "parameter_dock_widget.h"
+
 void Waveprogram2DPlot::setUpDockWindows()
 {
-
+    ParameterDockWidget* p = new ParameterDockWidget(this);
+    p->setFloating(true);
+    p->show();
 }
 
 
@@ -334,11 +341,8 @@ void Waveprogram2DPlot::removeTabs()
 
 void Waveprogram2DPlot::setUpTabs()
 {
-    QFont plotFont = QFont( "", 8 );
-    QwtText labelIntensity( "Intensity" );
-    labelIntensity.setFont( plotFont );
-    disconnect( this, SIGNAL( replotTab() ), 0, 0 );
-    disconnect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), 0, 0 );
+//    disconnect( this, SIGNAL( replotTab() ), 0, 0 );
+//    disconnect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), 0, 0 );
     plotViewVector_.clear();
     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
     {

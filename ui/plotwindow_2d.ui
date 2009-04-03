@@ -254,32 +254,10 @@
         </widget>
        </item>
        <item>
-        <widget class="QTabWidget" name="plotTabWidget">
+        <widget class="DetachableTabWidget" name="plotTabWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>-1</number>
          </property>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Tab 1</string>
-          </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QwtPlot" name="oldgraph">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>Tab 2</string>
-          </attribute>
-         </widget>
         </widget>
        </item>
       </layout>
@@ -959,9 +937,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
+   <class>DetachableTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>detachable_tab_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

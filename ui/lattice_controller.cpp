@@ -28,6 +28,7 @@ public:
 };
 
 
+
 /**
  * Legt einen LatticeController zu einem gegebenen Elternobjekt an.
  *
