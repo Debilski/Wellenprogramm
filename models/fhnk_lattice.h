@@ -1159,13 +1159,13 @@ template<> struct Metainfo< FhnKLattice_laplace_extended >::NoiseMapping< second
 //META(FhnLattice, TwoComponentSystem)
 class FhnKLattice_laplace_extended : public SIIP_LatticeIntegrator< FhnKLattice_laplace_extended > {
 public:
-    Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l;
+    Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l, max_distance;
     blitz::Array< bool, 2 > isFhnField;
     FhnKLattice_laplace_extended(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
         SIIP_LatticeIntegrator< FhnKLattice_laplace_extended > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
-                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), isFhnField( latticeSizeX, latticeSizeY )
+                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), max_distance( 2.0, "max_distance" ), isFhnField( latticeSizeX, latticeSizeY )
     {
         modelName_ = "FhnKLattice laplace ex.";
         modelInformation_ = "FHN-K-Modell mit noch größerer Nachbarschaft und Abstandsgewichtung.";
@@ -1184,6 +1184,7 @@ public:
         registerParameter( &beta );
         registerParameter( &gamma );
         registerParameter( &tau_l );
+        registerParameter( &max_distance );
     }
 
     inline double Psi(double x)
@@ -1201,8 +1202,11 @@ public:
 
             double z_sum = 0;
             double sumNeighbours = 0;
-            for (int i = -2; i <= 2; ++i) {
-                for (int j = -2; j <= 2; ++j) {
+
+            int distance_sum = std::ceil( max_distance );
+
+            for (int i = -distance_sum; i <= distance_sum; ++i) {
+                for (int j = -distance_sum; j <= distance_sum; ++j) {
                     int x = indexToX( pos );
                     int y = indexToY( pos );
 
@@ -1211,6 +1215,7 @@ public:
                     // Nehme nur Nicht-Fhn-Stellen mit und schließe sich selbst aus
                     if ( !isFhn( neighbourX, neighbourY ) && !(j == 0 && i == 0) ) {
                         double dist = std::sqrt(i*i + j*j);
+                        if (dist >= max_distance) {continue;}
                         z_sum += lattice[ 2 ]( neighbourX, neighbourY ) / dist;
                         sumNeighbours += 1.0 / dist;
                     }
@@ -1291,15 +1296,17 @@ protected:
     {
         double res = 0;
         double sumNeighbours = 0;
-        for (int i = -2; i <= 2; ++i) {
-            for (int j = -2; j <= 2; ++j) {
+        int distance_sum = std::ceil( max_distance );
+
+        for (int i = -distance_sum; i <= distance_sum; ++i) {
+            for (int j = -distance_sum; j <= distance_sum; ++j) {
                 int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
                 int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
                 // Nehme nur Fhn-Stellen
                 if ( isFhn( neighbourX, neighbourY ) ) {
                     double dist = std::sqrt(i*i + j*j);
                     // Wenn nächster = direkter Nachbar
-
+                        if (dist >= max_distance) {continue;}
                         sumNeighbours += 1.0 / dist;
                         res += Psi( lattice[ 0 ]( neighbourX , neighbourY )) / dist;
 
@@ -1317,8 +1324,10 @@ protected:
     {
         double res = 0;
         double sumNeighbours = 0;
-        for (int i = -1; i <= 1; ++i) {
-            for (int j = -1; j <= 1; ++j) {
+        int distance_sum = std::ceil( max_distance );
+
+        for (int i = -distance_sum; i <= distance_sum; ++i) {
+            for (int j = -distance_sum; j <= distance_sum; ++j) {
 
                 int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
                 int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
@@ -1326,7 +1335,9 @@ protected:
                 if ( !isFhn( neighbourX, neighbourY ) && !(j == 0 && i == 0) ) {
 
                     double dist = std::sqrt(i*i + j*j);
+                    if (dist >= max_distance) {continue;}
                             sumNeighbours += 1.0 / dist;
+                            res += lattice[ 2 ]( neighbourX, neighbourY ) / dist;
 
                 }
             }
