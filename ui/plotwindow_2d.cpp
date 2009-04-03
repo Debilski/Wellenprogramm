@@ -931,13 +931,13 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
 
     latticeController_->lattice()->setDiffusion( 0, 1. );
     latticeController_->lattice()->clear();
+    latticeController_->lattice()->toInitial(0);
+
     if ( parent != 0 ) {
         if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
             parent->statusBar()->clearMessage();
         }
     }
-
-    latticeController_->lattice()->setSpotAtComponent( 10, 10, 2, 2, 0, true );
 
     setUpTabs();
     setUpColorMap();
