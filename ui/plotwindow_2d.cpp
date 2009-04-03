@@ -965,6 +965,10 @@ void Waveprogram2DPlot::killField()
 void Waveprogram2DPlot::loopStart()
 {
     loopruns = true;
+    // Damit während der Schleife nur die Shots ein Update bewirken.
+    // Drinlassen bis zur Auslagerung.
+    disconnect( latticeController_, SIGNAL( changed() ), this, SLOT( replot() ) );
+
     loop();
 }
 
@@ -972,6 +976,7 @@ void Waveprogram2DPlot::loopStop()
 {
     loopruns = false;
     QTimer::singleShot( 10, this, SLOT(replot()));
+    connect( latticeController_, SIGNAL( changed() ), this, SLOT( replot() ) );
 }
 
 void Waveprogram2DPlot::toggleStartStop()
