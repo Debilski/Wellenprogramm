@@ -1,8 +1,7 @@
 #ifndef PLOTWINDOW_2D_H
 #define PLOTWINDOW_2D_H
 
-#include <QtGui>
-#include <QtScript>
+
 
 #include "ui_plotwindow_2d.h"
 
@@ -180,6 +179,9 @@ signals:
 
     void replotAllChildren();
 
+protected:
+    void closeEvent(QCloseEvent * event);
+
 private:
     bool showClusterIds_;
 
@@ -208,10 +210,6 @@ private:
 
     ColorMaps colorMaps_;
 
-protected:
-    void closeEvent(QCloseEvent * event);
-
-private:
     QList< QAction* > actionLatticeModels;
 
     QVector< PlotView* > plotViewVector_;

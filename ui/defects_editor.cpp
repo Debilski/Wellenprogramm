@@ -1,5 +1,7 @@
 #include "defects_editor.h"
 
+#include <QtGui>
+
 DefectsEditor::DefectsEditor(const QList< Defect< GeneralComponentSystem > > &defects, QMap< int,
     QString > &boundaryConditionsIdentifier, QMainWindow * parent) :
       QDialog( parent ), boundaryConditionsIdentifier( boundaryConditionsIdentifier ), defects( defects )

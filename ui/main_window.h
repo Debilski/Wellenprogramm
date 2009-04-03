@@ -2,25 +2,15 @@
 #define MAIN_H
 
 #include "ui_main_window.h"
-#include "plotwindow_2d.h"
 
-#include "tiny_double_edit.h"
+class Waveprogram2DPlot;
 
 class MainWindow : public QMainWindow, private Ui::settingsDLG
 {
     Q_OBJECT
 public:
-    MainWindow(QMainWindow *parent = 0);
-    Waveprogram2DPlot *plotWin_2D;
+    MainWindow(QMainWindow* parent = 0);
     //void closeEvent();
-protected:
-    void closeEvent ( QCloseEvent* event );
-    QMenu* lattice_menu;
-    QMenu* chain_menu;
-private:
-    void readSettings();
-    void writeSettings();
-
 public slots:
     void getPath();
     void openPlot2D();
@@ -30,6 +20,16 @@ public slots:
     void about();
  signals:
     void window_closed();
+
+protected:
+    void closeEvent ( QCloseEvent* event );
+    QMenu* lattice_menu;
+    QMenu* chain_menu;
+private:
+    void readSettings();
+    void writeSettings();
+
+    Waveprogram2DPlot* plotWindow_;
 };
 
 

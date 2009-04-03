@@ -7,6 +7,11 @@
 
 #include "configuration.h"
 
+#include <iostream>
+#include <qdebug.h>
+#include <qsettings.h>
+
+
 Configuration::Configuration()
 {
     QSettings settings;

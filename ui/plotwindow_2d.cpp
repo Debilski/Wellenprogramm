@@ -1,11 +1,14 @@
 // #include <iostream>
+
+#include "plotwindow_2d.h"
+
 #include <fstream>
 #include <cmath>
 
 #include <QtGui>
 #include <QtCore>
-#include "plotwindow_2d.h"
-#include "main_window.h"
+
+#include "plot_layer.h"
 
 #include "spectrogram_data.h"
 
@@ -1122,6 +1125,47 @@ void Waveprogram2DPlot::on_actionSave_as_Png_triggered()
      }
      graph->print(image);
      */
+
+    foreach( PlotView* view, plotViewVector_ ) {
+        static int i=0;
+
+
+        QImage pixmap(600, 600, QImage::Format_ARGB32);
+        pixmap.fill(Qt::white); // Qt::transparent ?
+
+        QwtPlotPrintFilter filter;
+        int options = 0;//= QwtPlotPrintFilter::PrintAll;
+        options &= ~QwtPlotPrintFilter::PrintBackground;
+        options &= ~QwtPlotPrintFilter::PrintFrameWithScales;
+        options &= ~QwtPlotPrintFilter::PrintMargin;
+        options &= ~QwtPlotPrintFilter::PrintTitle;
+        options &= ~QwtPlotPrintFilter::PrintLegend ;
+          options &= ~QwtPlotPrintFilter::PrintGrid;
+
+        filter.setOptions(options);
+
+
+        view->plot_->print(pixmap, filter);
+
+        pixmap.save( fileName + QString( ".%1.new.png" ).arg( i ), "PNG" );
+#if 0
+        QImage image = QImage(
+                    latticeController_->lattice()->latticeSizeX()*10, latticeController_->lattice()->latticeSizeY()*10, QImage::Format_ARGB32 );
+        QwtPlotPrintFilter filter;
+        filter.setOptions(QwtPlotPrintFilter::PrintBackground);
+
+        view->plot_->print(image, filter);
+
+        image.save( fileName + QString( ".%1.new.png" ).arg( i ), "PNG" );
+
+        QSvgGenerator generator;
+        generator.setFileName(fileName + QString( ".%1.new.svg" ).arg( i ));
+        generator.setSize(QSize(800, 600));
+
+        view->plot_->canvas()->->print(generator);
+#endif
+        ++i;
+    }
 
     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component) {
         QImage image = QImage(

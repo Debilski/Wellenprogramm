@@ -8,12 +8,12 @@
 #ifndef CONFIGURATION_H_
 #define CONFIGURATION_H_
 
-#include <QtCore>
+#include <qhash.h>
+#include <qstring.h>
 
 #include <boost/noncopyable.hpp>
 #include <boost/thread/once.hpp>
 
-#include <iostream>
 
 #include "option.h"
 
@@ -49,8 +49,6 @@ boost::once_flag singleton< T >::once_ = BOOST_ONCE_INIT;
 
 class Configuration : /*public QObject, */ public singleton< Configuration > {
 
-    //Q_OBJECT
-
 public:
 
     Configuration();
@@ -70,13 +68,12 @@ public:
     Option& operator()(const QString& name);
     Option option(const QString& name) const;
 
-    QHash< QString, Option > optionList;
-    typedef QHash< QString, Option >::iterator optionListIterator;
-
 public:
     Option emptyOption;
 private:
     Configuration(const Configuration&);
+    QHash< QString, Option > optionList;
+    typedef QHash< QString, Option >::iterator optionListIterator;
 };
 
 #define config Configuration::instance()

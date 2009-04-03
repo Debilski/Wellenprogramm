@@ -11,42 +11,28 @@
 #include <QtCore>
 #include <QtGui>
 
-#include <qwt_plot.h>
-#include <qwt_plot_layout.h>
-#include <qwt_plot_spectrogram.h>
-#include <qwt_color_map.h>
-#include <qwt_scale_widget.h>
-#include <qwt_polygon.h>
 
-#include "lattice_controller.h"
-#include "plot_layer.h"
+#include <qwt_array.h>
+typedef QPointF QwtDoublePoint;
+
+
 #include "color_map_adaptation.h"
+
+class PlotLayer;
+
+class QwtPlot;
+class QwtScaleWidget;
+class QwtPlotSpectrogram;
+class QwtColorMap;
+class QwtDoubleInterval;
 
 class PlotStack {
 public:
     QList< PlotLayer* > plotStack_;
-    void attach(QwtPlot* plot)
-    {
-        foreach( PlotLayer* p, plotStack_ )
-            {
-                p->attach( plot );
-            }
-    }
-    void append(PlotLayer* pL)
-    {
-        plotStack_.append( pL );
-    }
-    void adaptRange()
-    {
-        foreach( PlotLayer* p, plotStack_ )
-            {
-                p->adaptRange();
-            }
-    }
-    QwtDoubleInterval range() const
-    {
-        return plotStack_.first()->range();
-    }
+    void attach(QwtPlot* plot);
+    void append(PlotLayer* pL);
+    void adaptRange();
+    QwtDoubleInterval range() const;
 };
 
 /**
@@ -55,21 +41,17 @@ public:
 class PlotView : public QWidget {
 Q_OBJECT
 public:
+    PlotView(const PlotStack& plotStack, const QString label, QWidget* parent);
+    ~PlotView();
+
     PlotStack plotStack_;
 
-    //QwtLinearColorMap* colorMap_;
-    //QwtAlphaColorMap* colorMapAlpha_;
     QwtPlot* plot_;
     QwtScaleWidget* rightAxis;
 
-    PlotView(const PlotStack& plotStack, const QString label, QWidget* parent);
-
     QMenu rightClickMenu;
-    ~PlotView();
-    QwtPlotSpectrogram* firstSpectrogram()
-    {
-        return plotStack_.plotStack_.first()->spectrogram();
-    }
+
+    QwtPlotSpectrogram* firstSpectrogram();
 
 public slots:
     void replot(int);
@@ -80,8 +62,8 @@ public slots:
     void showMenu(const QPoint& p);
     void changeTop();
     void changeBottom();
-    void registerMouseEvent(const QwtDoublePoint &pos);
-    void registerMouseEvent(const QwtArray< QwtDoublePoint > &pa);
+    void registerMouseEvent(const QwtDoublePoint& pos);
+    void registerMouseEvent(const QwtArray< QwtDoublePoint >& pa);
 signals:
     void selected(const uint&, const QPointF&);
 

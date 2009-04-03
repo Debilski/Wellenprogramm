@@ -5,31 +5,28 @@
  *      Author: rikebs
  */
 
+#include <memory>
+
 #include "lattice_controller.h"
 
-/**
- * Liefert einen Zeiger auf die aktuelle Lattice zurück.
- */
-const LatticeInterface* LatticeController::lattice() const
-{
-    return lattice_.get();
-}
+#include "lattice_interface.h"
+#include "lattice_scripter.h"
+#include "plugin_kernel.h"
+#include "configuration.h"
 
-/**
- * Liefert einen Zeiger auf die aktuelle Lattice zurück.
- */
-LatticeInterface* LatticeController::lattice()
-{
-    return lattice_.get();
-}
 
-/**
- * Prüft, ob eine aktuelle Lattice initialisiert ist.
- */
-bool LatticeController::isValid()
-{
-    return lattice_.get() != 0;
-}
+class LatticeController::PrivateData {
+public:
+    PrivateData() :
+        lattice(0), stepsAtOnce(1)
+    {}
+    typedef std::auto_ptr<LatticeInterface> LatticePtr;
+    std::auto_ptr<LatticeInterface> lattice;
+    PluginKernel TheKernel;
+    LatticeScripter* latticeScripter;
+    int stepsAtOnce;
+};
+
 
 /**
  * Legt einen LatticeController zu einem gegebenen Elternobjekt an.
@@ -37,8 +34,10 @@ bool LatticeController::isValid()
  * Das Elternobjekt sorgt gegebenenfalls für das Zerstören des Controllers.
  */
 LatticeController::LatticeController(QObject* parent)
-: QObject(parent), lattice_( 0 ), stepsAtOnce_( 1 )
+: QObject(parent)
 {
+    d_data = new PrivateData;
+
     // Load Libraries
     QStringList filters;
 
@@ -57,16 +56,41 @@ LatticeController::LatticeController(QObject* parent)
 
     foreach (const QFileInfo &libInfo, libs) {
             std::cout << "Found library: " << qPrintable(libInfo.filePath()) << std::endl;
-            TheKernel.loadPlugin(libInfo.filePath().toStdString());
+            d_data->TheKernel.loadPlugin(libInfo.filePath().toStdString());
     }
 
-    latticeScripter_ = new LatticeScripter( this );
+    d_data->latticeScripter = new LatticeScripter( this );
 }
 
 LatticeController::~LatticeController()
 {
-
+    delete d_data;
 }
+
+/**
+ * Liefert einen Zeiger auf die aktuelle Lattice zurück.
+ */
+const LatticeInterface* LatticeController::lattice() const
+{
+    return d_data->lattice.get();
+}
+
+/**
+ * Liefert einen Zeiger auf die aktuelle Lattice zurück.
+ */
+LatticeInterface* LatticeController::lattice()
+{
+    return d_data->lattice.get();
+}
+
+/**
+ * Prüft, ob eine aktuelle Lattice initialisiert ist.
+ */
+bool LatticeController::isValid()
+{
+    return d_data->lattice.get() != 0;
+}
+
 
 /**
  * Lädt eine neue Lattice aus einem Plugin und initialisiert sie mit der angegebenen Größe.
@@ -80,7 +104,7 @@ bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int 
     int n = 0;
     bool modelExists = false;
 
-    LatticeServer& LS = TheKernel.getLatticeServer();
+    LatticeServer& LS = d_data->TheKernel.getLatticeServer();
     for(size_t i=0; i<LS.getDriverCount(); ++i) {
         std::string s = LS.getDriver(i).getName();
         std::cout << s.c_str() << std::endl;
@@ -90,7 +114,7 @@ bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int 
         }
     }
 
-    lattice_ = TheKernel.getLatticeServer().getDriver(n).createRenderer( sizeX, sizeY, latticeSizeX, latticeSizeY );
+    d_data->lattice = d_data->TheKernel.getLatticeServer().getDriver(n).createRenderer( sizeX, sizeY, latticeSizeX, latticeSizeY );
     return modelExists;
 }
 
@@ -99,7 +123,7 @@ bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int 
  */
 void LatticeController::destroy()
 {
-    lattice_.reset(0);
+    d_data->lattice.reset(0);
 }
 
 
@@ -108,7 +132,7 @@ void LatticeController::destroy()
  */
 void LatticeController::stepOnce()
 {
-    lattice_.get()->step();
+    d_data->lattice.get()->step();
     emit changed();
 }
 
@@ -141,7 +165,7 @@ void LatticeController::stopLoop()
 std::list<std::string> LatticeController::getModelNames() {
     std::list<std::string> names;
 
-    LatticeServer& LS = TheKernel.getLatticeServer();
+    LatticeServer& LS = d_data->TheKernel.getLatticeServer();
     for (size_t DriverIndex = 0; DriverIndex < LS.getDriverCount(); ++DriverIndex) {
         names.push_back( LS.getDriver( DriverIndex ).getName() );
     }
@@ -149,12 +173,12 @@ std::list<std::string> LatticeController::getModelNames() {
 }
 
 void LatticeController::stepMany() {
-    stepNum( stepsAtOnce_ );
+    stepNum( d_data->stepsAtOnce );
     emit changed();
 }
 
 void LatticeController::stepNum(int n) {
-    lattice_.get()->step(n);
+    d_data->lattice.get()->step(n);
     emit changed();
 }
 
@@ -164,17 +188,24 @@ void LatticeController::loop() {
 
 LatticeScripter* const LatticeController::getLatticeScripter() const
 {
-    return latticeScripter_;
+    return d_data->latticeScripter;
 }
 
 void LatticeController::setToFixpoint(uint component, const QPointF& realPoint, uint size)
 {
-    lattice_.get()->setSpotAtComponent(realPoint.x(), realPoint.y(), size, 0, component, true);
+    d_data->lattice.get()->setSpotAtComponent(realPoint.x(), realPoint.y(), size, 0, component, true);
     emit changed();
 }
 
 void LatticeController::setComponentAt(uint component, const QPointF& realPoint, uint size, double value)
 {
-    lattice_.get()->setSpotAtComponent(realPoint.x(), realPoint.y(), size, value, component, true);
+    d_data->lattice.get()->setSpotAtComponent(realPoint.x(), realPoint.y(), size, value, component, true);
     emit changed();
 }
+
+
+int LatticeController::sizeX() { return d_data->lattice->sizeX(); }
+int LatticeController::sizeY() { return d_data->lattice->sizeY(); }
+int LatticeController::latticeSizeX() { return d_data->lattice->latticeSizeX(); }
+int LatticeController::latticeSizeY() { return d_data->lattice->latticeSizeY(); }
+

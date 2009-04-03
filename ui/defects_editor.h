@@ -1,10 +1,14 @@
 #ifndef DEFECTS_EDITOR_H
 #define DEFECTS_EDITOR_H
 
-#include <QtGui>
 #include "ui_defects_editor.h"
 
-#include "rds_lattice.h"
+#include <QtCore>
+#include <qitemdelegate.h>
+
+#include "lattice_interface.h"
+
+class QMainWindow;
 
 class DefectsModel : public QAbstractTableModel {
 Q_OBJECT
@@ -31,7 +35,7 @@ class DefectsEditor : public QDialog, private Ui::defectsEditor {
 Q_OBJECT
 public:
   DefectsEditor(const QList< Defect< GeneralComponentSystem > > &defects,
-      QMap< int, QString > &boundaryConditionsIdentifier, QMainWindow * parent = 0);
+      QMap< int, QString > &boundaryConditionsIdentifier, QMainWindow* parent = 0);
   ~DefectsEditor();
 
   QMap< int, QString > boundaryConditionsIdentifier;

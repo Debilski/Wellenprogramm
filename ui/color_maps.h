@@ -13,7 +13,7 @@
 #include "qwt_color_map.h"
 
 
-class QWT_EXPORT LinearTransparentColorMap: public QwtColorMap
+class LinearTransparentColorMap: public QwtColorMap
 {
 public:
     /*!
@@ -82,7 +82,6 @@ public:
         switch (colorMapType) {
             case greyColorMap:
                 colorMap = QwtLinearColorMap( Qt::black, Qt::white );
-                qDebug() << "grey";
                 break;
             case jetColorMap:
                 double pos;

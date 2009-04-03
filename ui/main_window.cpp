@@ -1,6 +1,10 @@
-#include <QtGui>
 #include "main_window.h"
 
+#include <QtGui>
+
+#include "plotwindow_2d.h"
+
+#include "tiny_double_edit.h"
 
 // if we include <QtGui> there is no need to include every class used: <QString>, <QFileDialog>,...
 
@@ -120,18 +124,18 @@ void MainWindow::getPath()
 
 void MainWindow::openPlot2D()
 {
-  plotWin_2D = new Waveprogram2DPlot(this);
+  plotWindow_ = new Waveprogram2DPlot(this);
 }
 
 void MainWindow::openPlot2D(int realSize, int latticeSize)
 {
-  plotWin_2D = new Waveprogram2DPlot(this, realSize, latticeSize);
+  plotWindow_ = new Waveprogram2DPlot(this, realSize, latticeSize);
 }
 
 void MainWindow::openPlot2D(QAction * act)
 {
   QVariant qv = act->data();
-  plotWin_2D = new Waveprogram2DPlot(this, qv.toList().at(0).toInt(), qv.toList().at(1).toInt());
+  plotWindow_ = new Waveprogram2DPlot(this, qv.toList().at(0).toInt(), qv.toList().at(1).toInt());
 }
 
 

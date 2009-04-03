@@ -9,13 +9,9 @@
 #define LATTICE_CONTROLLER_H_
 
 #include <QtCore>
-#include <memory>
 
-#include "lattice_interface.h"
-#include "lattice_scripter.h"
-#include "plugin_kernel.h"
-#include "configuration.h"
-
+class LatticeInterface;
+class LatticeScripter;
 
 /**
  * Introspektionsfähige Abstraktion des Lattice-Objekts.
@@ -44,10 +40,10 @@ public:
     const LatticeInterface* lattice() const;
     LatticeInterface* lattice();
 
-    int sizeX() { return lattice_->sizeX(); }
-    int sizeY() { return lattice_->sizeY(); }
-    int latticeSizeX() { return lattice_->latticeSizeX(); }
-    int latticeSizeY() { return lattice_->latticeSizeY(); }
+    int sizeX();
+    int sizeY();
+    int latticeSizeX();
+    int latticeSizeY();
 
     bool isValid();
     bool load(const std::string& name, int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
@@ -77,11 +73,11 @@ signals:
     void changed();
 private:
     void loop();
-    typedef std::auto_ptr<LatticeInterface> LatticePtr;
-    std::auto_ptr<LatticeInterface> lattice_;
-    PluginKernel TheKernel;
-    LatticeScripter* latticeScripter_;
-    int stepsAtOnce_;
+
+    class PrivateData;
+    PrivateData* d_data;
 };
+
+
 
 #endif /* LATTICE_CONTROLLER_H_ */

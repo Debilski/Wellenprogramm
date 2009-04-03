@@ -10,65 +10,39 @@
 
 #include <QtCore>
 
-#include <qwt_plot.h>
-#include <qwt_plot_spectrogram.h>
-#include <qwt_color_map.h>
-
-#include "lattice_controller.h"
-
 #include "color_map_adaptation.h"
 
-class PlotLayer : public QObject{
-    Q_OBJECT
+class QwtPlot;
+class QwtPlotSpectrogram;
+class QwtColorMap;
+
+class LatticeController;
+
+class PlotLayer : public QObject {
+Q_OBJECT
 public:
     uint component;
 
-    void attach(QwtPlot* plot)
-    {
-        spectrogram_->attach( plot );
-    }
-    PlotLayer(LatticeController* latticeController) :
-        latticeController_( latticeController )
-    {
-        spectrogram_ = new QwtPlotSpectrogram();
-        adaptationMode_ = new DefaultColorMapAdaptationMode();
-    }
-    ~PlotLayer()
-    {
-        delete adaptationMode_;
-        delete spectrogram_;
-    }
-    void adaptRange()
-    {
-        adaptationMode_->adaptRange(
-            latticeController_->lattice()->getMin( component ),
-            latticeController_->lattice()->getMax( component ) );
-    }
+    PlotLayer(LatticeController* latticeController);
+    ~PlotLayer();
 
-    void setAdaptationMode(const ColorMapAdaptationMode& mode)
-    {
-        delete adaptationMode_;
-        adaptationMode_ = mode.copy();
-    }
-    QwtDoubleInterval range() const
-    {
-        return adaptationMode_->range();
-    }
+    void attach(QwtPlot* plot);
 
-    QwtPlotSpectrogram* spectrogram() const
-    {
-        return spectrogram_;
-    }
+    void adaptRange();
+
+    void setAdaptationMode(const ColorMapAdaptationMode& mode);
+
+    QwtDoubleInterval range() const;
+
+    QwtPlotSpectrogram* spectrogram() const;
 public slots:
     void setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes mode);
     void setColorMapMode(ColorMapAdaptationModes mode);
     void setColorMap(const QwtColorMap& colorMap);
 
 private:
-    LatticeController* latticeController_;
-    QwtPlotSpectrogram* spectrogram_;
-    ColorMapAdaptationMode* adaptationMode_;
+    class PrivateData;
+    PrivateData* d_data;
 };
-
 
 #endif /* PLOT_LAYER_H_ */
