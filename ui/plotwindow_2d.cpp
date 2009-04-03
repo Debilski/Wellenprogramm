@@ -1176,7 +1176,7 @@ void Waveprogram2DPlot::saveViews(const QString& name)
 
 void Waveprogram2DPlot::saveViews(const QString& name, uint num)
 {
-    QImage pixmap( 600, 600, QImage::Format_ARGB32 );
+    QImage pixmap( 645, 600, QImage::Format_ARGB32 );
     pixmap.fill( Qt::white ); // Qt::transparent ?
 
     QwtPlotPrintFilter filter;
