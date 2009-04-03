@@ -72,6 +72,8 @@ public:
     void loop();
     QTimer *timer;
 
+    void setUpDockWindows();
+
     void setUpActions();
     void setUpColorMap();
     void removeTabs();
@@ -95,14 +97,14 @@ public slots:
     void updateLabels();
 
     void on_clearButton_clicked();
-    void on_noiseBox_valueChanged(double d);
+    void on_noiseSpinBox_valueChanged(double d);
 
     void on_boundaryConditionsComboBox_currentIndexChanged(int i);
 
     void adaptationModeCheckBox_clicked(bool b);
 
-    void on_noise_correlationValue_valueChanged(int d);
-    void on_timestepValue_valueChanged(double d);
+    void on_correlationSpinBox_valueChanged(int d);
+    void on_timestepSpinBox_valueChanged(double d);
 
     void on_midpoint_sizeValue_valueChanged(double d);
 

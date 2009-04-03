@@ -51,7 +51,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     setupUi( this ); // this sets up GUI
 
     // setAttribute( Qt::WA_DeleteOnClose );
-    sliceWidget->setVisible( false );
+//    sliceWidget->setVisible( false );
 
     //    setAttribute( Qt::WA_MacMetalStyle );
     setTitle();
@@ -89,8 +89,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     boundaryConditionsComboBox->setCurrentIndex( latticeController_->lattice()->boundaryCondition() );
 
-    noise_correlationValue->setValue( latticeController_->lattice()->noiseCorrelation() );
-    timestepValue->setValue( latticeController_->lattice()->timeStep() );
+    correlationSpinBox->setValue( latticeController_->lattice()->noiseCorrelation() );
+    timestepSpinBox->setValue( latticeController_->lattice()->timeStep() );
 
     midpoint_sizeValue->setValue( 0 );
 
@@ -281,8 +281,15 @@ void Waveprogram2DPlot::updateUpdatePeriod(QAction* a)
         timer->start();
 }
 
+void Waveprogram2DPlot::setUpDockWindows()
+{
+
+}
+
+
 void Waveprogram2DPlot::setUpSlices()
 {
+    /*
     for (uint i = 0; i < slice.size(); ++i)
         slice[ i ] ->detach();
     slice.resize( latticeController_->lattice()->numberOfVariables() );
@@ -294,6 +301,7 @@ void Waveprogram2DPlot::setUpSlices()
         slice[ component ]->attach( slicePlot );
 
     }
+    */
 }
 
 void Waveprogram2DPlot::setUpColorMap()
@@ -664,17 +672,17 @@ void Waveprogram2DPlot::on_boundaryConditionsComboBox_currentIndexChanged(int i)
         latticeController_->lattice()->setBoundaryCondition( NoFluxBoundary );
 }
 
-void Waveprogram2DPlot::on_noiseBox_valueChanged(double d)
+void Waveprogram2DPlot::on_noiseSpinBox_valueChanged(double d)
 {
     latticeController_->lattice()->setNoiseIntensity( d );
 }
 
-void Waveprogram2DPlot::on_noise_correlationValue_valueChanged(int d)
+void Waveprogram2DPlot::on_correlationSpinBox_valueChanged(int d)
 {
     latticeController_->lattice()->setNoiseCorrelation( d );
 }
 
-void Waveprogram2DPlot::on_timestepValue_valueChanged(double d)
+void Waveprogram2DPlot::on_timestepSpinBox_valueChanged(double d)
 {
     latticeController_->lattice()->setTimeStep( d );
 }
@@ -885,6 +893,7 @@ void Waveprogram2DPlot::replot()
      }
      */
 
+    /*
     if ( slicePlot->isVisible() ) {
         QVector< double > sliceData[ latticeController_->lattice()->numberOfVariables() ];
         QVector< double > sliceLatticePoints;
@@ -904,6 +913,8 @@ void Waveprogram2DPlot::replot()
             }
         slicePlot->replot();
     }
+
+*/
 
     //phase->replot();
     waveSizeLabel->setNum( latticeController_->lattice()->currentWavesize() );
@@ -1586,7 +1597,7 @@ void Waveprogram2DPlot::on_actionAbout_triggered()
 
 void Waveprogram2DPlot::on_actionShow_Slice_triggered(bool b)
 {
-    sliceWidget->setVisible( b );
+//    sliceWidget->setVisible( b );
 }
 
 void Waveprogram2DPlot::readSettings()
