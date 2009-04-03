@@ -104,7 +104,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
      d_curvature_spectrogram->setContourLevels(contourLevels);
      */
 
-    updatePeriodTime_ = 25;
+    updatePeriodTime_ = 100;
     setUpUpdatePeriodMenu();
     defectsEditor = 0;
 
@@ -257,7 +257,7 @@ void Waveprogram2DPlot::setUpUpdatePeriodMenu()
     updatePeriodGroup->addAction( action25_ms );
     updatePeriodGroup->addAction( action500_ms );
     updatePeriodGroup->addAction( action5_s );
-    action25_ms->setChecked( true );
+    action100_ms->setChecked( true );
     connect(
         updatePeriodGroup, SIGNAL( triggered( QAction* ) ), this,
         SLOT( updateUpdatePeriod( QAction* ) ) );

@@ -2,7 +2,6 @@
 #define PLOTWINDOW_2D_H
 
 
-
 #include "ui_plotwindow_2d.h"
 
 #include <memory>
