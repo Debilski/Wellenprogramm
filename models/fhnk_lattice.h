@@ -925,8 +925,11 @@ public:
             double sumNeighbours = 0;
             for (int i = -1; i <= 1; ++i) {
                 for (int j = -1; j <= 1; ++j) {
-                    int neighbourX = indexToX( pos ) + i;
-                    int neighbourY = indexToY( pos ) + j;
+                    int x = indexToX( pos );
+                    int y = indexToY( pos );
+
+                    int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
+                    int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
                     // Nehme nur Nicht-Fhn-Stellen mit und schließe sich selbst aus
                     if ( !isFhn( neighbourX, neighbourY ) && !(j == 0 && i == 0) ) {
                         // direkte Nachbarn
@@ -995,17 +998,18 @@ protected:
                     diffMatrix( x, y ) = 0;
                     continue;
                 }
-                if ( x == 0 || x == (Base::latticeSizeX() - 1) || y == 0 || y
-                    == (Base::latticeSizeY() - 1) )
+
+                if ( ( ! Base::boundaryCondition_ == PeriodicBoundary ) &&
+
+                ( x == 0 || x == (Base::latticeSizeX() - 1) || y == 0 || y
+                    == (Base::latticeSizeY() - 1) ) )
                 {
-                    if ( Base::boundaryCondition_ == PeriodicBoundary ) {
-                        diffMatrix( x, y ) += (nb1_periodic( x, y ) + nb2_periodic( x, y ) - beta()
-                            * lattice[ 2 ]( x, y )) * scaleFactor;
-                    }
-                } else {
+                    continue;
+                }
+
                     diffMatrix( x, y ) += (nb1_periodic( x, y ) + nb2_periodic( x, y ) - beta()
                         * lattice[ 2 ]( x, y )) * scaleFactor;
-                }
+
             }
         }
         Base::lattice[ 2 ] += diffMatrix;
@@ -1017,10 +1021,10 @@ protected:
         double sumNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
+                int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
+                int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
                 // Nehme nur Fhn-Stellen
-                if ( isFhn( x + i, y + j ) ) {
-                    int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
-                    int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
+                if ( isFhn( neighbourX, neighbourY ) ) {
                     // Wenn nächster = direkter Nachbar
                     if ( i * j == 0 ) {
                         sumNeighbours += 1.0;
@@ -1047,11 +1051,12 @@ protected:
         double sumNeighbours = 0;
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
+
+                int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
+                int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
                 // Nehme nur Nicht-Fhn-Stellen mit und schließe sich selbst aus
-                if ( !isFhn( x + i, y + j ) && !(j == 0 && i == 0) ) {
+                if ( !isFhn( neighbourX, neighbourY ) && !(j == 0 && i == 0) ) {
                     {
-                        int neighbourX = Base::indexToX( Base::indexPeriodic( x + i, y + j ) );
-                        int neighbourY = Base::indexToY( Base::indexPeriodic( x + i, y + j ) );
                         // Wenn nächster = direkter Nachbar
                         if ( i * j == 0 ) {
                             sumNeighbours += 1.0;
@@ -1078,28 +1083,42 @@ protected:
     void toInitial(int number)
     {
         isFhnField = false;
+        for (int i = 2; i < latticeSizeX() - 3; ++i) {
+            for (int j = 2; j < latticeSizeY() - 3; ++j) {
+                if ( number == 1 ) {
+                    isFhnField( i, j ) = (i % 2 == 0 && j % 2 == 0);
+                }
+            }
+        }
+        for (int i = 0; i < latticeSizeX(); ++i) {
+            for (int j = 0; j < latticeSizeY(); ++j) {
+                if ( number == 5 ) {
+                    isFhnField( i, j ) = (i % 2 == 0 && j % 2 == 0);
+                }
+            }
+        }
         for (int i = 5; i < latticeSizeX() - 6; ++i) {
             for (int j = 5; j < latticeSizeY() - 6; ++j) {
 
                 if ( number == 0 ) {
                     isFhnField( i, j ) = (i % 2 == 0 && j % 2 == 0);
                 }
-
-                if ( number == 1 ) {
+                if ( number == 2 ) {
                     isFhnField( i, j ) = (rand() % 4 == 0);
                 }
 
-                if ( number == 2 ) {
+                if ( number == 3 ) {
                     isFhnField( i, j ) = (i % 3 == 0 && j % 3 == 0);
                 }
 
-                if ( number == 3 ) {
+                if ( number == 4 ) {
                     isFhnField( i, j ) = (i % 3 != 0 && j % 3 != 0);
                 }
 
             }
         }
     }
+
 
     /**
      * Gibt aus, ob das System an dieser Stelle ein FHN ist oder nicht
