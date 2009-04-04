@@ -25,6 +25,7 @@ class QwtScaleWidget;
 class QwtPlotSpectrogram;
 class QwtColorMap;
 class QwtDoubleInterval;
+class QwtPlotItem;
 
 class PlotStack {
 public:
@@ -54,6 +55,12 @@ public:
     QwtPlotSpectrogram* firstSpectrogram();
 
 public slots:
+    void attachItem(QwtPlotItem*);
+    void attachItems(QList<QwtPlotItem*>);
+
+    void removeItem(QwtPlotItem*);
+    void removeItems(QList<QwtPlotItem*>);
+
     void replot(int);
     void replot();
     void setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes mode);

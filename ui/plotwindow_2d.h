@@ -163,7 +163,6 @@ public slots:
     void on_parameterSetsSave_clicked();
     void on_parameterSetsDelete_clicked();
 
-    void showTimeMenu(const QPoint& p);
     void resetTime();
     void paint(const uint& component, const QPointF& point) ;
 
@@ -267,8 +266,6 @@ private:
 
     void readParameterSets();
     void writeParameterSets();
-
-    QMenu simulationTimeLabelRightClickMenu;
 };
 
 #endif

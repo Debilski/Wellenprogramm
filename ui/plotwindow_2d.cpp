@@ -135,17 +135,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     readSettings();
 
-    // Könnte man in extra Klasse auslagern.
-    connect(
-        simulationTimeLabel, SIGNAL( customContextMenuRequested(const QPoint&) ), this,
-        SLOT(showTimeMenu(const QPoint&)) );
-    simulationTimeLabel->setContextMenuPolicy( Qt::CustomContextMenu );
-    simulationTimeLabelRightClickMenu.addAction( QString( "Reset" ), this, SLOT(resetTime()) );
-}
+    connect( simulationTimeLabel, SIGNAL( reset() ), this, SLOT( resetTime()) );
 
-void Waveprogram2DPlot::showTimeMenu(const QPoint& p)
-{
-    simulationTimeLabelRightClickMenu.popup( simulationTimeLabel->mapToGlobal( p ) );
 }
 
 void Waveprogram2DPlot::resetTime()
@@ -718,6 +709,7 @@ void Waveprogram2DPlot::on_midpoint_sizeValue_valueChanged(double d)
     // statusBar()->showMessage( text );
 }
 
+
 void Waveprogram2DPlot::replot()
 {
 
@@ -814,11 +806,12 @@ void Waveprogram2DPlot::replot()
         typedef QList< QPair< SurfacePoint, double > > T_listPairs;
         typedef QPair< SurfacePoint, double > T_pair;
 
-        // Entfernt alles, was älter als tdiff=5 ist
+        // Entfernt alles, was älter als tdiff ist
+        const int tdiff = 5;
         for (T_bufferMap::Iterator i = temporaryBufferMap.begin(); i != temporaryBufferMap.end(); ++i)
         {
             for (T_listPairs::Iterator j = (*i).begin(); j != (*i).end(); ++j) {
-                if ( (*j).second < latticeController_->lattice()->time() - 5 ) {
+                if ( (*j).second < latticeController_->lattice()->time() - tdiff ) {
                     (*i).erase( j );
                 }
             }

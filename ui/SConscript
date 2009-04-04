@@ -5,44 +5,26 @@ import sys
 
 
 Import("env", 'target_bin_dir')
-#env.Append(QTDIR = '/usr/include/q')
-
-#env['CPPPATH'] += ['#/src']
-
 
 def takebasename(file) : return os.path.splitext(os.path.basename(file))[0]
 
-resources = [ env.Qrc(qrc, QT4_QRCFLAGS='-name '+takebasename(qrc))
-            for qrc in glob.glob('../../../ui/*.qrc')]
-interfaces = [env.Uic4(uic)
-            for uic in glob.glob('../../../ui/*.ui')]
+resources = [env.Qrc(qrc, QT4_QRCFLAGS='-name '+takebasename(qrc)) for qrc in Glob('*.qrc')]
+interfaces = [env.Uic4(uic) for uic in Glob('*.ui')]
 
-#env.Program('application', ['main.cpp', 'mainwindow.cpp', 'latticewindow.cpp']+resources, LIBS=env["LIBS"]+["fhnmodel2b", "fhnlatticeb"])
-
-#env.Program('maintest', ['main.cpp'])
+env.Append( CPPPATH = "extensions" )
 
 if not sys.platform=="darwin" :
     env.Append( LINKFLAGS = "-Wl,--export-dynamic" )
     env.Append( LINKFLAGS = Split('-z origin') )
     env.Append( RPATH = env.Literal(os.path.join('\\$$ORIGIN', 'lib')))
 
-plotFiles = [
-	'plot.cpp',
-	'main_window.cpp',
-	'plotwindow_2d.cpp',
-	'defects_editor.cpp',
-	'script_editor.cpp',
-	'tiny_double_edit.cpp',
-	'option.cpp',
-	'configuration.cpp'
-	]
-
-plotFile = [f for f in Glob('*.cpp') if not str(f).startswith("moc_")]
-print plotFile
-
 if not sys.platform=="darwin" :
     linkflags = "-static-libgcc -ldl -Wl -lstdc++ -Wl,--export-dynamic "
 else:
     linkflags = ""#-static-libgcc -ldl -Wl -lstdc++ "
+
+plotFile = [f for f in Glob('*.cpp') if not str(f).startswith("moc_")] + \
+        [f for f in Glob('extensions/*.cpp') if not str(f).startswith("moc_")]
+
 
 env.Program('plot', plotFile, LIBS=["plugin"]+env["LIBS"], LINKFLAGS = linkflags)#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")

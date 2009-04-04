@@ -213,6 +213,33 @@ void PlotView::changeBottom()
     }
 }
 
+void PlotView::attachItem(QwtPlotItem* item)
+{
+    item->attach( plot_ );
+}
+
+void PlotView::attachItems(QList<QwtPlotItem*> itemList)
+{
+    foreach( QwtPlotItem* item, itemList ) {
+        attachItem(item);
+    }
+}
+
+void PlotView::removeItem(QwtPlotItem* item)
+{
+    if ( plot_->itemList().contains( item ) ) {
+        item->detach();
+    }
+}
+
+void PlotView::removeItems(QList<QwtPlotItem*> itemList)
+{
+    foreach( QwtPlotItem* item, itemList ) {
+            removeItem(item);
+        }
+}
+
+
 QwtPlotSpectrogram* PlotView::firstSpectrogram()
 {
     return plotStack_.plotStack_.first()->spectrogram();

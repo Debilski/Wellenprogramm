@@ -132,7 +132,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="simulationTimeLabel">
+           <widget class="ResetableLabel" name="simulationTimeLabel">
             <property name="minimumSize">
              <size>
               <width>60</width>
@@ -941,6 +941,11 @@
    <extends>QTabWidget</extends>
    <header>detachable_tab_widget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ResetableLabel</class>
+   <extends>QLabel</extends>
+   <header>resetable_label.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
