@@ -58,6 +58,7 @@ public slots:
 
     void replot(int);
     void replot();
+    void replot(bool force);
 
     void setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes mode);
     void setColorMap(const QwtColorMap& colorMap);

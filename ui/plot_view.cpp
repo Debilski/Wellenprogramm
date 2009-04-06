@@ -169,12 +169,17 @@ PlotView::~PlotView()
 
 void PlotView::replot(int)
 {
-    replot();
+    replot(false);
 }
 
 void PlotView::replot()
 {
-    if ( isVisible() ) {
+    replot(false);
+}
+
+void PlotView::replot(bool force)
+{
+    if ( isVisible() || force) {
 
         d_data->plotStack.adaptRange();
 
@@ -219,6 +224,8 @@ void PlotView::setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes 
 
 void PlotView::print(QImage& image, bool raw, bool resize )
 {
+    // Replot, damit das Bild auf aktuelle Farben eingestellt wird.
+    replot(true);
     image.fill( Qt::white ); // Qt::transparent ?
 
     QwtPlotPrintFilter filter;
@@ -237,7 +244,9 @@ void PlotView::print(QImage& image, bool raw, bool resize )
     int margin = d_data->plot->margin();
     for (int i = 0; i < QwtPlot::axisCnt; ++i) {
         oldAxes[ i ] = d_data->plot->axisEnabled( i );
+        if ( raw ) {
         d_data->plot->enableAxis( i, false );
+        }
     }
     if ( raw ) {
         d_data->plot->setCanvasLineWidth( 0 );
