@@ -20,24 +20,23 @@
     name_(o.name_), value_(o.value_), defaultValue_(o.defaultValue_), commandLineStrings_(o.commandLineStrings_),
     settingsKey_(o.settingsKey_), saveToConfig_(o.saveToConfig_), changedByUser_(o.changedByUser_)
     {
-        qDebug() << "Attempt to copy from" << o.name_ << o.value_;
     }
+
     Option::Option() :
         name_(), defaultValue_(), settingsKey_(), saveToConfig_( false ), changedByUser_( false )
     {
-        qDebug() << "Created empty Option";
     }
+
     Option::Option(const QString& name, QVariant defaultValue) :
         name_( name ), defaultValue_( defaultValue ), saveToConfig_( false ),
             changedByUser_( false )
     {
-        qDebug() << "Created Option" << name;
     }
+
     Option::Option(const QString& name, QVariant defaultValue, const QString& settingsKey) :
         name_( name ), defaultValue_( defaultValue ), settingsKey_( settingsKey ), saveToConfig_(
             true ), changedByUser_( false )
     {
-        qDebug() << "Created Option" << name;
     }
 
     const QString& Option::name() const
@@ -80,7 +79,7 @@ QString Option::toString() const
 
 bool Option::readCommandLine()
 {
-    qDebug() << "read Command Line" << name_;
+    // qDebug() << "read Command Line" << name_;
     if ( commandLineStrings_.isEmpty() )
         return false;
 
@@ -103,14 +102,14 @@ bool Option::readCommandLine()
 
 
     value_ = filteredArgumentsList;
-    qDebug() << value_ << value_.isValid();
+    //qDebug() << value_ << value_.isValid();
 
     return true;
 }
 
 bool Option::readQSettings()
 {
-    qDebug() << "read QSettings" << name_;
+    //qDebug() << "read QSettings" << name_;
     if ( !settingsKey_.isEmpty() ) {
             QSettings settings;
             value_ = settings.value( settingsKey_, defaultValue_ );
@@ -123,29 +122,21 @@ void Option::read()
 {
 
     if ( readCommandLine() ) {
-        qDebug() << "Value" << name_ << value_ << defaultValue_;
         return;
     }
-
 
     if (readQSettings() )
         return;
 
-    qDebug() << "Value" << name_ << value_ << defaultValue_;
     // Fallback
     value_ = defaultValue_;
-
-    qDebug() << "Value" << name_ << value_ << defaultValue_;
 }
 
 void Option::write()
 {
     if ( !(saveToConfig_ && changedByUser_) ) {
-
-        qDebug() << "Do not write value" << settingsKey_ << value_ << saveToConfig_ << changedByUser_;
         return;
     }
-    qDebug() << "Write value" << settingsKey_ << value_;
     QSettings settings;
     settings.setValue( settingsKey_, value_ );
 

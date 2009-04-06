@@ -33,7 +33,7 @@ public:
                 *this );
         }
         catch (std::runtime_error e) {
-            std::cout << e.what() << "\n" << "Ignoring " << sFilename.c_str() << " due to error.\n";
+            std::cout << e.what() << " \n" << "Ignoring.\n";
         }
     }
 

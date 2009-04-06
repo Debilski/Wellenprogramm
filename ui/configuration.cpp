@@ -36,7 +36,7 @@ Configuration::Configuration()
 Option& Configuration::operator()(const QString& name)
 {
     if ( optionList.contains( name ) ) {
-        qDebug() << optionList[ name ].value();
+        //qDebug() << optionList[ name ].value();
         return optionList[ name ];
     }
     return emptyOption;
@@ -55,7 +55,6 @@ Option& Configuration::addOption(const QString& name, const QVariant& defaultVal
 Option& Configuration::addOption(const QString& name, const QVariant& defaultValue,
                                  const QString& settingsKey)
 {
-    std::cout << "----" << qPrintable( defaultValue.toString() ) << std::endl;
     Option newOption( name, defaultValue, settingsKey );
     return optionList.insert( name, newOption ).value();
 }
@@ -64,7 +63,7 @@ void Configuration::debug()
 {
     qDebug() << "Registered Variables";
     foreach( Option o, optionList ) {
-            qDebug() << o.name() << "Value" << o.value() << "Default" << o.defaultValue();
+            qDebug() << o.name() << o.value() << "Default" << o.defaultValue();
         }
 }
 void Configuration::read()
