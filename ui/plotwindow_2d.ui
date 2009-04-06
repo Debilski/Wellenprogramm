@@ -952,8 +952,18 @@
   <tabstop>clearButton</tabstop>
   <tabstop>numInitialComboBox</tabstop>
   <tabstop>numInitialPushButton</tabstop>
-  <tabstop>midpoint_sizeValue</tabstop>
+  <tabstop>timestepSpinBox</tabstop>
+  <tabstop>noiseSpinBox</tabstop>
+  <tabstop>correlationSpinBox</tabstop>
+  <tabstop>boundaryConditionsComboBox</tabstop>
   <tabstop>plotTabWidget</tabstop>
+  <tabstop>parameterSetsDropDown</tabstop>
+  <tabstop>parameterSetsSave</tabstop>
+  <tabstop>parameterSetsDelete</tabstop>
+  <tabstop>midpoint_sizeValue</tabstop>
+  <tabstop>paintSizeSpinBox</tabstop>
+  <tabstop>paintValueSpinBox</tabstop>
+  <tabstop>paintFixpointCheckbox</tabstop>
  </tabstops>
  <resources/>
  <connections>

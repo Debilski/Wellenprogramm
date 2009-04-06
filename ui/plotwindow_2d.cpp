@@ -1124,11 +1124,11 @@ void Waveprogram2DPlot::saveViews(const QString& name, uint num)
 {
     //QImage pixmap( 645, 600, QImage::Format_ARGB32 );
     QImage pixmap(
-        latticeController_->latticeSizeX() + 160, latticeController_->latticeSizeY() + 160,
+        latticeController_->latticeSizeX() + 0, latticeController_->latticeSizeY() + 0,
         QImage::Format_ARGB32 );
     pixmap.fill( Qt::white ); // Qt::transparent ?
 
-    plotViewVector_[ num ]->print( pixmap, false );
+    plotViewVector_[ num ]->print( pixmap, true );
 
     pixmap.save( name + QString( ".%1.png" ).arg( num ), "PNG" );
 }

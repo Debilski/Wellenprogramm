@@ -31,7 +31,6 @@ public:
     QString name;
 };
 
-
 void PlotStack::attach(QwtPlot* plot)
 {
     foreach( PlotLayer* p, plotStack_ )
@@ -117,7 +116,8 @@ PlotView::PlotView(const PlotStack& plotStack, const QString label, QWidget* par
         d_data->plotStack.plotStack_.first()->spectrogram()->colorMap() );
 
     d_data->plot->setAxisScale(
-        QwtPlot::yRight, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue(),
+        QwtPlot::yRight,
+        d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue(),
         d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue() );
     d_data->plot->enableAxis( QwtPlot::yRight );
     d_data->plot->setAxisFont( QwtPlot::yRight, plotFont );
@@ -134,7 +134,7 @@ PlotView::PlotView(const PlotStack& plotStack, const QString label, QWidget* par
 
     d_data->colorBarAxis->setContextMenuPolicy( Qt::CustomContextMenu );
     connect(
-d_data->colorBarAxis, SIGNAL( customContextMenuRequested( const QPoint& ) ), this,
+        d_data->colorBarAxis, SIGNAL( customContextMenuRequested( const QPoint& ) ), this,
         SLOT( showMenu( const QPoint& ) ) );
 }
 
@@ -143,12 +143,14 @@ QwtPlot* PlotView::plot()
     return d_data->plot;
 }
 
-const QString& PlotView::name() const {
+const QString& PlotView::name() const
+{
     return d_data->name;
 }
-    void PlotView::setName(const QString& name) {
-        d_data->name = name;
-    }
+void PlotView::setName(const QString& name)
+{
+    d_data->name = name;
+}
 
 void PlotView::registerMouseEvent(const QwtDoublePoint & p)
 {
@@ -169,17 +171,17 @@ PlotView::~PlotView()
 
 void PlotView::replot(int)
 {
-    replot(false);
+    replot( false );
 }
 
 void PlotView::replot()
 {
-    replot(false);
+    replot( false );
 }
 
 void PlotView::replot(bool force)
 {
-    if ( isVisible() || force) {
+    if ( isVisible() || force ) {
 
         d_data->plotStack.adaptRange();
 
@@ -222,10 +224,10 @@ void PlotView::setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes 
     replot();
 }
 
-void PlotView::print(QImage& image, bool raw, bool resize )
+void PlotView::print(QImage& image, bool raw, bool resize)
 {
     // Replot, damit das Bild auf aktuelle Farben eingestellt wird.
-    replot(true);
+    replot( true );
     image.fill( Qt::white ); // Qt::transparent ?
 
     QwtPlotPrintFilter filter;
@@ -245,12 +247,20 @@ void PlotView::print(QImage& image, bool raw, bool resize )
     for (int i = 0; i < QwtPlot::axisCnt; ++i) {
         oldAxes[ i ] = d_data->plot->axisEnabled( i );
         if ( raw ) {
-        d_data->plot->enableAxis( i, false );
+            d_data->plot->enableAxis( i, false );
         }
     }
     if ( raw ) {
         d_data->plot->setCanvasLineWidth( 0 );
         d_data->plot->setMargin( 0 );
+//        d_data->plot->plotLayout()->setAlignCanvasToScales( true );
+        d_data->plot->plotLayout()->setMargin( 0 );
+        d_data->plot->plotLayout()->setSpacing( 0 );
+
+        d_data->plot->plotLayout()->setCanvasMargin(0,QwtPlot::xBottom);
+        d_data->plot->plotLayout()->setCanvasMargin(0,QwtPlot::xTop);
+        d_data->plot->plotLayout()->setCanvasMargin(0,QwtPlot::yLeft);
+        d_data->plot->plotLayout()->setCanvasMargin(0,QwtPlot::yRight);
         d_data->plot->updateLayout();
     }
     d_data->plot->print( image, filter );
@@ -272,10 +282,11 @@ void PlotView::showMenu(const QPoint& p)
 void PlotView::changeTop()
 {
     TinyDoubleEdit tEdit(
-        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue(), TinyDoubleEdit::NoException );
+        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue(),
+        TinyDoubleEdit::NoException );
     if ( tEdit.exec() ) {
         double c = tEdit.value();
-        d_data->plotStack.plotStack_.first()->adaptionMode().hintMax(c);
+        d_data->plotStack.plotStack_.first()->adaptionMode().hintMax( c );
         replot();
     }
 }
@@ -283,10 +294,11 @@ void PlotView::changeTop()
 void PlotView::changeBottom()
 {
     TinyDoubleEdit tEdit(
-        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue(), TinyDoubleEdit::NoException );
+        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue(),
+        TinyDoubleEdit::NoException );
     if ( tEdit.exec() ) {
         double c = tEdit.value();
-        d_data->plotStack.plotStack_.first()->adaptionMode().hintMin(c);
+        d_data->plotStack.plotStack_.first()->adaptionMode().hintMin( c );
         replot();
     }
 }
