@@ -13,6 +13,12 @@ ColorMapAdaptationMode::~ColorMapAdaptationMode()
 {
 }
 
+void ColorMapAdaptationMode::hint(QwtDoubleInterval hintInterval)
+{
+    hintMax( hintInterval.maxValue() );
+    hintMin( hintInterval.minValue() );
+}
+
 QwtDoubleInterval ColorMapAdaptationMode::range()
 {
     return interval_;
@@ -39,6 +45,16 @@ void DefaultColorMapAdaptationMode::setInterval(QwtDoubleInterval interval)
     if ( !interval_.isValid() || interval_.isNull() ) {
         interval_ = QwtDoubleInterval( -2.2, 2.5 );
     }
+}
+
+void DefaultColorMapAdaptationMode::hintMax(double max)
+{
+    interval_.setMaxValue( max );
+}
+
+void DefaultColorMapAdaptationMode::hintMin(double min)
+{
+    interval_.setMinValue( min );
 }
 
 void DefaultColorMapAdaptationMode::adaptRange(double /*min*/, double /*max*/)

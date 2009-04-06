@@ -19,6 +19,9 @@ public:
     virtual ~ColorMapAdaptationMode() = 0
     ;
     virtual void adaptRange(double min, double max) = 0;
+    virtual void hintMax( double max ) {};
+    virtual void hintMin( double min ) {};
+    virtual void hint( QwtDoubleInterval hintInterval );
     QwtDoubleInterval range();
     virtual ColorMapAdaptationMode* copy() const = 0;
 protected:
@@ -35,6 +38,8 @@ public:
 
     void setInterval(QwtDoubleInterval interval);
     void adaptRange(double /*min*/, double /*max*/);
+    void hintMax( double max );
+    void hintMin( double min );
 };
 
 class AdaptiveColorMapAdaptationMode : public ColorMapAdaptationMode {

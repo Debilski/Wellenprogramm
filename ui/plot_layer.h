@@ -31,6 +31,7 @@ public:
     void adaptRange();
 
     void setAdaptationMode(const ColorMapAdaptationMode& mode);
+    ColorMapAdaptationMode& adaptionMode();
 
     QwtDoubleInterval range() const;
 

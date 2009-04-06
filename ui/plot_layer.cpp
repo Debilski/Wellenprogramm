@@ -89,6 +89,12 @@ void PlotLayer::setAdaptationMode(const ColorMapAdaptationMode& mode)
     delete d_data->adaptationMode;
     d_data->adaptationMode = mode.copy();
 }
+
+ColorMapAdaptationMode& PlotLayer::adaptionMode()
+{
+    return *(d_data->adaptationMode);
+}
+
 QwtDoubleInterval PlotLayer::range() const
 {
     return d_data->adaptationMode->range();

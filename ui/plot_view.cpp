@@ -263,20 +263,22 @@ void PlotView::showMenu(const QPoint& p)
 void PlotView::changeTop()
 {
     TinyDoubleEdit tEdit(
-        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue() );
+        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue(), TinyDoubleEdit::NoException );
     if ( tEdit.exec() ) {
         double c = tEdit.value();
-        qDebug() << c;
+        d_data->plotStack.plotStack_.first()->adaptionMode().hintMax(c);
+        replot();
     }
 }
 
 void PlotView::changeBottom()
 {
     TinyDoubleEdit tEdit(
-        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue() );
+        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue(), TinyDoubleEdit::NoException );
     if ( tEdit.exec() ) {
         double c = tEdit.value();
-        qDebug() << c;
+        d_data->plotStack.plotStack_.first()->adaptionMode().hintMin(c);
+        replot();
     }
 }
 

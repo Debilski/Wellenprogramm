@@ -13,10 +13,13 @@
 class TinyDoubleEdit : public QDialog, private Ui::tinyDoubleEdit {
 Q_OBJECT
 public:
-    TinyDoubleEdit(QWidget* parent = 0, double value = 0);
+    enum ExceptionMode { NoException = 0, ThrowException = 1 };
+    TinyDoubleEdit(QWidget* parent = 0, double value = 0, ExceptionMode mode = ThrowException);
     double value();
     double value( double defaultValue );
-
+private:
+    double initial_;
+    ExceptionMode mode_;
 };
 
 class UninitialisedValueException : public std::runtime_error {
