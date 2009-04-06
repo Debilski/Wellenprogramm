@@ -536,7 +536,6 @@
       </layout>
      </item>
     </layout>
-    <zorder></zorder>
    </widget>
   </widget>
   <widget class="QDockWidget" name="extrasWidget">
@@ -550,7 +549,7 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="extrasWidgetContents">
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_7">
      <item>
       <widget class="QGroupBox" name="groupBox">
        <property name="title">

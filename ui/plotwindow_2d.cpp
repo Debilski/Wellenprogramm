@@ -31,8 +31,8 @@ void Waveprogram2DPlot::setTitle()
             infoTextLabel->clear();
         } else {
             informationGroupBox->show();
-            infoTextLabel->setText( QString::fromStdString(
-                latticeController_->lattice()->modelInformation() ) );
+            infoTextLabel->setText( QString::fromUtf8(
+                latticeController_->lattice()->modelInformation().c_str() ) );
         }
     } else {
         setWindowTitle( QString::fromUtf8( "Wellenprogramm: No Model loaded" ) );
@@ -290,23 +290,6 @@ void Waveprogram2DPlot::setUpDockWindows()
     p->show();
 }
 
-void Waveprogram2DPlot::setUpSlices()
-{
-    /*
-     for (uint i = 0; i < slice.size(); ++i)
-     slice[ i ] ->detach();
-     slice.resize( latticeController_->lattice()->numberOfVariables() );
-     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
-     {
-     slice[ component ] = new QwtPlotCurve( QString( "slice %1" ).arg( QString::fromStdString(
-     latticeController_->lattice()->componentInfos[ component ].name() ) ) );
-
-     slice[ component ]->attach( slicePlot );
-
-     }
-     */
-}
-
 void Waveprogram2DPlot::setUpColorMap()
 {
     emit colorMapChanged( colorMaps_.getColorMap() );
@@ -527,6 +510,8 @@ void Waveprogram2DPlot::setUpModelProperties()
         parameterWidget->setWindowTitle( QString( "%1 Properties" ).arg(
             latticeController_->lattice()->modelName().c_str() ) );
     }
+    parameterWidget->setUpdatesEnabled( false );
+
     parameterWidgetContents = new QWidget();
     parameterWidgetContents->setObjectName( QString::fromUtf8( "parameterWidgetContents" ) );
     verticalLayout = new QVBoxLayout( parameterWidgetContents );
@@ -535,11 +520,14 @@ void Waveprogram2DPlot::setUpModelProperties()
     parameterWidgetFormLayout->setObjectName( QString::fromUtf8( "parameterWidgetFormLayout" ) );
 
     verticalLayout->addLayout( parameterWidgetFormLayout );
+    parameterWidgetContents->setSizePolicy( QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum) );
 
     parameterWidget->setWidget( parameterWidgetContents );
 
     if ( adaptationParameterWidgetContents )
         delete adaptationParameterWidgetContents;
+
+    adaptationParameterWidget->setUpdatesEnabled( false );
     //  if (parameterWidgetFormLayout)
     //    delete parameterWidgetFormLayout;
     if ( latticeController_->lattice() ) {
@@ -547,6 +535,7 @@ void Waveprogram2DPlot::setUpModelProperties()
             latticeController_->lattice()->modelName().c_str() ) );
     }
     adaptationParameterWidgetContents = new QWidget();
+    adaptationParameterWidgetContents->setSizePolicy( QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum) );
     adaptationParameterWidgetContents->setObjectName( QString::fromUtf8(
         "adaptationParameterWidgetContents" ) );
     verticalLayout = new QVBoxLayout( adaptationParameterWidgetContents );
@@ -570,6 +559,9 @@ void Waveprogram2DPlot::setUpModelProperties()
     setUpParameters();
 
     setUpAdaptationParameters();
+
+    parameterWidget->setUpdatesEnabled( true );
+    adaptationParameterWidget->setUpdatesEnabled( true );
 }
 
 void Waveprogram2DPlot::setUpParameters()
@@ -860,36 +852,7 @@ void Waveprogram2DPlot::replot()
     } else {
         emit replotTab();
     }
-    /*
-     for(int i=0; i<qMarkerList.size(); ++i) {
-     delete qMarkerList.at(i);
-     }
-     */
 
-    /*
-     if ( slicePlot->isVisible() ) {
-     QVector< double > sliceData[ latticeController_->lattice()->numberOfVariables() ];
-     QVector< double > sliceLatticePoints;
-
-     for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
-     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
-     {
-     sliceData[ component ].push_back( latticeController_->lattice()->getComponentAt(
-     component, i, latticeController_->lattice()->latticeSizeY() / 2 ) );
-     }
-     sliceLatticePoints.push_back( i * latticeController_->lattice()->scaleX() );
-     }
-     if ( slice.size() == latticeController_->lattice()->numberOfVariables() )
-     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
-     {
-     slice[ component ]->setData( sliceLatticePoints, sliceData[ component ] );
-     }
-     slicePlot->replot();
-     }
-
-     */
-
-    //phase->replot();
     waveSizeLabel->setNum( latticeController_->lattice()->currentWavesize() );
     if ( latticeParameters.value( "gamma" ) )
         gammaLabel->setNum( latticeParameters.value( "gamma" )->get() );
@@ -962,7 +925,6 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
     setUpColorMap();
     setUpModelProperties();
     setUpBoundaryConditionsSelector();
-    setUpSlices();
     setTitle();
 
     readParameterSets();
@@ -972,7 +934,6 @@ void Waveprogram2DPlot::killField()
 {
     writeParameterSets();
 
-    reorderTabs();
     if ( latticeController_->lattice() && !latticeIdentifier_.empty() ) {
         //LatticePluginRegistration::instance()->getDestroyerByName( latticeIdentifier_ )( lattice );
         latticeController_->destroy();
@@ -1746,3 +1707,12 @@ void Waveprogram2DPlot::on_actionShow_Single_Plot_triggered()
     connect( this, SIGNAL( modelClosed() ), p, SLOT( close() ) );
     connect( this, SIGNAL( replotAllChildren() ), p, SLOT( update() ) );
 }
+
+void Waveprogram2DPlot::showSinglePlot() {
+
+}
+
+void Waveprogram2DPlot::showSlicePlot() {
+
+}
+

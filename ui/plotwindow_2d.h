@@ -28,9 +28,9 @@
 
 #include "plot_single.h"
 
-#include "lattice_interface.h"
+// #include "lattice_interface.h"
 
-#include "lattice_controller.h"
+// #include "lattice_controller.h"
 
 #include "configuration.h"
 
@@ -85,7 +85,9 @@ public:
     void setUpParameters();
     void setUpAdaptationParameters();
     void setUpBoundaryConditionsSelector();
-    void setUpSlices();
+
+    void showSlicePlot();
+    void showSinglePlot();
 
     QList< QwtPlotMarker* > plotMarkers();
     QList< QwtPlotCurve* > plotCurves();
