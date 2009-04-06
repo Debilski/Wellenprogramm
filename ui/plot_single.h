@@ -18,6 +18,8 @@
 
 #include "ui_plot_single.h"
 
+// Label hinzufügen
+
 class PlotSingle : public QDialog, private Ui::plotSingle {
 Q_OBJECT
 public:

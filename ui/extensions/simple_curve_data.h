@@ -8,5 +8,11 @@
 #ifndef SIMPLE_CURVE_DATA_H_
 #define SIMPLE_CURVE_DATA_H_
 
+class QwtPlotCurve;
+
+class SimpleCurveData {
+public:
+    QwtPlotCurve toQwtPlotCurve();
+};
 
 #endif /* SIMPLE_CURVE_DATA_H_ */

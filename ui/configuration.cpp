@@ -58,7 +58,6 @@ Option& Configuration::addOption(const QString& name, const QVariant& defaultVal
     std::cout << "----" << qPrintable( defaultValue.toString() ) << std::endl;
     Option newOption( name, defaultValue, settingsKey );
     return optionList.insert( name, newOption ).value();
-
 }
 
 void Configuration::debug()
@@ -100,8 +99,8 @@ void Configuration::read()
      }
      libraryDirectory = testLibDir;
      */
-
 }
+
 void Configuration::write()
 {
     for (optionListIterator it = optionList.begin(); it != optionList.end(); ++it) {

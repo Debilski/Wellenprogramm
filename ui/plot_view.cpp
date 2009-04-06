@@ -7,6 +7,8 @@
 
 #include "plot_view.h"
 
+#include <qmenu.h>
+
 #include <qwt_plot.h>
 #include <qwt_plot_layout.h>
 #include <qwt_plot_spectrogram.h>
@@ -19,6 +21,16 @@
 
 #include "lattice_controller.h"
 #include "plot_layer.h"
+
+class PlotView::PrivateData {
+public:
+    PlotStack plotStack;
+    QwtPlot* plot;
+    QwtScaleWidget* colorBarAxis;
+    QMenu rightClickMenu;
+    QString name;
+};
+
 
 void PlotStack::attach(QwtPlot* plot)
 {
@@ -65,27 +77,30 @@ public:
  */
 
 PlotView::PlotView(const PlotStack& plotStack, const QString label, QWidget* parent) :
-    plotStack_( plotStack ), QWidget( parent )
+    QWidget( parent )
 {
+    d_data = new PrivateData;
+    d_data->plotStack = plotStack;
+    d_data->plot = new QwtPlot( this );
+
     QFont plotFont = QFont( "", 8 );
     QwtText labelIntensity( label );
     labelIntensity.setFont( plotFont );
 
     QHBoxLayout* horizontalLayout = new QHBoxLayout( this );
-    plot_ = new QwtPlot( this );
 
-    plot_->setAxisFont( QwtPlot::xBottom, plotFont );
-    plot_->setAxisFont( QwtPlot::yLeft, plotFont );
+    d_data->plot->setAxisFont( QwtPlot::xBottom, plotFont );
+    d_data->plot->setAxisFont( QwtPlot::yLeft, plotFont );
 
-    QRectF dimensions = plotStack_.plotStack_.first()->spectrogram()->boundingRect();
-    plot_->setAxisScale( QwtPlot::yLeft, dimensions.top(), dimensions.bottom() );
-    plot_->setAxisScale( QwtPlot::xBottom, dimensions.left(), dimensions.right() );
+    QRectF dimensions = d_data->plotStack.plotStack_.first()->spectrogram()->boundingRect();
+    d_data->plot->setAxisScale( QwtPlot::yLeft, dimensions.top(), dimensions.bottom() );
+    d_data->plot->setAxisScale( QwtPlot::xBottom, dimensions.left(), dimensions.right() );
 
-    horizontalLayout->addWidget( plot_ );
+    horizontalLayout->addWidget( d_data->plot );
 
-    plotStack_.attach( plot_ );
+    d_data->plotStack.attach( d_data->plot );
 
-    Painter* painter = new Painter( QwtPlot::xBottom, QwtPlot::yLeft, plot_->canvas() );
+    Painter* painter = new Painter( QwtPlot::xBottom, QwtPlot::yLeft, d_data->plot->canvas() );
     painter->setTrackerPen( QColor( Qt::white ) );
 
     painter->setEnabled( true );
@@ -94,38 +109,50 @@ PlotView::PlotView(const PlotStack& plotStack, const QString label, QWidget* par
         painter, SIGNAL(selected(const QwtDoublePoint &)), this,
         SLOT(registerMouseEvent(const QwtDoublePoint&)) );
 
-    rightAxis = plot_->axisWidget( QwtPlot::yRight );
-    rightAxis->setTitle( labelIntensity );
-    rightAxis->setColorBarEnabled( true );
-    rightAxis->setColorMap(
-        plotStack_.plotStack_.first()->spectrogram()->data().range(),
-        plotStack_.plotStack_.first()->spectrogram()->colorMap() );
+    d_data->colorBarAxis = d_data->plot->axisWidget( QwtPlot::yRight );
+    d_data->colorBarAxis->setTitle( labelIntensity );
+    d_data->colorBarAxis->setColorBarEnabled( true );
+    d_data->colorBarAxis->setColorMap(
+        d_data->plotStack.plotStack_.first()->spectrogram()->data().range(),
+        d_data->plotStack.plotStack_.first()->spectrogram()->colorMap() );
 
-    plot_->setAxisScale(
-        QwtPlot::yRight, plotStack_.plotStack_.first()->spectrogram()->data().range().minValue(),
-        plotStack_.plotStack_.first()->spectrogram()->data().range().maxValue() );
-    plot_->enableAxis( QwtPlot::yRight );
-    plot_->setAxisFont( QwtPlot::yRight, plotFont );
-    plot_->plotLayout()->setAlignCanvasToScales( true );
+    d_data->plot->setAxisScale(
+        QwtPlot::yRight, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue(),
+        d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue() );
+    d_data->plot->enableAxis( QwtPlot::yRight );
+    d_data->plot->setAxisFont( QwtPlot::yRight, plotFont );
+    d_data->plot->plotLayout()->setAlignCanvasToScales( true );
 
-    rightClickMenu.addAction(
+    d_data->rightClickMenu.addAction(
         QString( "Top Value: %1" ).arg(
-            plotStack_.plotStack_.first()->spectrogram()->data().range().maxValue() ), this,
+            d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue() ), this,
         SLOT(changeTop()) );
-    rightClickMenu.addAction(
+    d_data->rightClickMenu.addAction(
         QString( "Bottom Value: %1" ).arg(
-            plotStack_.plotStack_.first()->spectrogram()->data().range().minValue() ), this,
+            d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue() ), this,
         SLOT(changeBottom()) );
 
-    rightAxis->setContextMenuPolicy( Qt::CustomContextMenu );
+    d_data->colorBarAxis->setContextMenuPolicy( Qt::CustomContextMenu );
     connect(
-        rightAxis, SIGNAL( customContextMenuRequested( const QPoint& ) ), this,
+d_data->colorBarAxis, SIGNAL( customContextMenuRequested( const QPoint& ) ), this,
         SLOT( showMenu( const QPoint& ) ) );
 }
 
+QwtPlot* PlotView::plot()
+{
+    return d_data->plot;
+}
+
+const QString& PlotView::name() const {
+    return d_data->name;
+}
+    void PlotView::setName(const QString& name) {
+        d_data->name = name;
+    }
+
 void PlotView::registerMouseEvent(const QwtDoublePoint & p)
 {
-    emit selected( plotStack_.plotStack_.first()->component, p );
+    emit selected( d_data->plotStack.plotStack_.first()->component, p );
 }
 
 void PlotView::registerMouseEvent(const QwtArray< QwtDoublePoint > &pa)
@@ -135,6 +162,8 @@ void PlotView::registerMouseEvent(const QwtArray< QwtDoublePoint > &pa)
 
 PlotView::~PlotView()
 {
+    //delete d_data->plot;
+    delete d_data;
     //delete spectrogram();
 }
 
@@ -147,56 +176,94 @@ void PlotView::replot()
 {
     if ( isVisible() ) {
 
-        plotStack_.adaptRange();
+        d_data->plotStack.adaptRange();
 
-        rightAxis->setColorMap(
-            plotStack_.plotStack_.first()->spectrogram()->data().range(),
-            plotStack_.plotStack_.first()->spectrogram()->colorMap() );
-        plot_->setAxisScale(
+        d_data->colorBarAxis->setColorMap(
+            d_data->plotStack.plotStack_.first()->spectrogram()->data().range(),
+            d_data->plotStack.plotStack_.first()->spectrogram()->colorMap() );
+        d_data->plot->setAxisScale(
             QwtPlot::yRight,
-            plotStack_.plotStack_.first()->spectrogram()->data().range().minValue(),
-            plotStack_.plotStack_.first()->spectrogram()->data().range().maxValue() );
+            d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue(),
+            d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue() );
 
-        plot_->replot();
+        d_data->plot->replot();
     }
 }
 
 void PlotView::setColorMap(const QwtColorMap& colorMap)
 {
-    plotStack_.plotStack_.first()->setColorMap( colorMap );
-    rightAxis->setColorMap(
-        plotStack_.plotStack_.first()->spectrogram()->data().range(),
-        plotStack_.plotStack_.first()->spectrogram()->colorMap() );
+    d_data->plotStack.plotStack_.first()->setColorMap( colorMap );
+    d_data->colorBarAxis->setColorMap(
+        d_data->plotStack.plotStack_.first()->spectrogram()->data().range(),
+        d_data->plotStack.plotStack_.first()->spectrogram()->colorMap() );
     replot();
 }
 
 void PlotView::setColorMapMode(ColorMapAdaptationModes mode)
 {
-    plotStack_.plotStack_.first()->setColorMapMode( mode );
-    rightAxis->setColorMap(
-        plotStack_.plotStack_.first()->spectrogram()->data().range(),
-        plotStack_.plotStack_.first()->spectrogram()->colorMap() );
+    d_data->plotStack.plotStack_.first()->setColorMapMode( mode );
+    d_data->colorBarAxis->setColorMap(
+        d_data->plotStack.plotStack_.first()->spectrogram()->data().range(),
+        d_data->plotStack.plotStack_.first()->spectrogram()->colorMap() );
     replot();
 }
 
 void PlotView::setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes mode)
 {
-    plotStack_.plotStack_.first()->setColorMap( colorMap, mode );
-    rightAxis->setColorMap(
-        plotStack_.plotStack_.first()->spectrogram()->data().range(),
-        plotStack_.plotStack_.first()->spectrogram()->colorMap() );
+    d_data->plotStack.plotStack_.first()->setColorMap( colorMap, mode );
+    d_data->colorBarAxis->setColorMap(
+        d_data->plotStack.plotStack_.first()->spectrogram()->data().range(),
+        d_data->plotStack.plotStack_.first()->spectrogram()->colorMap() );
     replot();
+}
+
+void PlotView::print(QImage& image, bool raw, bool resize )
+{
+    image.fill( Qt::white ); // Qt::transparent ?
+
+    QwtPlotPrintFilter filter;
+    int options = 0;//= QwtPlotPrintFilter::PrintAll;
+    options &= ~QwtPlotPrintFilter::PrintBackground;
+    options &= ~QwtPlotPrintFilter::PrintFrameWithScales;
+    options &= ~QwtPlotPrintFilter::PrintMargin;
+    options &= ~QwtPlotPrintFilter::PrintTitle;
+    options &= ~QwtPlotPrintFilter::PrintLegend;
+    options &= ~QwtPlotPrintFilter::PrintGrid;
+
+    filter.setOptions( options );
+
+    bool oldAxes[ QwtPlot::axisCnt ];
+    int canvasLineWidth = d_data->plot->canvasLineWidth();
+    int margin = d_data->plot->margin();
+    for (int i = 0; i < QwtPlot::axisCnt; ++i) {
+        oldAxes[ i ] = d_data->plot->axisEnabled( i );
+        d_data->plot->enableAxis( i, false );
+    }
+    if ( raw ) {
+        d_data->plot->setCanvasLineWidth( 0 );
+        d_data->plot->setMargin( 0 );
+        d_data->plot->updateLayout();
+    }
+    d_data->plot->print( image, filter );
+
+    // Back to normal
+    for (int i = 0; i < QwtPlot::axisCnt; ++i) {
+        d_data->plot->enableAxis( i, oldAxes[ i ] );
+    }
+    d_data->plot->setCanvasLineWidth( canvasLineWidth );
+    d_data->plot->setMargin( margin );
+
 }
 
 void PlotView::showMenu(const QPoint& p)
 {
-    rightClickMenu.popup( rightAxis->mapToGlobal( p ) );
+    d_data->rightClickMenu.popup( d_data->colorBarAxis->mapToGlobal( p ) );
 }
 
 void PlotView::changeTop()
 {
     TinyDoubleEdit tEdit(
-        this, plotStack_.plotStack_.first()->spectrogram()->data().range().maxValue() );
+        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().maxValue() );
     if ( tEdit.exec() ) {
         double c = tEdit.value();
         qDebug() << c;
@@ -206,7 +273,7 @@ void PlotView::changeTop()
 void PlotView::changeBottom()
 {
     TinyDoubleEdit tEdit(
-        this, plotStack_.plotStack_.first()->spectrogram()->data().range().minValue() );
+        this, d_data->plotStack.plotStack_.first()->spectrogram()->data().range().minValue() );
     if ( tEdit.exec() ) {
         double c = tEdit.value();
         qDebug() << c;
@@ -215,32 +282,33 @@ void PlotView::changeBottom()
 
 void PlotView::attachItem(QwtPlotItem* item)
 {
-    item->attach( plot_ );
+    item->attach( d_data->plot );
 }
 
-void PlotView::attachItems(QList<QwtPlotItem*> itemList)
+void PlotView::attachItems(QList< QwtPlotItem* > itemList)
 {
-    foreach( QwtPlotItem* item, itemList ) {
-        attachItem(item);
-    }
+    foreach( QwtPlotItem* item, itemList )
+        {
+            attachItem( item );
+        }
 }
 
 void PlotView::removeItem(QwtPlotItem* item)
 {
-    if ( plot_->itemList().contains( item ) ) {
+    if ( d_data->plot->itemList().contains( item ) ) {
         item->detach();
     }
 }
 
-void PlotView::removeItems(QList<QwtPlotItem*> itemList)
+void PlotView::removeItems(QList< QwtPlotItem* > itemList)
 {
-    foreach( QwtPlotItem* item, itemList ) {
-            removeItem(item);
+    foreach( QwtPlotItem* item, itemList )
+        {
+            removeItem( item );
         }
 }
 
-
 QwtPlotSpectrogram* PlotView::firstSpectrogram()
 {
-    return plotStack_.plotStack_.first()->spectrogram();
+    return d_data->plotStack.plotStack_.first()->spectrogram();
 }

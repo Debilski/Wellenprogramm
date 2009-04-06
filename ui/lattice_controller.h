@@ -40,10 +40,13 @@ public:
     const LatticeInterface* lattice() const;
     LatticeInterface* lattice();
 
-    int sizeX();
-    int sizeY();
-    int latticeSizeX();
-    int latticeSizeY();
+    int sizeX() const;
+    int sizeY() const;
+    QSize size() const;
+
+    int latticeSizeX() const;
+    int latticeSizeY() const;
+    QSize latticeSize() const;
 
     bool isValid();
     bool load(const std::string& name, int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
@@ -51,7 +54,7 @@ public:
 
     std::list<std::string> getModelNames();
 
-    LatticeScripter* const getLatticeScripter() const;
+    LatticeScripter* getLatticeScripter() const;
 public slots:
     void stepNum(int n);
     void stepMany();

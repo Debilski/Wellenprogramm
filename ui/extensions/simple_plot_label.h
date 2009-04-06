@@ -8,5 +8,11 @@
 #ifndef SIMPLE_PLOT_LABEL_H_
 #define SIMPLE_PLOT_LABEL_H_
 
+class QwtPlotMarker;
+
+class SimplePlotLabel {
+public:
+    QwtPlotMarker toQwtPlotMarker();
+};
 
 #endif /* SIMPLE_PLOT_LABEL_H_ */

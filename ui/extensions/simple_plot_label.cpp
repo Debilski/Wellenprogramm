@@ -5,3 +5,5 @@
  *      Author: rikebs
  */
 
+#include "simple_plot_label.h"
+

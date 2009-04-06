@@ -8,9 +8,8 @@
 #ifndef PLOT_VIEW_H_
 #define PLOT_VIEW_H_
 
-#include <QtCore>
-#include <QtGui>
-
+#include <qlist.h>
+#include <qwidget.h>
 
 #include <qwt_array.h>
 typedef QPointF QwtDoublePoint;
@@ -45,16 +44,12 @@ public:
     PlotView(const PlotStack& plotStack, const QString label, QWidget* parent);
     ~PlotView();
 
-    PlotStack plotStack_;
-
-    QwtPlot* plot_;
-    QwtScaleWidget* rightAxis;
-
-    QMenu rightClickMenu;
-
     QwtPlotSpectrogram* firstSpectrogram();
-
+    QwtPlot* plot();
 public slots:
+    const QString& name() const;
+    void setName(const QString& name);
+
     void attachItem(QwtPlotItem*);
     void attachItems(QList<QwtPlotItem*>);
 
@@ -63,9 +58,13 @@ public slots:
 
     void replot(int);
     void replot();
+
     void setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes mode);
     void setColorMap(const QwtColorMap& colorMap);
     void setColorMapMode(ColorMapAdaptationModes mode);
+
+    void print( QImage& image, bool raw, bool resize = false );
+
     void showMenu(const QPoint& p);
     void changeTop();
     void changeBottom();
@@ -73,6 +72,9 @@ public slots:
     void registerMouseEvent(const QwtArray< QwtDoublePoint >& pa);
 signals:
     void selected(const uint&, const QPointF&);
+private:
+    class PrivateData;
+    PrivateData* d_data;
 
 };
 

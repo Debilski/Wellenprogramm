@@ -76,8 +76,8 @@ public:
 
     void setUpActions();
     void setUpColorMap();
-    void removeTabs();
-    void setUpTabs();
+    void reorderTabs();
+    void setUpViews();
     void setUpRanges();
 
     void setUpModelProperties();
@@ -86,6 +86,11 @@ public:
     void setUpAdaptationParameters();
     void setUpBoundaryConditionsSelector();
     void setUpSlices();
+
+    QList< QwtPlotMarker* > plotMarkers();
+    QList< QwtPlotCurve* > plotCurves();
+
+    void updatePlotAnnotations();
 
 public slots:
 
@@ -193,10 +198,9 @@ private:
 
     // Plotting Elements
 
-    QList< QwtPlotCurve* > curves;
 
     QVector< QwtPlotCurve* > slice;//[ ModelLattice::number_of_Variables ];
-    QVector< QwtPlotMarker* > qMarkerVector; // Markiert die Cluster
+
     QMap< long int, QList< QPair< SurfacePoint, double > > > bufferMap; // + timestamp
     QMap< long int, QList< QPair< SurfacePoint, double > > > temporaryBufferMap;
     QMap< long int, SurfacePoint > lastStepClusters;
@@ -266,6 +270,10 @@ private:
 
     void readParameterSets();
     void writeParameterSets();
+
+    class PrivateData;
+    PrivateData* d_data;
+
 };
 
 #endif

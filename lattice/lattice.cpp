@@ -64,7 +64,7 @@ Lattice< T_model >::Lattice(int sizeX, int sizeY, int latticeSizeX, int latticeS
     fftw3Wrapper->exportWisdom();
 
     Components comp = Components();
-    //comp.components = 0;
+    comp.components = 0;
     setDiffusion( comp );
 
     componentInfos.resize( Components::number_of_Variables );

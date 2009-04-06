@@ -12,6 +12,12 @@
 
 #include "spectrogram_data.h"
 
+class Waveprogram2DPlot::PrivateData {
+public:
+    QList< QwtPlotMarker* > markers;
+    QList< QwtPlotCurve* > curves;
+};
+
 void Waveprogram2DPlot::setTitle()
 {
     if ( latticeController_->isValid() ) {
@@ -38,6 +44,7 @@ void Waveprogram2DPlot::setTitle()
 Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int latticeSize) :
     QMainWindow( parent ), realSize_( realSize ), latticeSize_( latticeSize ), parent( parent )
 {
+    d_data = new PrivateData;
     std::cout << realSize_ << "/" << latticeSize_ << std::endl;
 
     // LatticeController vllt ohne Zeiger, aber auf jeden Fall besser einbauen als so!
@@ -51,14 +58,13 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     setupUi( this ); // this sets up GUI
 
     // setAttribute( Qt::WA_DeleteOnClose );
-//    sliceWidget->setVisible( false );
+    //    sliceWidget->setVisible( false );
 
     //    setAttribute( Qt::WA_MacMetalStyle );
     setTitle();
 
     adaptationMode_ = false;
     loopruns = false;
-
 
     boundaryConditionIdentifier[ FixedBoundary ] = "Fixed Boundary";
     boundaryConditionIdentifier[ PeriodicBoundary ] = "Periodic Boundary";
@@ -279,27 +285,26 @@ void Waveprogram2DPlot::updateUpdatePeriod(QAction* a)
 
 void Waveprogram2DPlot::setUpDockWindows()
 {
-    ParameterDockWidget* p = new ParameterDockWidget(this);
-    p->setFloating(true);
+    ParameterDockWidget* p = new ParameterDockWidget( this );
+    p->setFloating( true );
     p->show();
 }
-
 
 void Waveprogram2DPlot::setUpSlices()
 {
     /*
-    for (uint i = 0; i < slice.size(); ++i)
-        slice[ i ] ->detach();
-    slice.resize( latticeController_->lattice()->numberOfVariables() );
-    for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
-    {
-        slice[ component ] = new QwtPlotCurve( QString( "slice %1" ).arg( QString::fromStdString(
-            latticeController_->lattice()->componentInfos[ component ].name() ) ) );
+     for (uint i = 0; i < slice.size(); ++i)
+     slice[ i ] ->detach();
+     slice.resize( latticeController_->lattice()->numberOfVariables() );
+     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
+     {
+     slice[ component ] = new QwtPlotCurve( QString( "slice %1" ).arg( QString::fromStdString(
+     latticeController_->lattice()->componentInfos[ component ].name() ) ) );
 
-        slice[ component ]->attach( slicePlot );
+     slice[ component ]->attach( slicePlot );
 
-    }
-    */
+     }
+     */
 }
 
 void Waveprogram2DPlot::setUpColorMap()
@@ -310,31 +315,32 @@ void Waveprogram2DPlot::setUpColorMap()
     emit colorMapChanged( colorMaps_.getColorMap(), colorMapMode );
 }
 
-void Waveprogram2DPlot::removeTabs()
+void Waveprogram2DPlot::reorderTabs()
 {
+    plotTabWidget->setUpdatesEnabled( false );
     while (plotTabWidget->count() > 0) {
-        if ( QLatin1String( plotTabWidget->currentWidget()->metaObject()->className() )
-            == QLatin1String( "PlotView" ) )
-        {
-
-            PlotView* currentPlotView = static_cast< PlotView* > ( plotTabWidget->currentWidget() );
-
-            disconnect( this, 0, currentPlotView, 0 );
-            delete currentPlotView->plot_;
-            //delete currentPlotView->spectrogram_;
-            //delete currentPlotView->colorMap_;
-            delete currentPlotView;
-        }
-
-        plotTabWidget->removeTab( 0 );
+        plotTabWidget->removeTab( plotTabWidget->count() - 1 );
     }
+
+    for (uint i = 0; i < plotViewVector_.size(); ++i) {
+        plotTabWidget->addTab( plotViewVector_[ i ], plotViewVector_[ i ]->name() );
+    }
+
+    plotTabWidget->setUpdatesEnabled( true );
 }
 
-void Waveprogram2DPlot::setUpTabs()
+void Waveprogram2DPlot::setUpViews()
 {
-//    disconnect( this, SIGNAL( replotTab() ), 0, 0 );
-//    disconnect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), 0, 0 );
+    //    disconnect( this, SIGNAL( replotTab() ), 0, 0 );
+    //    disconnect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), 0, 0 );
+
+    for (uint i = 0; i < plotViewVector_.size(); ++i) {
+        PlotView* w = plotViewVector_[ i ];
+        disconnect( this, 0, w, 0 );
+        w->deleteLater();
+    }
     plotViewVector_.clear();
+
     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
     {
         QString label;
@@ -380,8 +386,7 @@ void Waveprogram2DPlot::setUpTabs()
                 latticeController_->lattice()->componentInfos[ component ].name() ),
             QString::fromStdString(
                 latticeController_->lattice()->componentInfos[ component ].shortName() ) );
-
-        plotTabWidget->addTab( view, name );
+        view->setName( name );
     }
 
     // Sollte irgendwie so ausgearbeitet werden, dass es im Modell definierbar ist.
@@ -446,6 +451,7 @@ void Waveprogram2DPlot::setUpTabs()
 
         PlotView* view = new PlotView( plotStack, label, plotTabWidget );
 
+        view->setName( "View" );
         plotViewVector_ << view;
 
         connect( this, SIGNAL( replotTab() ), view, SLOT( replot() ) );
@@ -453,6 +459,8 @@ void Waveprogram2DPlot::setUpTabs()
         connect(
             this, SIGNAL( colorMapModeChanged( ColorMapAdaptationModes )), view,
             SLOT( setColorMapMode( ColorMapAdaptationModes )) );
+        connect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), view, SLOT( replot() ) );
+
         //! Sendet an potenziell zu viele Tabs…
         connect( plotTabWidget, SIGNAL( currentChanged(int) ), view, SLOT( replot(int) ) );
 
@@ -460,9 +468,7 @@ void Waveprogram2DPlot::setUpTabs()
         //            view, SIGNAL( selected(const uint&, const QPointF& )), latticeController_,
         //            SLOT(setToFixpoint(const uint&, const QPointF&)) );
 
-        plotTabWidget->addTab( view, name );
     }
-    plotTabWidget->show();
 }
 
 void Waveprogram2DPlot::paint(const uint& component, const QPointF& point)
@@ -709,6 +715,122 @@ void Waveprogram2DPlot::on_midpoint_sizeValue_valueChanged(double d)
     // statusBar()->showMessage( text );
 }
 
+QList< QwtPlotMarker* > Waveprogram2DPlot::plotMarkers()
+{
+    return d_data->markers;
+}
+
+QList< QwtPlotCurve* > Waveprogram2DPlot::plotCurves()
+{
+    return d_data->curves;
+}
+
+void Waveprogram2DPlot::updatePlotAnnotations()
+{
+    qDeleteAll( d_data->markers );
+    d_data->markers.clear();
+    //    d_data->markers.reserve( latticeController_->lattice()->numberOfClusters() );
+    std::vector< Cluster > clusterVector = latticeController_->lattice()->getClusters();
+
+    // Marker
+    for (uint i = 0; i < clusterVector.size(); ++i) {
+        QwtPlotMarker* marker = new QwtPlotMarker;
+        marker->setValue( clusterVector[ i ].position.x, clusterVector[ i ].position.y );
+        QString label = "#%1\nSize: %2\nSpeed: %3 (est.)";
+        label = label.arg( clusterVector[ i ].clusterId ).arg( clusterVector[ i ].size );
+
+        // Calculate speed
+        if ( lastStepClusters.contains( clusterVector[ i ].clusterId ) ) {
+            double len = latticeController_->lattice()->euklidianDistance(
+                lastStepClusters[ clusterVector[ i ].clusterId ], clusterVector[ i ].position );
+            double speed = len / (-lastClustersUpdateTime + latticeController_->lattice()->time());
+            label = label.arg( speed );
+        } else {
+            label = label.arg( QString::fromUtf8( "–" ) );
+        }
+
+        marker->setLabel( label );
+
+        d_data->markers << marker;
+    }
+
+    lastClustersUpdateTime = latticeController_->lattice()->time();
+
+    // Curves
+
+    lastStepClusters.clear();
+
+    temporaryBufferMap.clear();
+
+    for (uint i = 0; i < clusterVector.size(); ++i) {
+        long int cId = clusterVector[ i ].clusterId;
+        if ( !bufferMap.contains( cId ) ) {
+            QList< QPair< SurfacePoint, double > > cb;
+
+            temporaryBufferMap[ cId ] = cb;
+        } else {
+            temporaryBufferMap[ cId ] = bufferMap[ cId ];
+        }
+        SurfacePoint sp;
+        sp.x = clusterVector[ i ].position.x;
+        sp.y = clusterVector[ i ].position.y;
+
+        lastStepClusters[ cId ] = sp;
+        temporaryBufferMap[ cId ].append( QPair< SurfacePoint, double > (
+            sp, latticeController_->lattice()->time() ) );
+    }
+
+    typedef QMap< long int, QList< QPair< SurfacePoint, double > > > T_bufferMap;
+    typedef QList< QPair< SurfacePoint, double > > T_listPairs;
+    typedef QPair< SurfacePoint, double > T_pair;
+
+    // Entfernt alles, was älter als tdiff ist
+    const int tdiff = 5;
+    for (T_bufferMap::Iterator i = temporaryBufferMap.begin(); i != temporaryBufferMap.end(); ++i) {
+        for (T_listPairs::Iterator j = (*i).begin(); j != (*i).end(); ++j) {
+            if ( (*j).second < latticeController_->lattice()->time() - tdiff ) {
+                (*i).erase( j );
+            }
+        }
+    }
+    bufferMap = temporaryBufferMap;
+
+    QBrush brush( Qt::blue );
+    QPen pen( brush, 2, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin );
+
+    qDeleteAll( d_data->curves );
+    d_data->curves.clear();
+    foreach( T_listPairs cb, bufferMap )
+        {
+            QwtArray< double > qv1, qv2;
+            double lastx = -1;
+            double lasty = -1;
+            foreach( T_pair sp , cb )
+                {
+
+                    if ( lastx > 0 && (abs( lastx - sp.first.x ) > 25 || abs( lasty - sp.first.y )
+                        > 25) )
+                    {
+
+                        QwtPlotCurve* curve = new QwtPlotCurve();
+                        curve->setPen( pen );
+                        curve->setData( qv1, qv2 );
+                        d_data->curves << curve;
+                        qv1.clear();
+                        qv2.clear();
+                    }
+                    qv1 << sp.first.x;
+                    qv2 << sp.first.y;
+                    lastx = sp.first.x;
+                    lasty = sp.first.y;
+                }
+            QwtPlotCurve* curve = new QwtPlotCurve();
+            curve->setPen( pen );
+            curve->setData( qv1, qv2 );
+
+            d_data->curves << curve;
+        }
+}
 
 void Waveprogram2DPlot::replot()
 {
@@ -719,167 +841,21 @@ void Waveprogram2DPlot::replot()
     emit
     replotAllChildren();
 
-    foreach(QwtPlotCurve* curve, curves )
-        {
-            curve->attach( 0 );
-            delete curve;
-        }
-    curves.clear();
-
-    for (int i = 0; i < qMarkerVector.size(); ++i) {
-        qMarkerVector[ i ]->attach( 0 );
-        delete qMarkerVector[ i ];
-    }
-    qMarkerVector.clear();
+    updatePlotAnnotations();
 
     // Check, if we have a PlotView in the current tab.
     if ( showClusterIds_ && QLatin1String(
         plotTabWidget->currentWidget()->metaObject()->className() ) == QLatin1String( "PlotView" ) )
     {
         PlotView* currentView = static_cast< PlotView* > ( plotTabWidget->currentWidget() );
-        QwtPlot * currentPlot = currentView->plot_;
 
-        // Color Map einbauen…
-        //currentView->spectrogram_->set
-        //currentPlot->rightAxis->setColorMap( tab->spectrogram_->data().range(), tab->spectrogram_->colorMap() );
-        qMarkerVector.reserve( latticeController_->lattice()->numberOfClusters() );
-        std::vector< Cluster > clusterVector = latticeController_->lattice()->getClusters();
-        /*
-         std::vector< SurfacePoint > tips = latticeController_->lattice()->getSpiralTips();
-         for (uint i = 0; i < tips.size(); ++i) {
-         QwtPlotMarker* marker = new QwtPlotMarker;
-         marker->setValue( tips[ i ].x, tips[ i ].y );
-         marker->setLabel( QString( "Hi!" ) );
-         marker->attach( currentPlot );
-         }
-         */
-        // Marker
-        for (uint i = 0; i < clusterVector.size(); ++i) {
-            QwtPlotMarker* marker = new QwtPlotMarker;
-            marker->setValue( clusterVector[ i ].position.x, clusterVector[ i ].position.y );
-            QString label = "#%1\nSize: %2\nSpeed: %3 (est.)";
-            label = label.arg( clusterVector[ i ].clusterId ).arg( clusterVector[ i ].size );
-
-            // Calculate speed
-            if ( lastStepClusters.contains( clusterVector[ i ].clusterId ) ) {
-                double len = latticeController_->lattice()->euklidianDistance(
-                    lastStepClusters[ clusterVector[ i ].clusterId ], clusterVector[ i ].position );
-                double speed = len / (-lastClustersUpdateTime
-                    + latticeController_->lattice()->time());
-                label = label.arg( speed );
-            } else {
-                label = label.arg( "–" );
-            }
-
-            marker->setLabel( label );
-            marker->attach( currentPlot );
-            qMarkerVector << marker;
-
-            std::cout << "\n" << latticeController_->lattice()->time() << ": "
-                << clusterVector[ i ].position.x << "!";
-        }
-
-        lastClustersUpdateTime = latticeController_->lattice()->time();
-        lastStepClusters.clear();
-
-        temporaryBufferMap.clear();
-
-        for (uint i = 0; i < clusterVector.size(); ++i) {
-            long int cId = clusterVector[ i ].clusterId;
-            if ( !bufferMap.contains( cId ) ) {
-                QList< QPair< SurfacePoint, double > > cb;
-
-                temporaryBufferMap[ cId ] = cb;
-            } else {
-                temporaryBufferMap[ cId ] = bufferMap[ cId ];
-            }
-            SurfacePoint sp;
-            sp.x = clusterVector[ i ].position.x;
-            sp.y = clusterVector[ i ].position.y;
-
-            lastStepClusters[ cId ] = sp;
-            temporaryBufferMap[ cId ].append( QPair< SurfacePoint, double > (
-                sp, latticeController_->lattice()->time() ) );
-        }
-
-        typedef QMap< long int, QList< QPair< SurfacePoint, double > > > T_bufferMap;
-        typedef QList< QPair< SurfacePoint, double > > T_listPairs;
-        typedef QPair< SurfacePoint, double > T_pair;
-
-        // Entfernt alles, was älter als tdiff ist
-        const int tdiff = 5;
-        for (T_bufferMap::Iterator i = temporaryBufferMap.begin(); i != temporaryBufferMap.end(); ++i)
-        {
-            for (T_listPairs::Iterator j = (*i).begin(); j != (*i).end(); ++j) {
-                if ( (*j).second < latticeController_->lattice()->time() - tdiff ) {
-                    (*i).erase( j );
-                }
-            }
-        }
-        bufferMap = temporaryBufferMap;
-        /*
-         QList< long int > bufferMapKeys = bufferMap.keys();
-         foreach ( long int id, bufferMapKeys ) {
-         bool in_current = false;
-         for ( uint i = 0; i < clusterVector.size(); ++i ) {
-         if ( clusterVector[ i ].clusterId == id ) {
-         in_current = true;
-         break;
-         }
-         }
-         if ( !in_current ) {
-         bufferMap.remove( id );
-         }
-         }
-         */
-
-        //boost::circular_buffer<SurfacePoint> cb(50);
-        QBrush brush( Qt::blue );
-        QPen pen( brush, 2, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin );
-
-        foreach( T_listPairs cb, bufferMap )
-            {
-                // QwtPlotCurve* curve1 = new QwtPlotCurve();
-                QwtArray< double > qv1, qv2;
-                double lastx = -1;
-                double lasty = -1;
-                foreach( T_pair sp , cb )
-                    {
-
-                        if ( lastx > 0 && (abs( lastx - sp.first.x ) > 25 || abs( lasty
-                            - sp.first.y ) > 25) )
-                        {
-
-                            QwtPlotCurve* curve = new QwtPlotCurve();
-                            curve->setPen( pen );
-                            curve->setData( qv1, qv2 );
-                            curve->attach( currentPlot );
-                            curves << curve;
-                            qv1.clear();
-                            qv2.clear();
-                        }
-                        qv1 << sp.first.x;
-                        qv2 << sp.first.y;
-                        lastx = sp.first.x;
-                        lasty = sp.first.y;
-                        //        std::cout << ".";
-                    }
-                //      std::cout << std::endl << std::flush;
-                QwtPlotCurve* curve = new QwtPlotCurve();
-                curve->setPen( pen );
-                curve->setData( qv1, qv2 );
-                curve->attach( currentPlot );
-                curves << curve;
-            }
+        foreach( QwtPlotMarker* m, plotMarkers() )
+                currentView->attachItem( m );
+        foreach( QwtPlotCurve* c, plotCurves() )
+                currentView->attachItem( c );
 
         emit
         replotTab();
-
-        foreach( QwtPlotCurve* curve, curves)
-            {
-                //  curve->attach( NULL );
-                // delete curve;
-            }
 
     } else {
         emit replotTab();
@@ -891,27 +867,27 @@ void Waveprogram2DPlot::replot()
      */
 
     /*
-    if ( slicePlot->isVisible() ) {
-        QVector< double > sliceData[ latticeController_->lattice()->numberOfVariables() ];
-        QVector< double > sliceLatticePoints;
+     if ( slicePlot->isVisible() ) {
+     QVector< double > sliceData[ latticeController_->lattice()->numberOfVariables() ];
+     QVector< double > sliceLatticePoints;
 
-        for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
-            for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
-            {
-                sliceData[ component ].push_back( latticeController_->lattice()->getComponentAt(
-                    component, i, latticeController_->lattice()->latticeSizeY() / 2 ) );
-            }
-            sliceLatticePoints.push_back( i * latticeController_->lattice()->scaleX() );
-        }
-        if ( slice.size() == latticeController_->lattice()->numberOfVariables() )
-            for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
-            {
-                slice[ component ]->setData( sliceLatticePoints, sliceData[ component ] );
-            }
-        slicePlot->replot();
-    }
+     for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
+     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
+     {
+     sliceData[ component ].push_back( latticeController_->lattice()->getComponentAt(
+     component, i, latticeController_->lattice()->latticeSizeY() / 2 ) );
+     }
+     sliceLatticePoints.push_back( i * latticeController_->lattice()->scaleX() );
+     }
+     if ( slice.size() == latticeController_->lattice()->numberOfVariables() )
+     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
+     {
+     slice[ component ]->setData( sliceLatticePoints, sliceData[ component ] );
+     }
+     slicePlot->replot();
+     }
 
-*/
+     */
 
     //phase->replot();
     waveSizeLabel->setNum( latticeController_->lattice()->currentWavesize() );
@@ -923,7 +899,7 @@ Waveprogram2DPlot::~Waveprogram2DPlot()
 {
     killField();
     delete timer;
-
+    delete d_data;
 }
 
 void Waveprogram2DPlot::setUpActions()
@@ -956,7 +932,7 @@ void Waveprogram2DPlot::changeModel(std::string m)
 
 void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string model)
 {
-    removeTabs();
+
     if ( parent != 0 ) {
         if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
             parent->statusBar()->showMessage( QString(
@@ -981,7 +957,8 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
         }
     }
 
-    setUpTabs();
+    setUpViews();
+    reorderTabs();
     setUpColorMap();
     setUpModelProperties();
     setUpBoundaryConditionsSelector();
@@ -995,7 +972,7 @@ void Waveprogram2DPlot::killField()
 {
     writeParameterSets();
 
-    removeTabs();
+    reorderTabs();
     if ( latticeController_->lattice() && !latticeIdentifier_.empty() ) {
         //LatticePluginRegistration::instance()->getDestroyerByName( latticeIdentifier_ )( lattice );
         latticeController_->destroy();
@@ -1184,21 +1161,13 @@ void Waveprogram2DPlot::saveViews(const QString& name)
 
 void Waveprogram2DPlot::saveViews(const QString& name, uint num)
 {
-    QImage pixmap( 645, 600, QImage::Format_ARGB32 );
+    //QImage pixmap( 645, 600, QImage::Format_ARGB32 );
+    QImage pixmap(
+        latticeController_->latticeSizeX(), latticeController_->latticeSizeY(),
+        QImage::Format_ARGB32 );
     pixmap.fill( Qt::white ); // Qt::transparent ?
 
-    QwtPlotPrintFilter filter;
-    int options = 0;//= QwtPlotPrintFilter::PrintAll;
-    options &= ~QwtPlotPrintFilter::PrintBackground;
-    options &= ~QwtPlotPrintFilter::PrintFrameWithScales;
-    options &= ~QwtPlotPrintFilter::PrintMargin;
-    options &= ~QwtPlotPrintFilter::PrintTitle;
-    options &= ~QwtPlotPrintFilter::PrintLegend;
-    options &= ~QwtPlotPrintFilter::PrintGrid;
-
-    filter.setOptions( options );
-
-    plotViewVector_[ num ]->plot_->print( pixmap, filter );
+    plotViewVector_[ num ]->print( pixmap, true );
 
     pixmap.save( name + QString( ".%1.png" ).arg( num ), "PNG" );
 }
@@ -1362,7 +1331,7 @@ void Waveprogram2DPlot::on_actionExport_as_Matlab_Structure_triggered()
     if ( matlabExportFile_.isEmpty() ) {
         matlabExportFile_ = QFileDialog::getSaveFileName(
             this, tr( "Matlab File" ), "matlabexport.m", tr( "Matlab Files (*.m)" ) );
-        if (!matlabExportFile_.isEmpty()) {
+        if ( !matlabExportFile_.isEmpty() ) {
             matlabExportIndex_ = 1;
             actionExport_as_Matlab_Structure->setText( "is Exporting" );
         }
@@ -1594,7 +1563,7 @@ void Waveprogram2DPlot::on_actionAbout_triggered()
 
 void Waveprogram2DPlot::on_actionShow_Slice_triggered(bool b)
 {
-//    sliceWidget->setVisible( b );
+    //    sliceWidget->setVisible( b );
 }
 
 void Waveprogram2DPlot::readSettings()
@@ -1624,7 +1593,7 @@ void Waveprogram2DPlot::writeSettings()
     //    settings.setValue("size", size());
     //    settings.setValue("pos", pos());
     settings.setValue( "geometry", saveGeometry() );
-    settings.setValue( "state", saveState(1) );
+    settings.setValue( "state", saveState( 1 ) );
     /*
      QTextStream stream;
 
