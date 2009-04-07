@@ -50,8 +50,16 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     // LatticeController vllt ohne Zeiger, aber auf jeden Fall besser einbauen als so!
     lc_.reset( new LatticeController() );
     latticeController_ = lc_.get();
+    connect( latticeController_, SIGNAL( stopped() ), this, SLOT( replot() ) );
+    connect( latticeController_, SIGNAL( stopped() ), this, SLOT( updateLabels() ) );
+
     connect( latticeController_, SIGNAL( changed() ), this, SLOT( replot() ) );
     connect( latticeController_, SIGNAL( changed() ), this, SLOT( updateLabels() ) );
+
+    connect( latticeController_, SIGNAL( processed(int) ), this, SLOT( resizeWindowToForceUpdate() ) );
+    connect( latticeController_, SIGNAL( processed(int) ), this, SLOT( updateLabels() ) );
+
+    connect( latticeController_, SIGNAL( parametersChanged() ), this, SLOT( updateParameters() ) );
 
     colorMapMode = defaultColorMapMode;
 
@@ -62,9 +70,6 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     //    setAttribute( Qt::WA_MacMetalStyle );
     setTitle();
-
-    adaptationMode_ = false;
-    loopruns = false;
 
     boundaryConditionIdentifier[ FixedBoundary ] = "Fixed Boundary";
     boundaryConditionIdentifier[ PeriodicBoundary ] = "Periodic Boundary";
@@ -153,7 +158,7 @@ void Waveprogram2DPlot::resetTime()
 
 void Waveprogram2DPlot::closeEvent(QCloseEvent * event)
 {
-    loopStop();
+    latticeController_->stopLoop();
     writeSettings();
     writeParameterSets();
     event->accept();
@@ -826,7 +831,6 @@ void Waveprogram2DPlot::updatePlotAnnotations()
 
 void Waveprogram2DPlot::replot()
 {
-
     if ( !latticeController_->lattice() )
         return;
 
@@ -882,7 +886,6 @@ void Waveprogram2DPlot::setUpActions()
 
 void Waveprogram2DPlot::changeModel(std::string m)
 {
-    loopStop();
     emit
     modelClosed();
 
@@ -941,7 +944,7 @@ void Waveprogram2DPlot::killField()
     }
     setTitle();
 }
-
+#if 0
 void Waveprogram2DPlot::loopStart()
 {
     loopruns = true;
@@ -958,9 +961,43 @@ void Waveprogram2DPlot::loopStop()
     QTimer::singleShot( 10, this, SLOT(replot()) );
     connect( latticeController_, SIGNAL( changed() ), this, SLOT( replot() ) );
 }
+#endif
 
 void Waveprogram2DPlot::toggleStartStop()
 {
+    if ( latticeController_->loopRuns() == false ) {
+        timer->start( updatePeriodTime_ );
+
+        startStopButton->setText( "Stop" );
+        actionStartStop->setText( "Stop" );
+    latticeController_->startLoop();
+    }
+    else {
+        qDebug() << "Stop";
+        latticeController_->stopLoop();
+        timer->stop();
+        startStopButton->setText( "Start" );
+        actionStartStop->setText( "Start" );
+    }
+    return;
+
+    static bool a = false;
+    a = !a;
+    if ( a ) {
+        timer->start( updatePeriodTime_ );
+
+        startStopButton->setText( "Stop" );
+        actionStartStop->setText( "Stop" );
+    latticeController_->start( 6 );
+    }
+    else {
+        qDebug() << "Stop";
+        latticeController_->stop();
+        timer->stop();
+        startStopButton->setText( "Start" );
+        actionStartStop->setText( "Start" );
+    }
+return;/*
     if ( loopruns == false ) {
         timer->start( updatePeriodTime_ );
         startStopButton->setText( "Stop" );
@@ -972,6 +1009,7 @@ void Waveprogram2DPlot::toggleStartStop()
         actionStartStop->setText( "Start" );
         this->loopStop();
     }
+*/
 }
 
 void Waveprogram2DPlot::on_clearButton_clicked()
@@ -1334,79 +1372,22 @@ void Waveprogram2DPlot::savePng(QString filename)
 
 void Waveprogram2DPlot::adaptationModeCheckBox_clicked(bool b)
 {
-    adaptationMode( b );
+    latticeController_->setAdaptationMode( b );
 }
 
-/*
- void Waveprogram2DPlot::makeStableStart()
- {
- for (int j = 0; j < 10000; j++) {
-
- //        if (latticeController_->lattice()->getAt(170,30).getX() > 0)
- //            latticeController_->lattice()->copy(100,1,100,100,1,100);
- // if ((j % 400 == 0) && (latticeController_->lattice()->epsilon > 0.08)) { latticeController_->lattice()->epsilon += -0.0001; }
- if ( j % 100 == 0 ) {
- if ( latticeController_->lattice()->currentWavesize() > wavesize_ ) {
- low = low + 0.01 * (high - low);
- } else {
- high = high - 0.01 * (high - low);
- }
- //      std::cout << "\nNew high: " << high << ", New low: " << low << ", Epsilon: " << latticeController_->lattice()->epsilon() << "\n" << std::flush;
- }
- if ( latticeController_->lattice()->currentWavesize() < wavesize_ ) {
- if ( latticeParameters.value( "gamma" ) )
- latticeParameters.value( "gamma" )->set( low );
- // std::cout << " g set to " << Model::g << " " << std::endl << std::flush;
- } else {
- if ( latticeParameters.value( "gamma" ) )
- latticeParameters.value( "gamma" )->set( high );
- // std::cout << " g set to " << Model::g << " " << std::endl << std::flush;
- }
- step();
- if ( j % 300 == 0 )
- replot();
- }
- }
- */
-
-void Waveprogram2DPlot::adaptationMode(bool b)
-{
-    adaptationMode_ = b;
+void Waveprogram2DPlot::resizeWindowToForceUpdate() {
+    if ( actionResize_program_window_to_force_update->isChecked() ) {
+        static int resizeCount = 0;
+        ++resizeCount;
+        if ( resizeCount == 2 ) {
+            this->resize( this->size().rwidth(), this->size().rheight() + 1 );
+        }
+        if ( resizeCount == 4 ) {
+            this->resize( this->size().rwidth(), this->size().rheight() - 1 );
+            resizeCount = 0;
+        }
+    }
 }
-
-bool Waveprogram2DPlot::adaptationMode()
-{
-    return adaptationMode_;
-}
-
-/*
- void Waveprogram2DPlot::adaptValues()
- {
- if ( !latticeParameters.value( "gamma" ) )
- return;
- static int j = 0;
- if ( j % 10 == 0 ) {
- std::cout << latticeController_->lattice()->currentWavesize();
- if ( latticeController_->lattice()->currentWavesize() > wavesize_ ) {
- low = low + gammaspacing * (high - low);
- gamma_lowValue->setValue( low );
- } else {
- high = high - gammaspacing * (high - low);
- gamma_highValue->setValue( high );
- }
- //!    SurfacePoint po = latticeController_->lattice()->centreOfExcitation();
- //!    std::cout << "\nNew high: " << high << ", New low: " << low << ", Epsilon: " << latticeController_->lattice()->epsilon() << " " << po.x <<"\n" << std::flush;
- }
- if ( latticeController_->lattice()->currentWavesize() < wavesize_ ) {
- latticeParameters.value( "gamma" )->set( low );
- // std::cout << " g set to " << Model::g << " " << std::endl << std::flush;
- } else {
- latticeParameters.value( "gamma" )->set( high );
- // std::cout << " g set to " << Model::g << " " << std::endl << std::flush;
- }
- j++;
- }
- */
 
 void Waveprogram2DPlot::updateLabels()
 {
@@ -1414,6 +1395,7 @@ void Waveprogram2DPlot::updateLabels()
     clusterNumberLabel->setNum( latticeController_->lattice()->numberOfClusters() );
 }
 
+#if 0
 void Waveprogram2DPlot::loop()
 {
     while (loopruns) {
@@ -1425,18 +1407,6 @@ void Waveprogram2DPlot::loop()
                 emit updateParameters();
             }
             latticeController_->stepNum( 5 );
-            /*
-             std::cout << latticeController_->lattice()->getMax( 0 ) << latticeController_->lattice()->getMax( 1 ) << std::endl;
-             this->step(  );
-             std::cout << latticeController_->lattice()->getMax( 0 ) << latticeController_->lattice()->getMax( 1 ) << std::endl;
-             this->step(  );
-             std::cout << latticeController_->lattice()->getMax( 0 ) << latticeController_->lattice()->getMax( 1 ) << std::endl;
-             this->step(  );
-             std::cout << latticeController_->lattice()->getMax( 0 ) << latticeController_->lattice()->getMax( 1 ) << std::endl;
-             this->step(  );
-             std::cout << latticeController_->lattice()->getMax( 0 ) << latticeController_->lattice()->getMax( 1 ) << std::endl;
-             */
-            //std::cout << latticeController_->lattice()->time() << std::endl;
 
             updateLabels();
         }
@@ -1506,6 +1476,7 @@ void Waveprogram2DPlot::loop()
 
     }
 }
+#endif
 
 void Waveprogram2DPlot::on_numInitialPushButton_clicked()
 {

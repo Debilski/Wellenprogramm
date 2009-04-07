@@ -271,7 +271,6 @@ void PlotView::print(QImage& image, bool raw, bool resize)
     }
     d_data->plot->setCanvasLineWidth( canvasLineWidth );
     d_data->plot->setMargin( margin );
-
 }
 
 void PlotView::showMenu(const QPoint& p)

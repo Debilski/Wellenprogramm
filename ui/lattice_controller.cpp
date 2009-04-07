@@ -5,19 +5,87 @@
  *      Author: rikebs
  */
 
-#include <memory>
 
 #include "lattice_controller.h"
+
+#include <memory>
+#include <QtCore>
 
 #include "lattice_interface.h"
 #include "lattice_scripter.h"
 #include "plugin_kernel.h"
 #include "configuration.h"
 
+
+LoopThread::LoopThread(QObject *parent) :
+    lattice( 0 ), QThread( parent )
+{
+    abort = false;
+    restart = false;
+    stopped = true;
+}
+LoopThread::~LoopThread()
+{
+    mutex.lock();
+    abort = true;
+    stopped = true;
+    condition.wakeOne();
+    mutex.unlock();
+
+    wait();
+}
+
+void LoopThread::setLattice(LatticeInterface* lattice)
+{
+    QMutexLocker locker( &mutex );
+    this->lattice = lattice;
+}
+
+void LoopThread::loop(int stepsAtOnce)
+{
+    QMutexLocker locker( &mutex );
+    this->stepsAtOnce = stepsAtOnce;
+
+    stopped = false;
+    if ( !isRunning() ) {
+        start( LowPriority );
+    } else {
+        restart = true;
+        condition.wakeOne();
+    }
+}
+void LoopThread::stop()
+{
+    QMutexLocker locker( &mutex );
+    stopped = true;
+
+}
+
+void LoopThread::run()
+{
+    forever {
+        mutex.lock();
+        int stepsAtOnce = this->stepsAtOnce;
+        mutex.unlock();
+        while (true) {
+            if ( restart )
+                break;
+            if ( stopped )
+                break;
+            lattice->step( stepsAtOnce );
+        }
+        mutex.lock();
+        if ( !restart )
+            condition.wait( &mutex );
+        restart = false;
+        mutex.unlock();
+    }
+}
+
 class LatticeController::PrivateData {
 public:
     PrivateData() :
-        lattice( 0 ), stepsAtOnce( 1 )
+        lattice( 0 ), stepsAtOnce( 1 ), stopped( true ), adaptationMode( false )
     {
     }
     typedef std::auto_ptr< LatticeInterface > LatticePtr;
@@ -25,6 +93,8 @@ public:
     PluginKernel TheKernel;
     LatticeScripter* latticeScripter;
     int stepsAtOnce;
+    bool adaptationMode;
+    bool stopped;
 };
 
 /**
@@ -58,7 +128,6 @@ LatticeController::LatticeController(QObject* parent) :
             std::cout << "Found library: " << qPrintable(libInfo.filePath()) << std::endl;
             d_data->TheKernel.loadPlugin( libInfo.filePath().toStdString() );
         }
-
     d_data->latticeScripter = new LatticeScripter( this );
 }
 
@@ -116,6 +185,7 @@ bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int 
 
     d_data->lattice = d_data->TheKernel.getLatticeServer().getDriver( n ).createRenderer(
         sizeX, sizeY, latticeSizeX, latticeSizeY );
+    thread.setLattice( lattice() );
     return modelExists;
 }
 
@@ -124,6 +194,7 @@ bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int 
  */
 void LatticeController::destroy()
 {
+    stopLoop();
     d_data->lattice.reset( 0 );
 }
 
@@ -150,7 +221,10 @@ void LatticeController::stepUntil(double time)
  */
 void LatticeController::startLoop()
 {
-
+    if ( ! loopRuns() ) {
+        d_data->stopped = false;
+        QTimer::singleShot( 0, this, SLOT(loop()) );
+    }
 }
 
 /**
@@ -158,7 +232,10 @@ void LatticeController::startLoop()
  */
 void LatticeController::stopLoop()
 {
-
+    if ( loopRuns() ) {
+        d_data->stopped = true;
+        emit changed();
+    }
 }
 
 // Kann und sollte vielleicht in den Kernel ausgelagert werden.
@@ -183,11 +260,6 @@ void LatticeController::stepNum(int n)
 {
     d_data->lattice.get()->step( n );
     emit changed();
-}
-
-void LatticeController::loop()
-{
-
 }
 
 LatticeScripter* LatticeController::getLatticeScripter() const
@@ -238,4 +310,51 @@ int LatticeController::latticeSizeY() const
 QSize LatticeController::latticeSize() const
 {
     return QSize( latticeSizeX(), latticeSizeY() );
+}
+
+void LatticeController::loop()
+{
+    QTime t;
+    t.start();
+    while (t.elapsed() < 100) {
+        if ( d_data->stopped ) {
+            return;
+        }
+        if ( adaptationMode() ) {
+                        lattice()->adaptParameters();
+                        emit parametersChanged();
+        }
+        d_data->lattice->step( d_data->stepsAtOnce );
+        emit processed( d_data->stepsAtOnce );
+
+    }
+    if ( d_data->stopped ) {
+        emit stopped();
+        return;
+    }
+    QTimer::singleShot( 0, this, SLOT(loop()) );
+}
+void LatticeController::start(int i)
+{
+    //thread.loop(i);
+}
+
+void LatticeController::stop()
+{
+    //thread.stop();
+}
+
+bool LatticeController::loopRuns() const
+{
+    return ! (d_data->stopped);
+}
+
+void LatticeController::setAdaptationMode(bool b)
+{
+    d_data->adaptationMode = b;
+}
+
+bool LatticeController::adaptationMode()
+{
+    return d_data->adaptationMode;
 }

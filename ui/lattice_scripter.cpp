@@ -7,15 +7,28 @@
 
 #include "lattice_scripter.h"
 
+#include <qscriptengine.h>
+
+class LatticeScripter::PrivateData {
+public:
+    QScriptEngine engine;
+};
+
 LatticeScripter::LatticeScripter(QObject* latticeController) :
-    QObject( latticeController )
+    QObject( latticeController ), d_data( new PrivateData )
 {
-    QScriptValue objectValue = engine_.newQObject( latticeController );
-    engine_.globalObject().setProperty( "lattice", objectValue );
+    QScriptValue objectValue = d_data->engine.newQObject( latticeController );
+    d_data->engine.globalObject().setProperty( "lattice", objectValue );
+}
+
+LatticeScripter::~LatticeScripter()
+{
+    delete d_data;
 }
 
 QScriptValue LatticeScripter::evaluate(const QString& program)
 {
-    QScriptValue res = engine_.evaluate( program );
+    QScriptValue res = d_data->engine.evaluate( program );
     emit result(res);
+    return res;
 }

@@ -66,10 +66,6 @@ public:
     Waveprogram2DPlot(QMainWindow * parent = 0, int realSize = 128, int latticeSize = 128);
     ~Waveprogram2DPlot();
 
-    void loopStart();
-    void loopStop();
-    bool loopruns;
-    void loop();
     QTimer *timer;
 
     void setUpDockWindows();
@@ -152,8 +148,7 @@ public slots:
     void changeParameter(Parameter< double >* p, double value);
 
     void changeModel(std::string m);
-    bool adaptationMode();
-    void adaptationMode(bool b);
+    void resizeWindowToForceUpdate();
 
     void updateColorScheme(QAction* a);
     void updateColorSchemeMode(QAction* a);
@@ -195,8 +190,6 @@ protected:
 
 private:
     bool showClusterIds_;
-
-    bool adaptationMode_;
 
     // Plotting Elements
 
