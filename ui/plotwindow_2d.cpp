@@ -128,6 +128,10 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     menuDock_Windows->addAction( adaptationParameterWidget->toggleViewAction() );
     menuDock_Windows->addAction( extrasWidget->toggleViewAction() );
 
+    QAction* paintWindow = paintDockWidget->toggleViewAction();
+    menuDock_Windows->addAction( paintWindow );
+    toolBar->addAction(paintWindow);
+
     setUnifiedTitleAndToolBarOnMac( true );
 
     setUpDockWindows();

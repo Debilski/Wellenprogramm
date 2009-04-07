@@ -640,7 +640,6 @@
    <addaction name="actionLoad_from_Png"/>
    <addaction name="actionSave_as_Movie_Pngs"/>
    <addaction name="actionExport_as_Matlab_Structure"/>
-   <addaction name="actionPaint_Mode"/>
   </widget>
   <widget class="QDockWidget" name="paintDockWidget">
    <property name="visible">
@@ -925,14 +924,6 @@
     <string>.</string>
    </property>
   </action>
-  <action name="actionPaint_Mode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Paint</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -967,22 +958,6 @@
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>actionPaint_Mode</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>paintDockWidget</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>154</x>
-     <y>573</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>paintFixpointCheckbox</sender>
    <signal>toggled(bool)</signal>
