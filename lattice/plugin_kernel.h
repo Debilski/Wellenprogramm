@@ -33,7 +33,7 @@ public:
                 *this );
         }
         catch (std::runtime_error e) {
-            std::cout << e.what() << " \n" << "Ignoring.\n";
+            std::cout << e.what() << " " << "Ignoring.\n";
         }
     }
 
