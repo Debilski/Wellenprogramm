@@ -168,6 +168,8 @@ public slots:
     void resetTime();
     void paint(const uint& component, const QPointF& point) ;
 
+    void movieExport();
+
 signals:
 
     void updateParameters();

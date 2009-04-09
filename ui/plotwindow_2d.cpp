@@ -61,6 +61,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     connect( latticeController_, SIGNAL( parametersChanged() ), this, SLOT( updateParameters() ) );
 
+    connect( latticeController_, SIGNAL( processed(int) ), this, SLOT( movieExport() ) );
+
     colorMapMode = defaultColorMapMode;
 
     setupUi( this ); // this sets up GUI
@@ -151,7 +153,6 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     readSettings();
 
     connect( simulationTimeLabel, SIGNAL( reset() ), this, SLOT( resetTime()) );
-
 }
 
 void Waveprogram2DPlot::resetTime()
@@ -727,7 +728,7 @@ QList< QwtPlotCurve* > Waveprogram2DPlot::plotCurves()
 }
 
 void Waveprogram2DPlot::updatePlotAnnotations()
-{
+{return;
     qDeleteAll( d_data->markers );
     d_data->markers.clear();
     //    d_data->markers.reserve( latticeController_->lattice()->numberOfClusters() );
@@ -1165,14 +1166,26 @@ void Waveprogram2DPlot::saveViews(const QString& name)
 void Waveprogram2DPlot::saveViews(const QString& name, uint num)
 {
     //QImage pixmap( 645, 600, QImage::Format_ARGB32 );
-    QImage pixmap(
+    {
+    QImage image(
         latticeController_->latticeSizeX() + 0, latticeController_->latticeSizeY() + 0,
         QImage::Format_ARGB32 );
-    pixmap.fill( Qt::white ); // Qt::transparent ?
+    image.fill( Qt::white ); // Qt::transparent ?
 
-    plotViewVector_[ num ]->print( pixmap, true );
+    plotViewVector_[ num ]->print( image, true );
 
-    pixmap.save( name + QString( ".%1.png" ).arg( num ), "PNG" );
+    image.save( name + QString( ".%1.png" ).arg( num ), "PNG" );
+    }
+    {
+        QImage image(
+            latticeController_->latticeSizeX() + 240, latticeController_->latticeSizeY() + 200,
+            QImage::Format_ARGB32 );
+        image.fill( Qt::white ); // Qt::transparent ?
+
+        plotViewVector_[ num ]->print( image, false );
+
+        image.save( name + QString( "-large.%1.png" ).arg( num ), "PNG" );
+    }
 }
 
 void Waveprogram2DPlot::on_actionSave_as_Png_triggered()
@@ -1396,8 +1409,29 @@ void Waveprogram2DPlot::resizeWindowToForceUpdate() {
 void Waveprogram2DPlot::updateLabels()
 {
     simulationTimeLabel->setNum( latticeController_->lattice()->time() );
-    clusterNumberLabel->setNum( latticeController_->lattice()->numberOfClusters() );
+//    clusterNumberLabel->setNum( latticeController_->lattice()->numberOfClusters() );
 }
+
+void Waveprogram2DPlot::movieExport()
+{
+if ( !movieQueue.empty() ) {
+    savePng( movieQueue.head() );
+    movieQueue.dequeue();
+    actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
+        movieQueue.size() ) );
+    if ( movieQueue.empty() ) {
+        actionSave_as_Movie_Pngs->setText( QString( "savetomultiple" ) );
+    }
+}
+
+if ( !matlabExportFile_.isEmpty() ) {
+    QString modelName( latticeController_->lattice()->modelName().c_str() );
+    modelName = modelName.remove( QRegExp( "[^A-Za-z]" ) );
+    exportAsMatlabStructure( matlabExportFile_, modelName, matlabExportIndex_, true );
+    ++matlabExportIndex_;
+}
+}
+
 
 #if 0
 void Waveprogram2DPlot::loop()
