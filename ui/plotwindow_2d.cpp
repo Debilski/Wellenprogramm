@@ -631,16 +631,12 @@ void Waveprogram2DPlot::setUpAdaptationParameters()
 
 void Waveprogram2DPlot::changeParameter(const QString& paramName, double value)
 {
-
-        std::cout << paramName.toStdString();
         Parameter< double >* p = latticeParameters.value( paramName );
-        std::cout << p;
         if ( p != 0 ) {
             changeParameter( p, value );
             return;
         }
         p = latticeAdaptationParameters.value( paramName );
-        std::cout << p;
         if ( p != 0 ) {
             changeParameter( p, value );
             return;
@@ -721,7 +717,7 @@ QList< QwtPlotCurve* > Waveprogram2DPlot::plotCurves()
 }
 
 void Waveprogram2DPlot::updatePlotAnnotations()
-{return;
+{
     qDeleteAll( d_data->markers );
     d_data->markers.clear();
     //    d_data->markers.reserve( latticeController_->lattice()->numberOfClusters() );
@@ -802,11 +798,9 @@ void Waveprogram2DPlot::updatePlotAnnotations()
             double lasty = -1;
             foreach( T_pair sp , cb )
                 {
-
                     if ( lastx > 0 && (abs( lastx - sp.first.x ) > 25 || abs( lasty - sp.first.y )
                         > 25) )
                     {
-
                         QwtPlotCurve* curve = new QwtPlotCurve();
                         curve->setPen( pen );
                         curve->setData( qv1, qv2 );
@@ -843,8 +837,9 @@ void Waveprogram2DPlot::replot()
     {
         PlotView* currentView = static_cast< PlotView* > ( plotTabWidget->currentWidget() );
 
-        foreach( QwtPlotMarker* m, plotMarkers() )
+        foreach( QwtPlotMarker* m, plotMarkers() ) {
                 currentView->attachItem( m );
+        }
         foreach( QwtPlotCurve* c, plotCurves() )
                 currentView->attachItem( c );
 
