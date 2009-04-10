@@ -195,9 +195,8 @@ private:
     QVector< ParameterValueMap > savedParameterSets;
 
     QQueue< QString > movieQueue;
-    int realSize_, latticeSize_;
 
-    void initField(int realSize, int latticeSize, const QString&  model);
+    void initField(int realSizeX, int realSizeY, int latticeSizeX, int latticeSizeY, const QString& model);
     void killField();
 
     //QVector< QDoubleSpinBox* > diffusionBoxes;//[ ModelLattice::number_of_Variables ];

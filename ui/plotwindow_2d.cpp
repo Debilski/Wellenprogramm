@@ -46,10 +46,10 @@ void Waveprogram2DPlot::setTitle()
 }
 
 Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int latticeSize) :
-    QMainWindow( parent ), realSize_( realSize ), latticeSize_( latticeSize ), parent( parent )
+    QMainWindow( parent ), parent( parent )
 {
     d_data = new PrivateData;
-    std::cout << realSize_ << "/" << latticeSize_ << std::endl;
+    std::cout << realSize << "/" << latticeSize << std::endl;
 
     // LatticeController vllt ohne Zeiger, aber auf jeden Fall besser einbauen als so!
     lc_.reset( new LatticeController() );
@@ -105,7 +105,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     QString lastUsedModel = config.option( "last_model" ).value().toString();
     qDebug() << lastUsedModel;
-    initField( realSize, latticeSize, lastUsedModel );
+    initField( realSize, realSize, latticeSize, latticeSize, lastUsedModel );
 
     boundaryConditionsComboBox->setCurrentIndex( latticeController_->lattice()->boundaryCondition() );
 
@@ -699,8 +699,8 @@ void Waveprogram2DPlot::on_actionShow_Cluster_Ids_triggered(bool b)
 void Waveprogram2DPlot::on_midpoint_sizeValue_valueChanged(double d)
 {
     Defect< GeneralComponentSystem > midpointDefect;
-    midpointDefect.centre.x = realSize_ / 2.0;
-    midpointDefect.centre.y = realSize_ / 2.0;
+    midpointDefect.centre.x = latticeController_->sizeX() / 2.0;
+    midpointDefect.centre.y = latticeController_->sizeY() / 2.0;
     midpointDefect.boundaryCondition = NoReactionBoundary;
     midpointDefect.radius = d;
     latticeController_->lattice()->addDefect( midpointDefect );
@@ -887,24 +887,28 @@ void Waveprogram2DPlot::changeModel(const QString& modelName)
     emit
     modelClosed();
 
+    int x = latticeController_->sizeX();
+    int y = latticeController_->sizeY();
+    int lx = latticeController_->latticeSizeX();
+    int ly = latticeController_->latticeSizeY();
+
     killField();
 
-    initField( realSize_, latticeSize_, modelName );
-    emit modelChanged();
+    initField( x, y, lx, ly, modelName );
 }
 
-void Waveprogram2DPlot::initField(int realSize, int latticeSize, const QString& model)
+void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX, int latticeSizeY, const QString& model)
 {
 
     if ( parent != 0 ) {
         if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
             parent->statusBar()->showMessage( QString(
-                "Creating a lattice of %1 x %1. This might take some time" ).arg( latticeSize_ ) );
+                "Creating a lattice of %1 x %2. This might take some time" ).arg( latticeSizeX, latticeSizeY ) );
         }
     }
     QCoreApplication::processEvents();
 
-    latticeController_->load( model, realSize, realSize, latticeSize, latticeSize );
+    latticeController_->load( model, realSizeX, realSizeY, latticeSizeX, latticeSizeY );
 
     config( "last_model" ).setValue( QVariant( model ) );
     qDebug() << config( "last_model" ).value();
@@ -928,6 +932,7 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, const QString& 
     setTitle();
 
     readParameterSets();
+    emit modelChanged();
 }
 
 void Waveprogram2DPlot::killField()
