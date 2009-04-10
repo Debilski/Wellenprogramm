@@ -899,15 +899,13 @@ void Waveprogram2DPlot::changeModel(const QString& modelName)
 
 void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX, int latticeSizeY, const QString& model)
 {
-    QString delayMsg = QString( "Creating a lattice of %1 x %2. This might take some time." ).arg( latticeSizeX, latticeSizeY );
+    QString delayMsg = QString( "Creating a lattice of %1 x %2. This might take some time." ).arg( latticeSizeX ).arg( latticeSizeY );
     if ( parent != 0 ) {
         if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
             parent->statusBar()->showMessage( delayMsg );
         }
     }
     qDebug() << delayMsg;
-
-    QCoreApplication::processEvents();
 
     latticeController_->load( model, realSizeX, realSizeY, latticeSizeX, latticeSizeY );
 
