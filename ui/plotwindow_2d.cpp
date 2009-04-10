@@ -26,10 +26,10 @@ void Waveprogram2DPlot::setTitle()
 {
     if ( latticeController_->isValid() ) {
         setWindowTitle( QString::fromUtf8(
-            "‘%1’: Simulate a field size of %2×%2 on a lattice of %3×%3 " ).arg(
-            latticeController_->lattice()->modelName().c_str() ).arg(
-            latticeController_->lattice()->sizeX() ).arg(
-            latticeController_->lattice()->latticeSizeX() ) );
+            "‘%1’: Simulate a field size of %2×%3 on a lattice of %4×%5 " ).arg(
+            latticeController_->modelName() ).arg( latticeController_->sizeX() ).arg(
+            latticeController_->sizeY() ).arg( latticeController_->latticeSizeX() ).arg(
+            latticeController_->latticeSizeY() ) );
         if ( latticeController_->lattice()->modelInformation().empty() ) {
             informationGroupBox->hide();
             infoTextLabel->clear();
@@ -899,19 +899,19 @@ void Waveprogram2DPlot::changeModel(const QString& modelName)
 
 void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX, int latticeSizeY, const QString& model)
 {
-
+    QString delayMsg = QString( "Creating a lattice of %1 x %2. This might take some time." ).arg( latticeSizeX, latticeSizeY );
     if ( parent != 0 ) {
         if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
-            parent->statusBar()->showMessage( QString(
-                "Creating a lattice of %1 x %2. This might take some time" ).arg( latticeSizeX, latticeSizeY ) );
+            parent->statusBar()->showMessage( delayMsg );
         }
     }
+    qDebug() << delayMsg;
+
     QCoreApplication::processEvents();
 
     latticeController_->load( model, realSizeX, realSizeY, latticeSizeX, latticeSizeY );
 
     config( "last_model" ).setValue( QVariant( model ) );
-    qDebug() << config( "last_model" ).value();
     config.write();
 
     latticeController_->lattice()->setDiffusion( 0, 1. );

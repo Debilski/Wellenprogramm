@@ -314,6 +314,11 @@ QSize LatticeController::latticeSize() const
     return QSize( latticeSizeX(), latticeSizeY() );
 }
 
+QString LatticeController::modelName() const
+{
+    return QString::fromStdString( d_data->lattice->modelName() );
+}
+
 void LatticeController::loop()
 {
     QTime t;

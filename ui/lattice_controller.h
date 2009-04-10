@@ -62,7 +62,7 @@ Q_PROPERTY(int sizeY READ sizeY)
 Q_PROPERTY(int latticeSizeX READ latticeSizeX)
 Q_PROPERTY(int latticeSizeY READ latticeSizeY)
 Q_PROPERTY(int adaptationMode READ adaptationMode WRITE setAdaptationMode)
-
+Q_PROPERTY(QString modelName READ modelName)
 public:
     LatticeController(QObject* parent = 0);
     ~LatticeController();
@@ -82,6 +82,7 @@ public:
     void closeLattice();
 
     QStringList getModelNames();
+    QString modelName() const;
 
     LatticeScripter* getLatticeScripter() const;
 
