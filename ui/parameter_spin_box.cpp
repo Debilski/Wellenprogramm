@@ -12,7 +12,13 @@ ParameterSpinBox::ParameterSpinBox(Parameter< double >* parameterReference, QWid
 {
     parameterName_ = QString::fromUtf8( parameter_->name.c_str() );
     update();
+    connect( this, SIGNAL(valueChanged(const double&)), this, SLOT(emitChanged(const double&)) );
 }
+
+ParameterSpinBox::~ParameterSpinBox()
+{
+}
+
 void ParameterSpinBox::updateReference(Parameter< double >* parameterReference)
 {
     parameter_ = parameterReference;
@@ -28,10 +34,14 @@ void ParameterSpinBox::updateValue()
 }
 void ParameterSpinBox::update()
 {
-    this->setProperty( "parameter", QVariant( parameterName_ ) );
     this->setDecimals( parameter_->decimals() );
     this->setMaximum( parameter_->max() );
     this->setMinimum( parameter_->min() );
     this->setSingleStep( parameter_->stepSizeHint() );
     this->setValue( parameter_->get() );
+}
+
+void ParameterSpinBox::emitChanged(const double& val)
+{
+    emit valueChanged(parameterName_, val);
 }

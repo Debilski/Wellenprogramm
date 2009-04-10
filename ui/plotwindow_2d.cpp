@@ -10,6 +10,9 @@
 
 #include "plot_layer.h"
 
+#include "parameter_spin_box.h"
+#include "diffusion_spin_box.h"
+
 #include "spectrogram_data.h"
 
 class Waveprogram2DPlot::PrivateData {
@@ -480,28 +483,19 @@ void Waveprogram2DPlot::setUpDiffusion()
 {
     for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
     {
-        QDoubleSpinBox* diffusionBox = new QDoubleSpinBox( parameterWidgetContents );
+        DiffusionSpinBox* diffusionBox = new DiffusionSpinBox( component, parameterWidgetContents );
 
         //! Bisschen unsauber…
-        diffusionBox->setProperty( "component", QVariant( component ) );
+        diffusionBox->setValue( latticeController_->lattice()->getDiffusion( component ) );
         diffusionBox->setDecimals( 3 );
         diffusionBox->setMaximum( 1000 );
-        diffusionBox->setValue( latticeController_->lattice()->getDiffusion( component ) );
         QString name = "Diffusion " + QString::fromStdString(
             latticeController_->lattice()->componentInfos[ component ].shortName() );
         QLabel* label = new QLabel( name, parameterWidgetContents );
         parameterWidgetFormLayout->addRow( label, diffusionBox );
         connect(
-            diffusionBox, SIGNAL( valueChanged(const double&) ), this,
-            SLOT( changeDiffusion(const double&) ) );
-    }
-}
-
-void Waveprogram2DPlot::changeDiffusion(double value)
-{
-    if ( sender() != 0 ) {
-        std::cout << "Diff" << sender()->property( "component" ).toInt() << " to " << value;
-        changeDiffusion( sender()->property( "component" ).toInt(), value );
+            diffusionBox, SIGNAL( valueChanged(const int&, const double&) ), this,
+            SLOT( changeDiffusion(const int&, const double&) ) );
     }
 }
 
@@ -590,8 +584,8 @@ void Waveprogram2DPlot::setUpParameters()
         QLabel* label = new QLabel( paramName, parameterWidgetContents );
         parameterWidgetFormLayout->addRow( label, parameterBox );
         connect(
-            parameterBox, SIGNAL( valueChanged(const double&) ), this,
-            SLOT( changeParameter(const double&) ) );
+            parameterBox, SIGNAL( valueChanged(const QString&, const double&) ), this,
+            SLOT( changeParameter(const QString&, const double&) ) );
         connect( this, SIGNAL( updateParameters() ), parameterBox, SLOT ( updateValue() ) );
     }
 }
@@ -623,8 +617,8 @@ void Waveprogram2DPlot::setUpAdaptationParameters()
         QLabel* label = new QLabel( paramName, adaptationParameterWidgetContents );
         adaptationParameterWidgetFormLayout->addRow( label, parameterBox );
         connect(
-            parameterBox, SIGNAL( valueChanged(const double&) ), this,
-            SLOT( changeParameter(const double&) ) );
+            parameterBox, SIGNAL( valueChanged(const QString&, const double&) ), this,
+            SLOT( changeParameter(const QString&, const double&) ) );
 
         connect( this, SIGNAL( updateParameters() ), parameterBox, SLOT ( updateValue() ) );
     }
@@ -635,10 +629,9 @@ void Waveprogram2DPlot::setUpAdaptationParameters()
     }
 }
 
-void Waveprogram2DPlot::changeParameter(double value)
+void Waveprogram2DPlot::changeParameter(const QString& paramName, double value)
 {
-    if ( sender() != 0 ) {
-        QString paramName = sender()->property( "parameter" ).toString();
+
         std::cout << paramName.toStdString();
         Parameter< double >* p = latticeParameters.value( paramName );
         std::cout << p;
@@ -652,7 +645,7 @@ void Waveprogram2DPlot::changeParameter(double value)
             changeParameter( p, value );
             return;
         }
-    }
+
 }
 
 void Waveprogram2DPlot::changeParameter(Parameter< double >* p, double value)
@@ -1409,7 +1402,7 @@ void Waveprogram2DPlot::resizeWindowToForceUpdate() {
 void Waveprogram2DPlot::updateLabels()
 {
     simulationTimeLabel->setNum( latticeController_->lattice()->time() );
-//    clusterNumberLabel->setNum( latticeController_->lattice()->numberOfClusters() );
+    clusterNumberLabel->setNum( latticeController_->lattice()->numberOfClusters() );
 }
 
 void Waveprogram2DPlot::movieExport()

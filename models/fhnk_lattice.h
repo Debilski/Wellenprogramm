@@ -869,6 +869,7 @@ struct Metainfo< FhnKLattice_laplace > : MetainfoBase {
     static const bool OPTIMISE_NO_MULTIPLICATIVE_NOISE = true;
     static const bool OPTIMISE_NO_CLUSTER_COUNT = true;
     static const bool OPTIMISE_NO_EXTERNAL_FORCE = true;
+    static const int CLUSTER_COUNTER_LATTICE = 2;
 };
 template<> struct Metainfo< FhnKLattice_laplace >::NoiseMapping< secondComponent > {
     enum {

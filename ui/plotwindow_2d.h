@@ -24,8 +24,6 @@
 #include "script_editor.h"
 #include "plot_view.h"
 
-#include "parameter_spin_box.h"
-
 #include "plot_single.h"
 
 // #include "lattice_interface.h"
@@ -142,9 +140,8 @@ public slots:
     void savePng(QString filename);
 
     void changeDiffusion(int component, double value);
-    void changeDiffusion(double value);
 
-    void changeParameter(double value);
+    void changeParameter(const QString& paramName, double value);
     void changeParameter(Parameter< double >* p, double value);
 
     void changeModel(std::string m);
