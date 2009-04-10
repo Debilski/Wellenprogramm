@@ -167,6 +167,7 @@ bool LatticeController::isValid()
 bool LatticeController::load(const QString& name, int sizeX, int sizeY, int latticeSizeX,
                              int latticeSizeY)
 {
+    closeLattice();
     qDebug() << "Trying Model " << name;
     std::string std_name = name.toStdString();
     int n = 0;
@@ -191,9 +192,10 @@ bool LatticeController::load(const QString& name, int sizeX, int sizeY, int latt
 /**
  * Zerstört die Lattice.
  */
-void LatticeController::destroy()
+void LatticeController::closeLattice()
 {
     stopLoop();
+    // Ist problematisch, da nicht das delete aus der Klasse verwendet wird. Muss noch irgendwann ins Interface.
     d_data->lattice.reset( 0 );
 }
 

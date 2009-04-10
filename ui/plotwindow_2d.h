@@ -178,7 +178,6 @@ private:
 
     std::auto_ptr< LatticeController > lc_;
     LatticeController* latticeController_;
-    std::string latticeIdentifier_;
 
     ColorMaps colorMaps_;
 

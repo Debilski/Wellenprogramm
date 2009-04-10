@@ -931,11 +931,8 @@ void Waveprogram2DPlot::killField()
 {
     writeParameterSets();
 
-    if ( latticeController_->lattice() && !latticeIdentifier_.empty() ) {
-        //LatticePluginRegistration::instance()->getDestroyerByName( latticeIdentifier_ )( lattice );
-        latticeController_->destroy();
-        latticeIdentifier_.clear();
-    }
+   latticeController_->closeLattice();
+
     setTitle();
 }
 #if 0

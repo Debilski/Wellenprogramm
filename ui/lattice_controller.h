@@ -79,7 +79,7 @@ public:
 
     bool isValid();
     bool load(const QString& name, int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
-    void destroy();
+    void closeLattice();
 
     QStringList getModelNames();
 
