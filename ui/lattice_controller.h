@@ -81,7 +81,7 @@ public:
     bool load(const QString& name, int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
     void destroy();
 
-    std::list< std::string > getModelNames();
+    QStringList getModelNames();
 
     LatticeScripter* getLatticeScripter() const;
 

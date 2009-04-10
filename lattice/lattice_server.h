@@ -50,6 +50,16 @@ public:
         return *LatticeDrivers_.at( Index );
     }
 
+    std::list< std::string > getModelNames()
+    {
+        std::list< std::string > names;
+
+        for (size_t DriverIndex = 0; DriverIndex < getDriverCount(); ++DriverIndex) {
+            names.push_back( getDriver( DriverIndex ).getName() );
+        }
+        return names;
+    }
+
 private:
     /// A vector of Lattice drivers
     typedef std::vector< LatticeDriver * > LatticeDriverVector;

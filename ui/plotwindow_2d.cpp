@@ -868,13 +868,12 @@ void Waveprogram2DPlot::setUpActions()
     QList< QAction * > availableActions = menuMode->actions();
     QSignalMapper* mapper = new QSignalMapper(this);
 
-    std::list< std::string > names = latticeController_->getModelNames();
-    for (std::list< std::string >::const_iterator it = names.begin(); it != names.end(); ++it) {
-        QString actionName = QString::fromStdString( *it );
-        QAction* action = new QAction( actionName, this );
+    QStringList names = latticeController_->getModelNames();
+    foreach( QString name, names ) {
+        QAction* action = new QAction( name, this );
         menuMode->insertAction( availableActions.first(), action );
-        connect( action, SIGNAL( action->triggered() ), mapper, SLOT(map()) );
-        mapper->setMapping(action, actionName );
+        connect( action, SIGNAL( triggered() ), mapper, SLOT(map()) );
+        mapper->setMapping(action, name );
     }
 
     connect( mapper, SIGNAL(mapped(const QString&)), this, SLOT(changeModel(const QString&) ));

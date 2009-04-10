@@ -238,15 +238,16 @@ void LatticeController::stopLoop()
 }
 
 // Kann und sollte vielleicht in den Kernel ausgelagert werden.
-std::list< std::string > LatticeController::getModelNames()
+QStringList LatticeController::getModelNames()
 {
-    std::list< std::string > names;
-
     LatticeServer& LS = d_data->TheKernel.getLatticeServer();
-    for (size_t DriverIndex = 0; DriverIndex < LS.getDriverCount(); ++DriverIndex) {
-        names.push_back( LS.getDriver( DriverIndex ).getName() );
+    std::list< std::string > names = LS.getModelNames();
+    QStringList n;
+    for(std::list< std::string >::const_iterator it = names.begin(); it != names.end(); ++it ) {
+        n << QString::fromStdString( *it );
     }
-    return names;
+    return n;
+
 }
 
 void LatticeController::stepMany()
