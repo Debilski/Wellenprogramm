@@ -101,6 +101,8 @@ public slots:
 
     bool adaptationMode();
     void setAdaptationMode(bool b);
+
+    void clear();
 private slots:
     void loop();
 signals:

@@ -67,12 +67,9 @@ public slots:
     void updateDefects();
     void updateLabels();
 
-    void on_clearButton_clicked();
     void on_noiseSpinBox_valueChanged(double d);
 
     void on_boundaryConditionsComboBox_currentIndexChanged(int i);
-
-    void adaptationModeCheckBox_clicked(bool b);
 
     void on_correlationSpinBox_valueChanged(int d);
     void on_timestepSpinBox_valueChanged(double d);

@@ -97,6 +97,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     connect( startStopButton, SIGNAL( clicked() ), this, SLOT( toggleStartStop() ) );
     connect( actionStartStop, SIGNAL( triggered() ), this, SLOT( toggleStartStop() ) );
 
+    connect( clearButton, SIGNAL(clicked), latticeController_, SLOT(clear() ));
+
     setUpActions();
 
     setUpColorSchemeMenu();
@@ -556,8 +558,8 @@ void Waveprogram2DPlot::setUpModelProperties()
     adaptationModeCheckBox = new QCheckBox( adaptationParameterWidgetContents );
     adaptationModeCheckBox->setObjectName( QString::fromUtf8( "adaptationModeCheckBox" ) );
     connect(
-        adaptationModeCheckBox, SIGNAL( clicked(bool) ), this,
-        SLOT ( adaptationModeCheckBox_clicked(bool) ) );
+        adaptationModeCheckBox, SIGNAL( clicked(bool) ), latticeController_,
+        SLOT ( setAdaptationMode(bool) ) );
     adaptationParameterWidgetFormLayout->addRow( label, adaptationModeCheckBox );
 
     setUpDiffusion();
@@ -691,6 +693,7 @@ void Waveprogram2DPlot::on_actionShow_Cluster_Ids_triggered(bool b)
     showClusterIds_ = b;
     if ( !showClusterIds_ )
         bufferMap.clear();
+    replot();
 }
 
 void Waveprogram2DPlot::on_midpoint_sizeValue_valueChanged(double d)
@@ -1003,11 +1006,6 @@ return;/*
 */
 }
 
-void Waveprogram2DPlot::on_clearButton_clicked()
-{
-    latticeController_->lattice()->clear();
-    replot();
-}
 
 void Waveprogram2DPlot::on_actionSave_triggered()
 {
@@ -1371,11 +1369,6 @@ void Waveprogram2DPlot::savePng(QString filename)
             filename + QString( ".%1" ).arg( save_component ), "PNG" );
     }
 #endif
-}
-
-void Waveprogram2DPlot::adaptationModeCheckBox_clicked(bool b)
-{
-    latticeController_->setAdaptationMode( b );
 }
 
 void Waveprogram2DPlot::resizeWindowToForceUpdate() {

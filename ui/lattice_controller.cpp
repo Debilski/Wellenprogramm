@@ -346,6 +346,12 @@ void LatticeController::stop()
     //thread.stop();
 }
 
+void LatticeController::clear()
+{
+    d_data->lattice->clear();
+    emit changed();
+}
+
 bool LatticeController::loopRuns() const
 {
     return ! (d_data->stopped);
