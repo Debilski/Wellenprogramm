@@ -54,12 +54,10 @@ void FhnLattice::adaptParameters()
     static int j = 0;
     double ws = this->currentWavesize();
     if ( j % 10 == 0 ) {
-        std::cout << ws;
-
         if ( ws > waveSize_threshold() ) {
-            gamma_low() = gamma_low() + gamma_spacing() * (gamma_high() - gamma_low());
+            gamma_low() = gamma_low() + gamma_spacing() * (gamma_high() - gamma_low()) * timeStep();
         } else {
-            gamma_high() = gamma_high() - gamma_spacing() * (gamma_high() - gamma_low());
+            gamma_high() = gamma_high() - gamma_spacing() * (gamma_high() - gamma_low()) * timeStep();
         }
         //    SurfacePoint po = lattice->centreOfExcitation();
         //    std::cout << "\nNew high: " << high << ", New low: " << low << ", Epsilon: " << lattice->epsilon() << " " << po.x <<"\n" << std::flush;

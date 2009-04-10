@@ -97,7 +97,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     connect( startStopButton, SIGNAL( clicked() ), this, SLOT( toggleStartStop() ) );
     connect( actionStartStop, SIGNAL( triggered() ), this, SLOT( toggleStartStop() ) );
 
-    connect( clearButton, SIGNAL(clicked), latticeController_, SLOT(clear() ));
+    connect( clearButton, SIGNAL( clicked() ), latticeController_, SLOT( clear() ) );
 
     setUpActions();
 
@@ -138,7 +138,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     QAction* paintWindow = paintDockWidget->toggleViewAction();
     menuDock_Windows->addAction( paintWindow );
-    toolBar->addAction(paintWindow);
+    toolBar->addAction( paintWindow );
 
     setUnifiedTitleAndToolBarOnMac( true );
 
@@ -527,7 +527,8 @@ void Waveprogram2DPlot::setUpModelProperties()
     parameterWidgetFormLayout->setObjectName( QString::fromUtf8( "parameterWidgetFormLayout" ) );
 
     verticalLayout->addLayout( parameterWidgetFormLayout );
-    parameterWidgetContents->setSizePolicy( QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum) );
+    parameterWidgetContents->setSizePolicy( QSizePolicy(
+        QSizePolicy::Preferred, QSizePolicy::Maximum ) );
 
     parameterWidget->setWidget( parameterWidgetContents );
 
@@ -542,7 +543,8 @@ void Waveprogram2DPlot::setUpModelProperties()
             latticeController_->lattice()->modelName().c_str() ) );
     }
     adaptationParameterWidgetContents = new QWidget();
-    adaptationParameterWidgetContents->setSizePolicy( QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum) );
+    adaptationParameterWidgetContents->setSizePolicy( QSizePolicy(
+        QSizePolicy::Preferred, QSizePolicy::Maximum ) );
     adaptationParameterWidgetContents->setObjectName( QString::fromUtf8(
         "adaptationParameterWidgetContents" ) );
     verticalLayout = new QVBoxLayout( adaptationParameterWidgetContents );
@@ -634,16 +636,16 @@ void Waveprogram2DPlot::setUpAdaptationParameters()
 
 void Waveprogram2DPlot::changeParameter(const QString& paramName, double value)
 {
-        Parameter< double >* p = latticeParameters.value( paramName );
-        if ( p != 0 ) {
-            changeParameter( p, value );
-            return;
-        }
-        p = latticeAdaptationParameters.value( paramName );
-        if ( p != 0 ) {
-            changeParameter( p, value );
-            return;
-        }
+    Parameter< double >* p = latticeParameters.value( paramName );
+    if ( p != 0 ) {
+        changeParameter( p, value );
+        return;
+    }
+    p = latticeAdaptationParameters.value( paramName );
+    if ( p != 0 ) {
+        changeParameter( p, value );
+        return;
+    }
 
 }
 
@@ -841,9 +843,10 @@ void Waveprogram2DPlot::replot()
     {
         PlotView* currentView = static_cast< PlotView* > ( plotTabWidget->currentWidget() );
 
-        foreach( QwtPlotMarker* m, plotMarkers() ) {
+        foreach( QwtPlotMarker* m, plotMarkers() )
+            {
                 currentView->attachItem( m );
-        }
+            }
         foreach( QwtPlotCurve* c, plotCurves() )
                 currentView->attachItem( c );
 
@@ -869,17 +872,18 @@ Waveprogram2DPlot::~Waveprogram2DPlot()
 void Waveprogram2DPlot::setUpActions()
 {
     QList< QAction * > availableActions = menuMode->actions();
-    QSignalMapper* mapper = new QSignalMapper(this);
+    QSignalMapper* mapper = new QSignalMapper( this );
 
     QStringList names = latticeController_->getModelNames();
-    foreach( QString name, names ) {
-        QAction* action = new QAction( name, this );
-        menuMode->insertAction( availableActions.first(), action );
-        connect( action, SIGNAL( triggered() ), mapper, SLOT(map()) );
-        mapper->setMapping(action, name );
-    }
+    foreach( QString name, names )
+        {
+            QAction* action = new QAction( name, this );
+            menuMode->insertAction( availableActions.first(), action );
+            connect( action, SIGNAL( triggered() ), mapper, SLOT(map()) );
+            mapper->setMapping( action, name );
+        }
 
-    connect( mapper, SIGNAL(mapped(const QString&)), this, SLOT(changeModel(const QString&) ));
+    connect( mapper, SIGNAL(mapped(const QString&)), this, SLOT(changeModel(const QString&) ) );
 }
 
 void Waveprogram2DPlot::changeModel(const QString& modelName)
@@ -897,9 +901,11 @@ void Waveprogram2DPlot::changeModel(const QString& modelName)
     initField( x, y, lx, ly, modelName );
 }
 
-void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX, int latticeSizeY, const QString& model)
+void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX, int latticeSizeY,
+                                  const QString& model)
 {
-    QString delayMsg = QString( "Creating a lattice of %1 x %2. This might take some time." ).arg( latticeSizeX ).arg( latticeSizeY );
+    QString delayMsg = QString( "Creating a lattice of %1 x %2. This might take some time." ).arg(
+        latticeSizeX ).arg( latticeSizeY );
     if ( parent != 0 ) {
         if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
             parent->statusBar()->showMessage( delayMsg );
@@ -937,7 +943,7 @@ void Waveprogram2DPlot::killField()
 {
     writeParameterSets();
 
-   latticeController_->closeLattice();
+    latticeController_->closeLattice();
 
     setTitle();
 }
@@ -967,9 +973,8 @@ void Waveprogram2DPlot::toggleStartStop()
 
         startStopButton->setText( "Stop" );
         actionStartStop->setText( "Stop" );
-    latticeController_->startLoop();
-    }
-    else {
+        latticeController_->startLoop();
+    } else {
         qDebug() << "Stop";
         latticeController_->stopLoop();
         d_data->timer->stop();
@@ -985,30 +990,28 @@ void Waveprogram2DPlot::toggleStartStop()
 
         startStopButton->setText( "Stop" );
         actionStartStop->setText( "Stop" );
-    latticeController_->start( 6 );
-    }
-    else {
+        latticeController_->start( 6 );
+    } else {
         qDebug() << "Stop";
         latticeController_->stop();
         d_data->timer->stop();
         startStopButton->setText( "Start" );
         actionStartStop->setText( "Start" );
     }
-return;/*
-    if ( loopruns == false ) {
-        d_data->timer->start( updatePeriodTime_ );
-        startStopButton->setText( "Stop" );
-        actionStartStop->setText( "Stop" );
-        this->loopStart();
-    } else {
-        d_data->timer->stop();
-        startStopButton->setText( "Start" );
-        actionStartStop->setText( "Start" );
-        this->loopStop();
-    }
-*/
+    return;/*
+     if ( loopruns == false ) {
+     d_data->timer->start( updatePeriodTime_ );
+     startStopButton->setText( "Stop" );
+     actionStartStop->setText( "Stop" );
+     this->loopStart();
+     } else {
+     d_data->timer->stop();
+     startStopButton->setText( "Start" );
+     actionStartStop->setText( "Start" );
+     this->loopStop();
+     }
+     */
 }
-
 
 void Waveprogram2DPlot::on_actionSave_triggered()
 {
@@ -1154,19 +1157,17 @@ void Waveprogram2DPlot::saveViews(const QString& name, uint num)
 {
     //QImage pixmap( 645, 600, QImage::Format_ARGB32 );
     {
-    QImage image(
-        latticeController_->latticeSizeX() + 0, latticeController_->latticeSizeY() + 0,
-        QImage::Format_ARGB32 );
-    image.fill( Qt::white ); // Qt::transparent ?
+        QImage image( latticeController_->latticeSizeX() + 0, latticeController_->latticeSizeY()
+            + 0, QImage::Format_ARGB32 );
+        image.fill( Qt::white ); // Qt::transparent ?
 
-    plotViewVector_[ num ]->print( image, true );
+        plotViewVector_[ num ]->print( image, true );
 
-    image.save( name + QString( ".%1.png" ).arg( num ), "PNG" );
+        image.save( name + QString( ".%1.png" ).arg( num ), "PNG" );
     }
     {
-        QImage image(
-            latticeController_->latticeSizeX() + 240, latticeController_->latticeSizeY() + 200,
-            QImage::Format_ARGB32 );
+        QImage image( latticeController_->latticeSizeX() + 240, latticeController_->latticeSizeY()
+            + 200, QImage::Format_ARGB32 );
         image.fill( Qt::white ); // Qt::transparent ?
 
         plotViewVector_[ num ]->print( image, false );
@@ -1374,7 +1375,8 @@ void Waveprogram2DPlot::savePng(QString filename)
 #endif
 }
 
-void Waveprogram2DPlot::resizeWindowToForceUpdate() {
+void Waveprogram2DPlot::resizeWindowToForceUpdate()
+{
     if ( actionResize_program_window_to_force_update->isChecked() ) {
         static int resizeCount = 0;
         ++resizeCount;
@@ -1396,24 +1398,23 @@ void Waveprogram2DPlot::updateLabels()
 
 void Waveprogram2DPlot::movieExport()
 {
-if ( !movieQueue.empty() ) {
-    savePng( movieQueue.head() );
-    movieQueue.dequeue();
-    actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
-        movieQueue.size() ) );
-    if ( movieQueue.empty() ) {
-        actionSave_as_Movie_Pngs->setText( QString( "savetomultiple" ) );
+    if ( !movieQueue.empty() ) {
+        savePng( movieQueue.head() );
+        movieQueue.dequeue();
+        actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
+            movieQueue.size() ) );
+        if ( movieQueue.empty() ) {
+            actionSave_as_Movie_Pngs->setText( QString( "savetomultiple" ) );
+        }
+    }
+
+    if ( !matlabExportFile_.isEmpty() ) {
+        QString modelName( latticeController_->lattice()->modelName().c_str() );
+        modelName = modelName.remove( QRegExp( "[^A-Za-z]" ) );
+        exportAsMatlabStructure( matlabExportFile_, modelName, matlabExportIndex_, true );
+        ++matlabExportIndex_;
     }
 }
-
-if ( !matlabExportFile_.isEmpty() ) {
-    QString modelName( latticeController_->lattice()->modelName().c_str() );
-    modelName = modelName.remove( QRegExp( "[^A-Za-z]" ) );
-    exportAsMatlabStructure( matlabExportFile_, modelName, matlabExportIndex_, true );
-    ++matlabExportIndex_;
-}
-}
-
 
 #if 0
 void Waveprogram2DPlot::loop()
@@ -1473,7 +1474,7 @@ void Waveprogram2DPlot::loop()
             savePng( movieQueue.head() );
             movieQueue.dequeue();
             actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
-                movieQueue.size() ) );
+                    movieQueue.size() ) );
             if ( movieQueue.empty() ) {
                 actionSave_as_Movie_Pngs->setText( QString( "savetomultiple" ) );
             }
@@ -1699,11 +1700,13 @@ void Waveprogram2DPlot::on_actionShow_Single_Plot_triggered()
     connect( this, SIGNAL( replotAllChildren() ), p, SLOT( update() ) );
 }
 
-void Waveprogram2DPlot::showSinglePlot() {
+void Waveprogram2DPlot::showSinglePlot()
+{
 
 }
 
-void Waveprogram2DPlot::showSlicePlot() {
+void Waveprogram2DPlot::showSlicePlot()
+{
 
 }
 
