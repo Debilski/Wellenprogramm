@@ -26,45 +26,15 @@
 
 #include "plot_single.h"
 
-// #include "lattice_interface.h"
-
-// #include "lattice_controller.h"
-
 #include "configuration.h"
 
 #include "color_maps.h"
-
-/**
- * Action which stores the Modeltype it shall call
- */
-class ModelAction : public QAction {
-Q_OBJECT
-public:
-    ModelAction(const QString & text, std::string model, QObject * parent) :
-        QAction( text, parent ), model_( model )
-    {
-        connect( this, SIGNAL( triggered( bool ) ), this, SLOT( modelTriggered( bool ) ) );
-    }
-private slots:
-    void modelTriggered(bool /*b*/)
-    {
-        emit modelTriggered( model_ );
-    }
-
-private:
-    std::string model_;
-signals:
-    void modelTriggered(std::string);
-
-};
 
 class Waveprogram2DPlot : public QMainWindow, private Ui::plotWindow_2d {
 Q_OBJECT
 public:
     Waveprogram2DPlot(QMainWindow * parent = 0, int realSize = 128, int latticeSize = 128);
     ~Waveprogram2DPlot();
-
-    QTimer *timer;
 
     void setUpDockWindows();
 
@@ -144,7 +114,7 @@ public slots:
     void changeParameter(const QString& paramName, double value);
     void changeParameter(Parameter< double >* p, double value);
 
-    void changeModel(std::string m);
+    void changeModel(const QString& modelName);
     void resizeWindowToForceUpdate();
 
     void updateColorScheme(QAction* a);
@@ -231,7 +201,7 @@ private:
     QQueue< QString > movieQueue;
     int realSize_, latticeSize_;
 
-    void initField(int realSize, int latticeSize, std::string model);
+    void initField(int realSize, int latticeSize, const QString&  model);
     void killField();
 
     //QVector< QDoubleSpinBox* > diffusionBoxes;//[ ModelLattice::number_of_Variables ];

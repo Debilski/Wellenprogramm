@@ -164,12 +164,11 @@ bool LatticeController::isValid()
  * Lädt eine neue Lattice aus einem Plugin und initialisiert sie mit der angegebenen Größe.
  *
  */
-bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int latticeSizeX,
+bool LatticeController::load(const QString& name, int sizeX, int sizeY, int latticeSizeX,
                              int latticeSizeY)
 {
-
-    qDebug() << "Trying Model " << name.c_str();
-
+    qDebug() << "Trying Model " << name;
+    std::string std_name = name.toStdString();
     int n = 0;
     bool modelExists = false;
 
@@ -177,7 +176,7 @@ bool LatticeController::load(const std::string& name, int sizeX, int sizeY, int 
     for (size_t i = 0; i < LS.getDriverCount(); ++i) {
         std::string s = LS.getDriver( i ).getName();
         std::cout << s.c_str() << std::endl;
-        if ( LS.getDriver( i ).getName() == name ) {
+        if ( LS.getDriver( i ).getName() == std_name ) {
             n = i;
             modelExists = true;
         }

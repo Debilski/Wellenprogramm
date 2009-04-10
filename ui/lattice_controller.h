@@ -78,7 +78,7 @@ public:
     QSize latticeSize() const;
 
     bool isValid();
-    bool load(const std::string& name, int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
+    bool load(const QString& name, int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
     void destroy();
 
     std::list< std::string > getModelNames();

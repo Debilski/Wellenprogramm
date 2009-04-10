@@ -19,6 +19,7 @@ class Waveprogram2DPlot::PrivateData {
 public:
     QList< QwtPlotMarker* > markers;
     QList< QwtPlotCurve* > curves;
+    QTimer* timer;
 };
 
 void Waveprogram2DPlot::setTitle()
@@ -145,8 +146,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     replot();
 
-    timer = new QTimer( this );
-    connect( timer, SIGNAL(timeout()), this, SLOT(replot()) );
+    d_data->timer = new QTimer( this );
+    connect( d_data->timer, SIGNAL(timeout()), this, SLOT(replot()) );
 
     clipboard = QApplication::clipboard();
 
@@ -289,9 +290,9 @@ void Waveprogram2DPlot::updateUpdatePeriod(QAction* a)
     if ( a == action5_s )
         updatePeriodTime_ = 5000;
 
-    timer->setInterval( updatePeriodTime_ );
-    if ( timer->isActive() )
-        timer->start();
+    d_data->timer->setInterval( updatePeriodTime_ );
+    if ( d_data->timer->isActive() )
+        d_data->timer->start();
 }
 
 #include "parameter_dock_widget.h"
@@ -858,38 +859,39 @@ void Waveprogram2DPlot::replot()
 Waveprogram2DPlot::~Waveprogram2DPlot()
 {
     killField();
-    delete timer;
+    delete d_data->timer;
     delete d_data;
 }
 
 void Waveprogram2DPlot::setUpActions()
 {
     QList< QAction * > availableActions = menuMode->actions();
-
-    ModelAction * action;
+    QSignalMapper* mapper = new QSignalMapper(this);
 
     std::list< std::string > names = latticeController_->getModelNames();
     for (std::list< std::string >::const_iterator it = names.begin(); it != names.end(); ++it) {
-        action = new ModelAction( QString::fromStdString( *it ), *it, this );
+        QString actionName = QString::fromStdString( *it );
+        QAction* action = new QAction( actionName, this );
         menuMode->insertAction( availableActions.first(), action );
-        connect(
-            action, SIGNAL( modelTriggered(std::string) ), this, SLOT( changeModel(std::string) ) );
+        connect( action, SIGNAL( action->triggered() ), mapper, SLOT(map()) );
+        mapper->setMapping(action, actionName );
     }
+
+    connect( mapper, SIGNAL(mapped(const QString&)), this, SLOT(changeModel(const QString&) ));
 }
 
-void Waveprogram2DPlot::changeModel(std::string m)
+void Waveprogram2DPlot::changeModel(const QString& modelName)
 {
     emit
     modelClosed();
 
     killField();
 
-    //removeTabs();
-    initField( realSize_, latticeSize_, m );
+    initField( realSize_, latticeSize_, modelName );
     emit modelChanged();
 }
 
-void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string model)
+void Waveprogram2DPlot::initField(int realSize, int latticeSize, const QString& model)
 {
 
     if ( parent != 0 ) {
@@ -902,7 +904,7 @@ void Waveprogram2DPlot::initField(int realSize, int latticeSize, std::string mod
 
     latticeController_->load( model, realSize, realSize, latticeSize, latticeSize );
 
-    config( "last_model" ).setValue( QVariant( QString::fromStdString( model ) ) );
+    config( "last_model" ).setValue( QVariant( model ) );
     qDebug() << config( "last_model" ).value();
     config.write();
 
@@ -959,7 +961,7 @@ void Waveprogram2DPlot::loopStop()
 void Waveprogram2DPlot::toggleStartStop()
 {
     if ( latticeController_->loopRuns() == false ) {
-        timer->start( updatePeriodTime_ );
+        d_data->timer->start( updatePeriodTime_ );
 
         startStopButton->setText( "Stop" );
         actionStartStop->setText( "Stop" );
@@ -968,7 +970,7 @@ void Waveprogram2DPlot::toggleStartStop()
     else {
         qDebug() << "Stop";
         latticeController_->stopLoop();
-        timer->stop();
+        d_data->timer->stop();
         startStopButton->setText( "Start" );
         actionStartStop->setText( "Start" );
     }
@@ -977,7 +979,7 @@ void Waveprogram2DPlot::toggleStartStop()
     static bool a = false;
     a = !a;
     if ( a ) {
-        timer->start( updatePeriodTime_ );
+        d_data->timer->start( updatePeriodTime_ );
 
         startStopButton->setText( "Stop" );
         actionStartStop->setText( "Stop" );
@@ -986,18 +988,18 @@ void Waveprogram2DPlot::toggleStartStop()
     else {
         qDebug() << "Stop";
         latticeController_->stop();
-        timer->stop();
+        d_data->timer->stop();
         startStopButton->setText( "Start" );
         actionStartStop->setText( "Start" );
     }
 return;/*
     if ( loopruns == false ) {
-        timer->start( updatePeriodTime_ );
+        d_data->timer->start( updatePeriodTime_ );
         startStopButton->setText( "Stop" );
         actionStartStop->setText( "Stop" );
         this->loopStart();
     } else {
-        timer->stop();
+        d_data->timer->stop();
         startStopButton->setText( "Start" );
         actionStartStop->setText( "Start" );
         this->loopStop();
@@ -1013,18 +1015,18 @@ void Waveprogram2DPlot::on_clearButton_clicked()
 
 void Waveprogram2DPlot::on_actionSave_triggered()
 {
-    timer->stop();
+    d_data->timer->stop();
     QString fileName = QFileDialog::getSaveFileName( this, tr( "Save to binary format" ), ".", tr(
         "Binary (*.bin)" ) );
     if ( !fileName.isEmpty() ) {
         latticeController_->lattice()->save( false, fileName.toStdString() );
     }
-    timer->start();
+    d_data->timer->start();
 }
 
 void Waveprogram2DPlot::on_actionRecall_triggered()
 {
-    timer->stop();
+    d_data->timer->stop();
     //latticeController_->lattice()->recall();
     QString fileName = QFileDialog::getOpenFileName(
         this, tr( "Load from binary format" ), ".", tr( "Binary (*.bin);; All (*)" ) );
@@ -1033,7 +1035,7 @@ void Waveprogram2DPlot::on_actionRecall_triggered()
         latticeController_->lattice()->recall( fileName.toStdString() );
         replot();
     }
-    timer->start();
+    d_data->timer->start();
 }
 
 void Waveprogram2DPlot::on_actionDump_triggered()
