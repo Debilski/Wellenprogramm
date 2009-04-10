@@ -63,7 +63,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     connect( latticeController_, SIGNAL( processed(int) ), this, SLOT( resizeWindowToForceUpdate() ) );
     connect( latticeController_, SIGNAL( processed(int) ), this, SLOT( updateLabels() ) );
 
-    connect( latticeController_, SIGNAL( parametersChanged() ), this, SLOT( updateParameters() ) );
+    connect( latticeController_, SIGNAL( parametersChanged() ), this, SIGNAL( updateParameters() ) );
 
     connect( latticeController_, SIGNAL( processed(int) ), this, SLOT( movieExport() ) );
 
@@ -102,8 +102,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     setUpColorSchemeMenu();
 
     QString lastUsedModel = config.option( "last_model" ).value().toString();
-
-    initField( realSize, latticeSize, qPrintable(lastUsedModel) );
+    qDebug() << lastUsedModel;
+    initField( realSize, latticeSize, lastUsedModel );
 
     boundaryConditionsComboBox->setCurrentIndex( latticeController_->lattice()->boundaryCondition() );
 

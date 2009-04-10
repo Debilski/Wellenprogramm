@@ -30,7 +30,7 @@ Configuration::Configuration()
     addOption( "libraryPattern", libPattern, "global/libraryPattern" ). addCommandLineString(
         "libPattern" );
 
-    addOption( "lastModel", "FhnLattice", "global/lastModel" ). addCommandLineString( "model" );
+    addOption( "last_model", "FhnLattice", "global/lastModel" ). addCommandLineString( "model" );
 }
 
 Option& Configuration::operator()(const QString& name)
@@ -38,6 +38,8 @@ Option& Configuration::operator()(const QString& name)
     if ( optionList.contains( name ) ) {
         //qDebug() << optionList[ name ].value();
         return optionList[ name ];
+    } else {
+        qDebug() << "Option not found:" << name;
     }
     return emptyOption;
 }
