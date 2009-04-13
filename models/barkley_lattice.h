@@ -9,6 +9,7 @@
 #define BARKLEY_LATTICE_H_
 
 #include "../lattice/rds_lattice.h"
+#include "../lattice/finite_interval_lattice_integrator.h"
 
 class BarkleyLattice;
 template<>

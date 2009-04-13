@@ -8,7 +8,7 @@
 #ifndef FHN_LATTICE_H_
 #define FHN_LATTICE_H_
 
-#include "../lattice/rds_lattice.h"
+#include "../lattice/siip_lattice_integrator.h"
 
 /**
  * \class FhnLattice

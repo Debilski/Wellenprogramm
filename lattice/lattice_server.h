@@ -88,12 +88,18 @@ class lattice_class##_LatticeDriver : public LatticeServer::LatticeDriver {     
     }                                                                               \
 };
 
+#ifdef INTERNAL
+#define INTERNAL static
+#else
+#define INTERNAL extern "C"
+#endif
+
 #define REGISTER_PLUGINS_BEGIN                                                      \
 /* Retrieve the engine version we're going to expect */                             \
-extern "C" int getEngineVersion() {                                                 \
+INTERNAL int getEngineVersion() {                                                 \
 return LATTICE_INTERFACE_VERSION;                                                   \
 }                                                                                   \
-extern "C"  void registerPlugin(PluginKernel &K) {
+INTERNAL void registerPlugin(PluginKernel &K) {
 
 #define REGISTER_PLUGINS_END      }
 
@@ -108,5 +114,7 @@ DEFINE_LATTICE_DRIVER2(lattice_name,lattice_class)                              
 REGISTER_PLUGINS_BEGIN                                                              \
 REGISTER_PLUGIN(lattice_class)                                                      \
 REGISTER_PLUGINS_END
+
+
 
 #endif /* LATTICE_SERVER_H_ */
