@@ -101,6 +101,48 @@ void Fftw3Wrapper::exportWisdom(const std::string s)
 
 
 /**
+ * Erstellt einen Plan für eine zweidimensionale komplexe DF-Trafo.
+ *
+ * \attention Sollten die Dimensionen der übergebenen Arrays nicht korrekt sein, so wird eine
+ * Assertion ausgelöst. Diese Methode wird kein @c resize ausführen, wenn es falsch ist.
+ *
+ *
+ * \param in Das reale Eingangsarray
+ * \param out Das komplexe Ausgabearray
+ */
+fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2c_forward_2d(blitz::Array< std::complex< double >, 2 >& in, blitz::Array<
+    std::complex< double >, 2 >& out)
+{
+  int x = in.extent( blitz::firstDim );
+  int y = in.extent( blitz::secondDim );
+  assert( out.extent( blitz::firstDim ) == in.extent( blitz::firstDim ) );
+  assert( out.extent( blitz::secondDim ) == in.extent( blitz::secondDim ) );
+  return fftw_plan_dft_2d(
+      x, y, reinterpret_cast< fftw_complex* > ( in.data() ), reinterpret_cast< fftw_complex* > ( out.data() ), FFTW_FORWARD, fftwFlags );
+}
+
+/**
+ * Erstellt einen Plan für eine zweidimensionale komplexe DF-Trafo.
+ *
+ * \attention Sollten die Dimensionen der übergebenen Arrays nicht korrekt sein, so wird eine
+ * Assertion ausgelöst. Diese Methode wird kein @c resize ausführen, wenn es falsch ist.
+ *
+ *
+ * \param in Das reale Eingangsarray
+ * \param out Das komplexe Ausgabearray
+ */
+fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2c_backward_2d(blitz::Array< std::complex< double >, 2 >& in, blitz::Array<
+    std::complex< double >, 2 >& out)
+{
+  int x = in.extent( blitz::firstDim );
+  int y = in.extent( blitz::secondDim );
+  assert( out.extent( blitz::firstDim ) == in.extent( blitz::firstDim ) );
+  assert( out.extent( blitz::secondDim ) == in.extent( blitz::secondDim ) );
+  return fftw_plan_dft_2d(
+      x, y, reinterpret_cast< fftw_complex* > ( in.data() ), reinterpret_cast< fftw_complex* > ( out.data() ), FFTW_BACKWARD, fftwFlags );
+}
+
+/**
  * Erstellt einen Plan für eine zweidimensionale reale DF-Trafo.
  *
  * \attention Sollten die Dimensionen der übergebenen Arrays nicht korrekt sein, so wird eine

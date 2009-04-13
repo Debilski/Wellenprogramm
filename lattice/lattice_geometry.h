@@ -52,6 +52,7 @@ struct SurfacePoint {
  */
 class LatticeGeometry {
 public:
+    LatticeGeometry();
     LatticeGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
     LatticeGeometry(const LatticeGeometry& geometry);
     long int indexPeriodic(int i, int j) const;
@@ -92,6 +93,7 @@ public:
     bool hasValidGeometry() const;
 
     void initGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
+    void setGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
 private:
      int sizeX_, sizeY_;
      int latticeSizeX_, latticeSizeY_;
@@ -115,11 +117,17 @@ inline void LatticeGeometry::initGeometry(int sizeX, int sizeY, int latticeSizeX
     boxesPerLengthY_ = (latticeSizeY / sizeY);
 }
 
-
+inline void LatticeGeometry::setGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY)
+{
+    initGeometry( sizeX ? sizeX : sizeX_,
+                        sizeY ? sizeY : sizeY_,
+                        latticeSizeX ? latticeSizeX : latticeSizeX_,
+                        latticeSizeY ? latticeSizeY : latticeSizeY_ );
+}
 
 
 inline bool LatticeGeometry::hasValidGeometry() const {
-    return true;
+    return ! ( sizeX_ * sizeY_ * latticeSizeX_ * latticeSizeY_ );
 }
 
 inline int LatticeGeometry::sizeX() const
@@ -213,6 +221,13 @@ inline LatticeGeometry LatticeGeometry::geometry() const
 {
     LatticeGeometry g( *this );
     return g;
+}
+
+inline LatticeGeometry::LatticeGeometry() :
+    sizeX_( 0 ), sizeY_( 0 ), latticeSizeX_( 0 ), latticeSizeY_( 0 ),
+        latticeSize_( 0 ), scaleX_( 0 ), scaleY_( 0 ), boxesPerLengthX_( 0 ),
+        boxesPerLengthY_( 0 )
+{
 }
 
 /**

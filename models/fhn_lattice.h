@@ -142,7 +142,13 @@ public:
     void toInitial(int num)
     {
 
+        if ( num == 2 ) {
+            setGeometry(0,0,128,128);
+
+        }
+        status( std::cout );
         toFixpoint();
+        return;
         if ( num == 2 ) {
             removeDefects();
 
