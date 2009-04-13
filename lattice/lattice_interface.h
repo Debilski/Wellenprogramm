@@ -531,7 +531,7 @@ class FractionalLinearOperatorClass {
 
 
 
-#define LATTICE_INTERFACE_VERSION 2
+#define LATTICE_INTERFACE_VERSION 3
 
 #include <boost/noncopyable.hpp>
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
@@ -743,6 +743,11 @@ public:
     virtual void addDefect(Defect< GeneralComponentSystem > defect) = 0;
     //virtual void addDefect( Defect<Components> defect );
     virtual void removeDefects() = 0;
+
+    /**
+     * Sollte gerufen werden, nachdem eine Änderung das System unsicher gemacht haben könnte.
+     */
+    virtual void doNormalize() = 0;
 
     virtual void setNoiseGenerator(uint noiseComponent, NoiseGenerator* ng) = 0;
     /*

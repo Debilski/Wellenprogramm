@@ -273,6 +273,7 @@ void LatticeController::setToFixpoint(uint component, const QPointF& realPoint, 
 {
     d_data->lattice.get()->setSpotAtComponent(
         realPoint.x(), realPoint.y(), size, 0, component, true );
+    doNormalize();
     emit changed();
 }
 
@@ -281,6 +282,7 @@ void LatticeController::setComponentAt(uint component, const QPointF& realPoint,
 {
     d_data->lattice.get()->setSpotAtComponent(
         realPoint.x(), realPoint.y(), size, value, component, true );
+    doNormalize();
     emit changed();
 }
 
@@ -355,6 +357,11 @@ void LatticeController::clear()
 {
     d_data->lattice->clear();
     emit changed();
+}
+
+void LatticeController::doNormalize()
+{
+    d_data->lattice->doNormalize();
 }
 
 bool LatticeController::loopRuns() const

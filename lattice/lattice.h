@@ -104,6 +104,7 @@ public:
 
     void setComponentAt(uint component, double value, int x, int y);
 
+    void doNormalize();
 
     double time() const;
     void setTime(double t);

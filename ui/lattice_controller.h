@@ -104,6 +104,7 @@ public slots:
     void setAdaptationMode(bool b);
 
     void clear();
+    void doNormalize();
 private slots:
     void loop();
 signals:

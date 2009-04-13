@@ -9,6 +9,7 @@
 #define FHNK_LATTICE_H_
 
 #include "../lattice/rds_lattice.h"
+#include "../lattice/siip_lattice_integrator.h"
 
 THREE_COMPONENT_SYSTEM(FhnKSystem, x, y, z)
 
@@ -917,6 +918,21 @@ public:
     {
         return tau_l() + (tau_r() - tau_l()) * Psi( x );
     }
+
+    inline void doNormalize()
+        {
+
+        for (int i = 0; i < latticeSizeX(); ++i) {
+            for (int j = 0; j < latticeSizeY(); ++j) {
+                if (! isFhnField( i, j ) ) {
+                     lattice[ 0 ](i,j) = fixpoint(-1).x();
+                     lattice[ 1 ](i,j) = fixpoint(-1).y();
+            } else {
+                lattice[ 2 ](i,j) = fixpoint(-1).z();
+            }
+        }
+        }
+        }
 
     inline FhnKSystem step_f(FhnKSystem sys, long int pos)
     {

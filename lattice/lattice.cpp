@@ -964,6 +964,11 @@ void Lattice< T_model >::setNoiseIntensity(double d)
 }
 
 template<typename T_model>
+void Lattice< T_model >::doNormalize()
+{
+}
+
+template<typename T_model>
 void Lattice< T_model >::precomputeNoise(Lattice< T_model >* lattice)
 {
     for (uint noiseComponent = 0; noiseComponent < number_of_Noise_Variables; ++noiseComponent) {
