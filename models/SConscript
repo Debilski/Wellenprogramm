@@ -10,34 +10,36 @@ library_files = [ '#lattice/rds_helper.cpp',
  '#lattice/plugin.cpp' ] 
 #]
 
+pluginEnv = env.Clone()
+pluginEnv.Append( CCFLAGS=" -DRDS_PLUGIN " )
 
-fhnlattice = env.Library('fhn_lattice_s', ['fhn_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-fhnlatticeS = env.SharedLibrary('fhn_lattice', ['fhn_lattice.cpp'] + library_files)
+fhnlattice = env.Library('fhn_lattice_s', ['fhn_lattice.cpp'] + library_files)
+fhnlatticeS = pluginEnv.SharedLibrary('fhn_lattice', ['fhn_lattice.cpp'] + library_files)
 
-fhnadditionallattice = env.Library('fhn_additional_lattice', ['fhn_additional_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-fhnadditionallatticeS = env.SharedLibrary('fhn_additional_lattice', ['fhn_additional_lattice.cpp'] + library_files)
+fhnadditionallattice = env.Library('fhn_additional_lattice', ['fhn_additional_lattice.cpp'] + library_files)
+fhnadditionallatticeS = pluginEnv.SharedLibrary('fhn_additional_lattice', ['fhn_additional_lattice.cpp'] + library_files)
 
-fhnoriginallattice = env.Library('fhn_original_lattice', ['fhn_original_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-fhnoriginallatticeS = env.SharedLibrary('fhn_original_lattice', ['fhn_original_lattice.cpp'] + library_files)
-
-
-bistablelattice = env.Library('bistable_lattice', ['bistable_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-bistablelatticeS = env.SharedLibrary('bistable_lattice', ['bistable_lattice.cpp'] + library_files)
-
-barkleylattice = env.Library('barkley_lattice_s', ['barkley_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-barkleylatticeS = env.SharedLibrary('barkley_lattice', ['barkley_lattice.cpp'] + library_files)
-
-hodgkinhuxleylattice = env.Library('hodgkin_huxley_lattice', ['hodgkin_huxley_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-hodgkinhuxleylatticeS = env.SharedLibrary('hodgkin_huxley_lattice', ['hodgkin_huxley_lattice.cpp'] + library_files)
-
-oregonatorlattice = env.Library('oregonator_lattice', ['oregonator_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-oregonatorlatticeS = env.SharedLibrary('oregonator_lattice', ['oregonator_lattice.cpp'] + library_files)
-
-brusselatorlattice = env.Library('brusselator_lattice', ['brusselator_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-brusselatorlatticeS = env.SharedLibrary('brusselator_lattice', ['brusselator_lattice.cpp'] + library_files)
+fhnoriginallattice = env.Library('fhn_original_lattice', ['fhn_original_lattice.cpp'] + library_files)
+fhnoriginallatticeS = pluginEnv.SharedLibrary('fhn_original_lattice', ['fhn_original_lattice.cpp'] + library_files)
 
 
+bistablelattice = env.Library('bistable_lattice', ['bistable_lattice.cpp'] + library_files)
+bistablelatticeS = pluginEnv.SharedLibrary('bistable_lattice', ['bistable_lattice.cpp'] + library_files)
 
-fhnklattice = env.Library('fhnk_lattice_s', ['fhnk_lattice.cpp'] + library_files, CCFLAGS=" -DINTERNAL ")
-fhnklatticeS = env.SharedLibrary('fhnk_lattice', ['fhnk_lattice.cpp'] + library_files)
+barkleylattice = env.Library('barkley_lattice_s', ['barkley_lattice.cpp'] + library_files)
+barkleylatticeS = pluginEnv.SharedLibrary('barkley_lattice', ['barkley_lattice.cpp'] + library_files)
+
+hodgkinhuxleylattice = env.Library('hodgkin_huxley_lattice', ['hodgkin_huxley_lattice.cpp'] + library_files)
+hodgkinhuxleylatticeS = pluginEnv.SharedLibrary('hodgkin_huxley_lattice', ['hodgkin_huxley_lattice.cpp'] + library_files)
+
+oregonatorlattice = env.Library('oregonator_lattice', ['oregonator_lattice.cpp'] + library_files)
+oregonatorlatticeS = pluginEnv.SharedLibrary('oregonator_lattice', ['oregonator_lattice.cpp'] + library_files)
+
+brusselatorlattice = env.Library('brusselator_lattice', ['brusselator_lattice.cpp'] + library_files)
+brusselatorlatticeS = pluginEnv.SharedLibrary('brusselator_lattice', ['brusselator_lattice.cpp'] + library_files)
+
+
+
+fhnklattice = env.Library('fhnk_lattice_s', ['fhnk_lattice.cpp'] + library_files)
+fhnklatticeS = pluginEnv.SharedLibrary('fhnk_lattice', ['fhnk_lattice.cpp'] + library_files)
 

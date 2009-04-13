@@ -88,7 +88,7 @@ class lattice_class##_LatticeDriver : public LatticeServer::LatticeDriver {     
     }                                                                               \
 };
 
-#ifdef INTERNAL
+#ifndef RDS_PLUGIN
 #define INTERNAL static
 #else
 #define INTERNAL extern "C"
