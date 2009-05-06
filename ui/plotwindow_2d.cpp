@@ -1097,7 +1097,7 @@ void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString struct
                                                 int timeIndex, bool append /*= true*/)
 {
     QString text;
-    text += QString( "Time_%1{%2} = %3\n" ).arg( structureName ).arg( timeIndex ).arg(
+    text += QString( "Time_%1{%2} = %3;\n" ).arg( structureName ).arg( timeIndex ).arg(
         latticeController_->lattice()->time(), 0, 'f', 4 );
     for (int component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
     {
@@ -1106,17 +1106,21 @@ void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString struct
 
         double value = latticeController_->lattice()->getComponentAt( component, 16, 16 );
         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
-        value = latticeController_->lattice()->getComponentAt( component, 17, 16 );
+        /*value = latticeController_->lattice()->getComponentAt( component, 17, 16 );
         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
         value = latticeController_->lattice()->getComponentAt( component, 18, 16 );
         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
-
+*/
         value = latticeController_->lattice()->getComponentAt( component, 30, 32 );
         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
-        value = latticeController_->lattice()->getComponentAt( component, 31, 32 );
-        text += QString( "%1, " ).arg( value, 0, 'f', 4 );
+//        value = latticeController_->lattice()->getComponentAt( component, 31, 32 );
+ //       text += QString( "%1, " ).arg( value, 0, 'f', 4 );
         value = latticeController_->lattice()->getComponentAt( component, 32, 32 );
-        text += QString( "%1" ).arg( value, 0, 'f', 4 );
+        text += QString( "%1," ).arg( value, 0, 'f', 4 );
+//        value = latticeController_->lattice()->getComponentAt( component, 33, 32 );
+//        text += QString( "%1, " ).arg( value, 0, 'f', 4 );
+        value = latticeController_->lattice()->getComponentAt( component, 34, 32 );
+        text += QString( "%1 " ).arg( value, 0, 'f', 4 );
 
         text += QString( "];\n" );
 

@@ -85,7 +85,7 @@ void LoopThread::run()
 class LatticeController::PrivateData {
 public:
     PrivateData() :
-        lattice( 0 ), stepsAtOnce( 1 ), stopped( true ), adaptationMode( false )
+        lattice( 0 ), stepsAtOnce( 5 ), stopped( true ), adaptationMode( false )
     {
     }
     typedef std::auto_ptr< LatticeInterface > LatticePtr;
