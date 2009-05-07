@@ -97,6 +97,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     connect( startStopButton, SIGNAL( clicked() ), this, SLOT( toggleStartStop() ) );
     connect( actionStartStop, SIGNAL( triggered() ), this, SLOT( toggleStartStop() ) );
 
+    connect( actionClear, SIGNAL( triggered() ), latticeController_, SLOT( clear() ) );
     connect( clearButton, SIGNAL( clicked() ), latticeController_, SLOT( clear() ) );
 
     setUpActions();
@@ -134,11 +135,18 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     menuDock_Windows->addAction( parameterWidget->toggleViewAction() );
     adaptationParameterWidget->toggleViewAction()->setText( "Adaptation Properties" );
     menuDock_Windows->addAction( adaptationParameterWidget->toggleViewAction() );
+    pngSaveDockWidget->toggleViewAction()->setText( "PNG Properties" );
+    menuDock_Windows->addAction( pngSaveDockWidget->toggleViewAction() );
+
     menuDock_Windows->addAction( extrasWidget->toggleViewAction() );
 
-    QAction* paintWindow = paintDockWidget->toggleViewAction();
-    menuDock_Windows->addAction( paintWindow );
-    toolBar->addAction( paintWindow );
+    toolBar->addAction( pngSaveDockWidget->toggleViewAction() );
+
+    menuDock_Windows->addAction( paintDockWidget->toggleViewAction() );
+    toolBar->addAction( paintDockWidget->toggleViewAction() );
+
+    saveAsPngToolButton->setDefaultAction(actionSave_as_Png);
+    saveAsPngMovieToolButton->setDefaultAction(actionSave_as_Movie_Pngs);
 
     setUnifiedTitleAndToolBarOnMac( true );
 
