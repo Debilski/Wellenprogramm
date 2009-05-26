@@ -15,6 +15,7 @@
 
 #include "spectrogram_data.h"
 
+
 class Waveprogram2DPlot::PrivateData {
 public:
     QList< QwtPlotMarker* > markers;
@@ -171,8 +172,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
 void Waveprogram2DPlot::resetTime()
 {
-    latticeController_->lattice()->setTime( 0 );
-    simulationTimeLabel->setNum( latticeController_->lattice()->time() );
+    latticeController_->setTime( 0 );
+    simulationTimeLabel->setNum( latticeController_->time() );
 }
 
 void Waveprogram2DPlot::closeEvent(QCloseEvent * event)

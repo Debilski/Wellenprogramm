@@ -63,6 +63,8 @@ Q_PROPERTY(int latticeSizeX READ latticeSizeX)
 Q_PROPERTY(int latticeSizeY READ latticeSizeY)
 Q_PROPERTY(int adaptationMode READ adaptationMode WRITE setAdaptationMode)
 Q_PROPERTY(QString modelName READ modelName)
+Q_PROPERTY(double time READ time WRITE setTime)
+Q_PROPERTY(int numberOfClusters READ numberOfClusters)
 public:
     LatticeController(QObject* parent = 0);
     ~LatticeController();
@@ -77,9 +79,14 @@ public:
     int latticeSizeY() const;
     QSize latticeSize() const;
 
+    int numberOfClusters() /* const? */;
+
     bool isValid();
     bool load(const QString& name, int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
     void closeLattice();
+
+    double time();
+    void setTime(double time);
 
     QStringList getModelNames();
     QString modelName() const;
@@ -100,11 +107,22 @@ public slots:
     void setToFixpoint(uint component, const QPointF& realPoint, uint size);
     void setComponentAt(uint component, const QPointF& realPoint, uint size, double value);
 
+    void adaptParameters();
     bool adaptationMode();
     void setAdaptationMode(bool b);
 
+    void setFixedObstacle(double x, double y, double size);
+    void setNonReactingObstacle(double x, double y, double size);
+    void clearObstacles();
+
+    void saveTemporary();
+    void recallTemporary();
+
     void clear();
     void doNormalize();
+
+    double maximum(uint component);
+    double minimum(uint component);
 private slots:
     void loop();
 signals:

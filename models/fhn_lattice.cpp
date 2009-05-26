@@ -23,6 +23,8 @@ FhnLattice::FhnLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY)
     componentInfos[ 1 ] = ComponentInfo( "Inhibitor", "v", -2.2, 2.5 );
 
     modelName_ = "FitzHugh-Nagumo";
+    modelInformation_ = "d<i>u</i>/d<i>t</i> = (1/<i>&epsilon;</i>) (3 <i>u</i> - <i>u</i><sup>3</sup> - <i>v</i>) + D<sub>u</sub>  &Delta; <i>u</i><br/>"
+        "d<i>v</i>/d<i>t</i> = <i>&gamma;</i> + 1 + <i>u</i>  + D<sub>v</sub> &Delta; <i>v</i>";
 
     registerParameter( &epsilon );
     registerParameter( &gamma );

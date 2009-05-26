@@ -95,6 +95,8 @@ public:
     int stepsAtOnce;
     bool adaptationMode;
     bool stopped;
+
+    QTemporaryFile temporaryLattice;
 };
 
 /**
@@ -330,7 +332,7 @@ void LatticeController::loop()
             return;
         }
         if ( adaptationMode() ) {
-                        lattice()->adaptParameters();
+                        adaptParameters();
                         emit parametersChanged();
         }
         d_data->lattice->step( d_data->stepsAtOnce );
@@ -343,6 +345,12 @@ void LatticeController::loop()
     }
     QTimer::singleShot( 0, this, SLOT(loop()) );
 }
+
+void LatticeController::adaptParameters()
+{
+    lattice()->adaptParameters();
+}
+
 void LatticeController::start(int i)
 {
     //thread.loop(i);
@@ -378,3 +386,68 @@ bool LatticeController::adaptationMode()
 {
     return d_data->adaptationMode;
 }
+
+double LatticeController::maximum(uint component)
+{
+    return d_data->lattice->getMax(component);
+}
+
+double LatticeController::minimum(uint component)
+{
+    return d_data->lattice->getMin(component);
+}
+
+double LatticeController::time()
+{
+    return d_data->lattice->time();
+}
+
+void LatticeController::setTime(double time)
+{
+    d_data->lattice->setTime( time );
+}
+
+int LatticeController::numberOfClusters()
+{
+    return d_data->lattice->numberOfClusters();
+}
+
+void LatticeController::saveTemporary()
+{
+    if ( d_data->temporaryLattice.open() ) {
+        lattice()->save( false, d_data->temporaryLattice.fileName().toStdString() );
+        d_data->temporaryLattice.close();
+    }
+}
+
+void LatticeController::recallTemporary()
+{
+    if ( d_data->temporaryLattice.open() ) {
+            lattice()->recall( d_data->temporaryLattice.fileName().toStdString() );
+            d_data->temporaryLattice.close();
+        }
+}
+
+void LatticeController::setFixedObstacle(double x, double y, double size)
+{
+    Defect<GeneralComponentSystem> defect;
+    defect.boundaryCondition = FixedBoundary;
+    defect.centre.x = x;
+    defect.centre.y = y;
+    defect.radius = size;
+    lattice()->addDefect(defect);
+}
+void LatticeController::setNonReactingObstacle(double x, double y, double size)
+{
+    Defect<GeneralComponentSystem> defect;
+        defect.boundaryCondition = NoReactionBoundary;
+        defect.centre.x = x;
+        defect.centre.y = y;
+        defect.radius = size;
+        lattice()->addDefect(defect);
+}
+void LatticeController::clearObstacles()
+{
+    lattice()->removeDefects();
+}
+

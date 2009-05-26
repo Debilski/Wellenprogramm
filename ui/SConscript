@@ -13,7 +13,8 @@ resources = [ env.Qrc(qrc, QT4_QRCFLAGS='-name '+takebasename(qrc))
 interfaces = [env.Uic4(uic)
             for uic in glob.glob('../../../ui/*.ui')]
 
-env.Append( CPPPATH = "extensions" )
+env.Append( CPPPATH = "extensions")
+env.Append( CPPPATH = "3rd-party" )
 
 if not sys.platform=="darwin" :
     env.Append( LINKFLAGS = "-Wl,--export-dynamic" )
@@ -26,7 +27,7 @@ else:
     linkflags = ""#-static-libgcc -ldl -Wl -lstdc++ "
 
 
-subdirectories = [ '', 'extensions/' ]
+subdirectories = [ '', 'extensions/', '3rd-party/' ]
 
 glob = []
 for d in subdirectories:
