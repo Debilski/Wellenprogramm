@@ -106,6 +106,8 @@ if "darwin" in build_base_dir :
     env.Append(LIBS=['qwt'])
     env.Append(LIBS=static_libs + ['boost_thread-mt', "fftw3" , "fftw3_threads" ,"m","gomp", "blitz"])
     env.Append(FRAMEWORKS=['QtScript', 'QtXml'])
+    env.Replace(CXX = '/Developer/usr/bin/llvm-g++-4.2 ')
+    env.Append(CCFLAGS = ' -O4 ')
 # g++ -o builds/darwin/ui/plot -static-libgcc -ldl -Wl -lstdc++ builds/darwin/ui/plotmain.o builds/darwin/ui/main.o builds/darwin/ui/plotwindow.o builds/darwin/ui/plotwindow_b.o builds/darwin/ui/plotwindow_2d.o builds/darwin/ui/plotwindow_1d.o builds/darwin/ui/moc_main.o builds/darwin/ui/moc_plotwindow.o builds/darwin/ui/moc_plotwindow_b.o builds/darwin/ui/moc_plotwindow_2d.o builds/darwin/ui/moc_plotwindow_1d.o -Lbuilds/darwin/lib -Lsrc/lib -Lbuilds/darwin -Lsrc -Lui -L/usr/lib/openmpi/lib -L/opt/local/lib -L/opt/local/lib -L/opt/local/Library/Frameworks -lmodel -lmodel_b -lrds_lattice -lcluster_counter -lnoise_lattice -lchain -F/opt/local/Library/Frameworks -framework QtCore -framework QtGui -lqwt -lboost_thread-mt -lfftw3_threads -lfftw3 -lm
 
 # variables the sub build directories need

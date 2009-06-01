@@ -74,7 +74,6 @@ public slots:
     void on_correlationSpinBox_valueChanged(int d);
     void on_timestepSpinBox_valueChanged(double d);
 
-    void on_midpoint_sizeValue_valueChanged(double d);
 
     void on_actionClose_Window_triggered();
 

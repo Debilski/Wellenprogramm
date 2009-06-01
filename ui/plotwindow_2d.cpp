@@ -114,8 +114,6 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     correlationSpinBox->setValue( latticeController_->lattice()->noiseCorrelation() );
     timestepSpinBox->setValue( latticeController_->lattice()->timeStep() );
 
-    midpoint_sizeValue->setValue( 0 );
-
     showClusterIds_ = false;
 
     //QwtValueList contourLevels;
@@ -705,20 +703,6 @@ void Waveprogram2DPlot::on_actionShow_Cluster_Ids_triggered(bool b)
     if ( !showClusterIds_ )
         bufferMap.clear();
     replot();
-}
-
-void Waveprogram2DPlot::on_midpoint_sizeValue_valueChanged(double d)
-{
-    Defect< GeneralComponentSystem > midpointDefect;
-    midpointDefect.centre.x = latticeController_->sizeX() / 2.0;
-    midpointDefect.centre.y = latticeController_->sizeY() / 2.0;
-    midpointDefect.boundaryCondition = NoReactionBoundary;
-    midpointDefect.radius = d;
-    latticeController_->lattice()->addDefect( midpointDefect );
-
-    // double s = 0;//! = latticeController_->lattice()->getSpotSize(d, true);
-    // QString text = QString( "Area: %1 FE" ).arg( s );
-    // statusBar()->showMessage( text );
 }
 
 QList< QwtPlotMarker* > Waveprogram2DPlot::plotMarkers()
