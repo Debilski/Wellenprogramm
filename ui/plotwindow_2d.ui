@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>940</width>
-    <height>825</height>
+    <width>817</width>
+    <height>684</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -273,7 +273,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>940</width>
+     <width>817</width>
      <height>22</height>
     </rect>
    </property>
@@ -604,8 +604,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionStartStop"/>
-   <addaction name="actionClear"/>
    <addaction name="actionSave"/>
    <addaction name="actionRecall"/>
    <addaction name="actionDump"/>
