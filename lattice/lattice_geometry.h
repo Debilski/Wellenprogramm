@@ -12,8 +12,6 @@
  * Rike-Benjamin Schuppner
  */
 
-
-
 #ifndef LATTICE_GEOMETRY_H
 #define LATTICE_GEOMETRY_H
 
@@ -102,12 +100,19 @@ public:
 
     void initGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
     void setGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
+
+    static LatticeGeometry sizeFromString(std::string size);
+    static std::string stringFromSize(LatticeGeometry size);
+    static std::string stringFromSize(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
+
+    bool operator==(const LatticeGeometry& other);
+    bool operator!=(const LatticeGeometry& other);
 private:
-     int sizeX_, sizeY_;
-     int latticeSizeX_, latticeSizeY_;
-     long latticeSize_;
-     double scaleX_, scaleY_;
-     int boxesPerLengthX_, boxesPerLengthY_;
+    int sizeX_, sizeY_;
+    int latticeSizeX_, latticeSizeY_;
+    long latticeSize_;
+    double scaleX_, scaleY_;
+    int boxesPerLengthX_, boxesPerLengthY_;
 
 };
 
@@ -127,15 +132,14 @@ inline void LatticeGeometry::initGeometry(int sizeX, int sizeY, int latticeSizeX
 
 inline void LatticeGeometry::setGeometry(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY)
 {
-    initGeometry( sizeX ? sizeX : sizeX_,
-                        sizeY ? sizeY : sizeY_,
-                        latticeSizeX ? latticeSizeX : latticeSizeX_,
-                        latticeSizeY ? latticeSizeY : latticeSizeY_ );
+    initGeometry(
+        sizeX ? sizeX : sizeX_, sizeY ? sizeY : sizeY_,
+        latticeSizeX ? latticeSizeX : latticeSizeX_, latticeSizeY ? latticeSizeY : latticeSizeY_ );
 }
 
-
-inline bool LatticeGeometry::hasValidGeometry() const {
-    return ! ( sizeX_ * sizeY_ * latticeSizeX_ * latticeSizeY_ );
+inline bool LatticeGeometry::hasValidGeometry() const
+{
+    return !(sizeX_ * sizeY_ * latticeSizeX_ * latticeSizeY_);
 }
 
 inline int LatticeGeometry::sizeX() const
@@ -232,9 +236,8 @@ inline LatticeGeometry LatticeGeometry::geometry() const
 }
 
 inline LatticeGeometry::LatticeGeometry() :
-    sizeX_( 0 ), sizeY_( 0 ), latticeSizeX_( 0 ), latticeSizeY_( 0 ),
-        latticeSize_( 0 ), scaleX_( 0 ), scaleY_( 0 ), boxesPerLengthX_( 0 ),
-        boxesPerLengthY_( 0 )
+    sizeX_( 0 ), sizeY_( 0 ), latticeSizeX_( 0 ), latticeSizeY_( 0 ), latticeSize_( 0 ),
+        scaleX_( 0 ), scaleY_( 0 ), boxesPerLengthX_( 0 ), boxesPerLengthY_( 0 )
 {
 }
 
@@ -307,6 +310,37 @@ inline double LatticeGeometry::latticeDistance(const LatticePoint& a, const Latt
     return sqrt( (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) );
 }
 
+inline LatticeGeometry LatticeGeometry::sizeFromString(std::string size)
+{
+    int sizeX, sizeY, latticeSizeX, latticeSizeY;
+    sscanf( size.c_str(), "%dx%d / %dx%d", &sizeX, &sizeY, &latticeSizeX, &latticeSizeY );
+    return LatticeGeometry( sizeX, sizeY, latticeSizeX, latticeSizeY );
+}
+
+inline std::string LatticeGeometry::stringFromSize(LatticeGeometry size)
+{
+    return stringFromSize( size.sizeX(), size.sizeY(), size.latticeSizeX(), size.latticeSizeY() );
+}
+
+inline std::string LatticeGeometry::stringFromSize(int sizeX, int sizeY, int latticeSizeX,
+                                                   int latticeSizeY)
+{
+    std::stringstream s;
+    s << sizeX << "x" << sizeY << " / " << latticeSizeX << "x" << latticeSizeY;
+    std::string res = s.str();
+    return res;
+}
+
+inline bool LatticeGeometry::operator==(const LatticeGeometry& other)
+{
+    return sizeX_ == other.sizeX_ && sizeY_ == other.sizeY_ && latticeSizeX_ == other.latticeSizeX_
+        && latticeSizeY_ == other.latticeSizeY_;
+}
+
+inline bool LatticeGeometry::operator!=(const LatticeGeometry& other)
+{
+    return !(operator==( other ));
+}
 
 class LatticeIterator {
     const LatticeGeometry* latticeGeometry_;

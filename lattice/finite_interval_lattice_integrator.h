@@ -26,10 +26,8 @@ class FiniteIntervalIntegrator : public SIIP_LatticeIntegrator< T_model > {
 
 typedef    typename Base::Components Components;
 public:
-    FiniteIntervalIntegrator(int sizeX, int sizeY, int latticeSizeX,
-        int latticeSizeY) :
-    SIIP_LatticeIntegrator< T_model> (
-        sizeX, sizeY, latticeSizeX, latticeSizeY )
+    FiniteIntervalIntegrator() :
+    SIIP_LatticeIntegrator< T_model> ( )
     {
         Base::INTEGRATOR_NAME = std::string( "Semi Implicite Finite Intervall" );
     }

@@ -192,8 +192,8 @@ bool LatticeController::load(const QString& name, int sizeX, int sizeY, int latt
         }
     }
 
-    d_data->lattice = d_data->TheKernel.getLatticeServer().getDriver( n ).createRenderer(
-        sizeX, sizeY, latticeSizeX, latticeSizeY );
+    d_data->lattice = d_data->TheKernel.getLatticeServer().getDriver( n ).createRenderer();
+    lattice()->init(sizeX, sizeY, latticeSizeX, latticeSizeY);
     thread.setLattice( lattice() );
     return modelExists;
 }

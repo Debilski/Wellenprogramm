@@ -136,13 +136,13 @@ void MainWindow::openPlot2D()
 
 void MainWindow::openPlot2D(int realSize, int latticeSize)
 {
-  plotWindow_ = new Waveprogram2DPlot(this, realSize, latticeSize);
+  //plotWindow_ = new Waveprogram2DPlot(this, realSize, latticeSize);
 }
 
 void MainWindow::openPlot2D(QAction * act)
 {
   QVariant qv = act->data();
-  plotWindow_ = new Waveprogram2DPlot(this, qv.toList().at(0).toInt(), qv.toList().at(1).toInt());
+  //plotWindow_ = new Waveprogram2DPlot(this, qv.toList().at(0).toInt(), qv.toList().at(1).toInt());
 }
 
 

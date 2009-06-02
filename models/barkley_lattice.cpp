@@ -7,8 +7,7 @@
 
 #include "barkley_lattice.h"
 
-BarkleyLattice::BarkleyLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-    FiniteIntervalIntegrator< BarkleyLattice > ( sizeX, sizeY, latticeSizeX, latticeSizeY ), epsilon(
+BarkleyLattice::BarkleyLattice() : epsilon(
         0.06, "epsilon", 0.001, 10.0 ), a( 0.75, "a", 0.2, 1.0 ), b( 0.06, "b", 0., 1., 5 )
 {
     componentInfos[ 0 ] = ComponentInfo( "Aktivator", "u", -0.1, 1.1 );

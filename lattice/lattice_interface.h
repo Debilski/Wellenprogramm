@@ -539,7 +539,7 @@ class FractionalLinearOperatorClass {
 
 
 
-#define LATTICE_INTERFACE_VERSION 3
+#define LATTICE_INTERFACE_VERSION 4
 
 #include <boost/noncopyable.hpp>
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
@@ -563,7 +563,7 @@ class FractionalLinearOperatorClass {
 class LatticeInterface : public LatticeGeometry /*, private boost::noncopyable */ {
 public:
 
-    LatticeInterface(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
+    LatticeInterface();
     virtual ~LatticeInterface() = 0;
 
     /**
@@ -804,6 +804,14 @@ public:
     virtual bool insertOtherAt(const LatticeInterface& other, int x, int y) = 0;
     virtual bool copyFromOther(const LatticeInterface& other, int x, int y) = 0;
 
+    /**
+     * \param sizeX Reale Ausdehnung des Systems in x-Richtung
+     * \param sizeY Reale Ausdehnung des Systems in y-Richtung
+     * \param latticeSizeX Ausdehnung des zu Grunde liegenden Gitters in x-Richtung
+     * \param latticeSizeY Ausdehnung des zu Grunde liegenden Gitters in y-Richtung
+     */
+    virtual void init(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) = 0;
+
     virtual std::vector< SurfacePoint > getSpiralTips() = 0;
 
     virtual void adaptParameters() = 0;
@@ -815,15 +823,9 @@ private:
 
 /**
  * Konstruktor des Interfaces.
- * Die Parameter werden ohne Verarbeitung an LatticeGeometry weiter gegeben.
- *
- * \param sizeX Reale Ausdehnung des Systems in x-Richtung
- * \param sizeY Reale Ausdehnung des Systems in y-Richtung
- * \param latticeSizeX Ausdehnung des zu Grunde liegenden Gitters in x-Richtung
- * \param latticeSizeY Ausdehnung des zu Grunde liegenden Gitters in y-Richtung
  */
-inline LatticeInterface::LatticeInterface(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-    LatticeGeometry( sizeX, sizeY, latticeSizeX, latticeSizeY )
+inline LatticeInterface::LatticeInterface() :
+    LatticeGeometry()
 {
 }
 

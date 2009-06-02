@@ -7,7 +7,7 @@
  *****************************************************************************/
 #include <QApplication>
 
-#include "main_window.h"
+#include "plotwindow_2d.h"
 
 #include "configuration.h"
 
@@ -23,11 +23,11 @@ int main(int argc, char *argv[])
     config.read();
     config.debug();
 
-    MainWindow *dialog = new MainWindow();
+    Waveprogram2DPlot* main = new Waveprogram2DPlot();;
 
-    dialog->raise();
-    dialog->show();
-    dialog->activateWindow();
+    main->raise();
+    main->show();
+    main->activateWindow();
 
     app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
 

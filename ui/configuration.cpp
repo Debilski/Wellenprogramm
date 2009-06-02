@@ -38,6 +38,11 @@ Configuration::Configuration()
         "libPattern" );
 
     addOption( "last_model", "FhnLattice", "global/lastModel" ). addCommandLineString( "model" );
+
+    addOption( "last_size_x", "128", "global/lastSizeX" ). addCommandLineString( "sizex" );
+    addOption( "last_size_y", "128", "global/lastSizeY" ). addCommandLineString( "sizey" );
+    addOption( "last_lattice_size_x", "128", "global/lastLatticeSizeX" ). addCommandLineString( "latticesizex" );
+    addOption( "last_lattice_size_y", "128", "global/lastLatticeSizeY" ). addCommandLineString( "latticesizey" );
 }
 
 Option& Configuration::operator()(const QString& name)

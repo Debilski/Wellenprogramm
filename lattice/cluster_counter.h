@@ -18,8 +18,9 @@ class ClusterCounter : public LatticeGeometry {
 public:
 
     const LatticeInterface* lattice_;
-    ClusterCounter(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY, const LatticeInterface* lattice = 0);
+    ClusterCounter(const LatticeInterface* lattice = 0);
     ~ClusterCounter();
+    void init(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
 
     void countClusters();
     void printClusters();

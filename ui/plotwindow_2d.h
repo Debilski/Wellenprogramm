@@ -40,11 +40,12 @@
 class Waveprogram2DPlot : public QMainWindow, private Ui::plotWindow_2d {
 Q_OBJECT
 public:
-    Waveprogram2DPlot(QMainWindow * parent = 0, int realSize = 128, int latticeSize = 128);
+    Waveprogram2DPlot(QMainWindow * parent = 0);
     ~Waveprogram2DPlot();
 
     void setUpDockWindows();
 
+    void setUpSizeMenu();
     void setUpActions();
     void setUpColorMap();
     void reorderTabs();
@@ -71,8 +72,13 @@ public slots:
 
     void toggleStartStop();
 
+    void updateSizeMenu();
+
     void updateDefects();
     void updateLabels();
+
+
+    void changeSize( const QString& size );
 
     void on_noiseSpinBox_valueChanged(double d);
 
@@ -177,6 +183,9 @@ private:
 
     void setTitle();
 
+    QStringList recentSizes;
+    QSignalMapper* sizeMapper;
+
     // FHNModel *fhnmodel;
 
     std::auto_ptr< LatticeController > lc_;
@@ -212,6 +221,8 @@ private:
     QMap< int, QString > boundaryConditionIdentifier;
 
     void setUpColorSchemeMenu();
+
+    QAction* createLatticeWithNewSize;
 
     QActionGroup* changeColorSchemeGroup;
     QActionGroup* changeColorSchemeModeGroup;

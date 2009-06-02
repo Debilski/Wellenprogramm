@@ -68,8 +68,10 @@ public:
         return number_of_Variables;
     }
 
-    Lattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
+    Lattice();
     virtual ~Lattice();
+
+    virtual void init(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
 
     Components getAt(int x, int y) const;
     double getComponentAt(uint component, int x, int y) const;

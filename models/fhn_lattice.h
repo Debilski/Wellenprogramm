@@ -44,7 +44,7 @@ class FhnLattice : public SIIP_LatticeIntegrator< FhnLattice > {
 public:
     typedef TwoComponentSystem TestComponents;
     // TestComponents C;
-    FhnLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
+    FhnLattice();
 
     Parameter< double > epsilon;
     Parameter< double > gamma;
@@ -241,8 +241,8 @@ public:
     enum Rule {
         BearsCell, KillsCell, IgnoresCell
     };
-    GameOfLife(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        Lattice< GameOfLife > ( sizeX, sizeY, latticeSizeX, latticeSizeY ), delay( 0.01, "delay" )
+    GameOfLife() :
+        delay( 0.01, "delay" )
     {
         registerParameter( &delay );
     }
@@ -394,8 +394,7 @@ public:
         return TwoComponentSystem( fixpointU(), fixpointV() );
     }
 
-    FhnHeartLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnHeartLattice > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnHeartLattice() :
             epsilon( 0.1, "epsilon", 0.0, 100.0 ), gamma( 0.1, "gamma", 0.0, 100.0 ), gamma_high(
                 0.55, "γ high" ), gamma_low( 0.1, "γ low" ), gamma_spacing( 0.001, "γ spacing" ),
             waveSize_threshold( 200, "wavesize" ), var_intensity( 0, "intensity", 0, 100 ),

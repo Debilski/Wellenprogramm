@@ -53,11 +53,10 @@ void Waveprogram2DPlot::setTitle()
     }
 }
 
-Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int latticeSize) :
+Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     QMainWindow( parent ), parent( parent )
 {
     d_data = new PrivateData;
-    std::cout << realSize << "/" << latticeSize << std::endl;
 
     // LatticeController vllt ohne Zeiger, aber auf jeden Fall besser einbauen als so!
     lc_.reset( new LatticeController() );
@@ -108,13 +107,16 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
     connect( actionClear, SIGNAL( triggered() ), latticeController_, SLOT( clear() ) );
     connect( clearButton, SIGNAL( clicked() ), latticeController_, SLOT( clear() ) );
 
+
+    setUpSizeMenu();
+    updateSizeMenu();
     setUpActions();
 
     setUpColorSchemeMenu();
 
     QString lastUsedModel = config.option( "last_model" ).value().toString();
     qDebug() << lastUsedModel;
-    initField( realSize, realSize, latticeSize, latticeSize, lastUsedModel );
+    initField( config.option("last_size_x").value().toInt(), config.option("last_size_y").value().toInt(), config.option("last_lattice_size_x").value().toInt(), config.option("last_lattice_size_y").value().toInt(), lastUsedModel );
 
     boundaryConditionsComboBox->setCurrentIndex( latticeController_->lattice()->boundaryCondition() );
 
@@ -174,6 +176,8 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent, int realSize, int lat
 
     connect( simulationTimeLabel, SIGNAL( reset() ), this, SLOT( resetTime()) );
 }
+
+
 
 void Waveprogram2DPlot::resetTime()
 {
@@ -869,6 +873,49 @@ Waveprogram2DPlot::~Waveprogram2DPlot()
     delete d_data;
 }
 
+void Waveprogram2DPlot::setUpSizeMenu()
+{
+    recentSizes << QString::fromStdString( LatticeGeometry::stringFromSize(4,4,8,8) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(8,8,8,8) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(8,8,512,512) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(16,16,32,32) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(16,16,1024,1024) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(32,32,32,32) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(64,64,64,64) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(128,128,128,128) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(128,128,256,256) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(128,128,512,512) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(256,256,256,256) )
+    << QString::fromStdString( LatticeGeometry::stringFromSize(256,256,512,512) );
+
+    createLatticeWithNewSize = new QAction( tr("Create Lattice with new Size"), this);
+
+    sizeMapper = new QSignalMapper( this );
+    connect( sizeMapper, SIGNAL(mapped( const QString&)), this, SLOT( changeSize(const QString&)) );
+}
+
+void Waveprogram2DPlot::updateSizeMenu()
+{
+    menuSize->clear();
+    foreach( QString size, recentSizes ) {
+        QAction* action = new QAction( size, this );
+        menuSize->addAction(action);
+        connect( action, SIGNAL( triggered() ), sizeMapper, SLOT( map() ) );
+        sizeMapper->setMapping( action, size );
+    }
+    menuSize->addSeparator();
+    menuSize->addAction(createLatticeWithNewSize);
+}
+
+void Waveprogram2DPlot::changeSize( const QString& size )
+{
+    qDebug() << QString::fromStdString( LatticeGeometry::stringFromSize( LatticeGeometry::sizeFromString(size.toStdString()) ) );
+    LatticeGeometry s = LatticeGeometry::sizeFromString(size.toStdString());
+    if ( s != LatticeGeometry() ) {
+        initField( s.sizeX(), s.sizeY(), s.latticeSizeX(), s.latticeSizeY(), latticeController_->modelName() );
+    }
+}
+
 void Waveprogram2DPlot::setUpActions()
 {
     QList< QAction * > availableActions = menuMode->actions();
@@ -916,6 +963,11 @@ void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX
     latticeController_->load( model, realSizeX, realSizeY, latticeSizeX, latticeSizeY );
 
     config( "last_model" ).setValue( QVariant( model ) );
+    config("last_size_x").setValue(realSizeX);
+    config("last_size_y").setValue(realSizeY);
+    config("last_lattice_size_x").setValue(latticeSizeX);
+    config("last_lattice_size_y").setValue(latticeSizeY);
+
     config.write();
 
     latticeController_->lattice()->setDiffusion( 0, 1. );

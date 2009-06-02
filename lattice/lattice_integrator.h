@@ -46,8 +46,8 @@ struct _tvec< 0 > {
 template<typename T_model>
 class LatticeIntegrator : public Lattice< T_model >{
 public:
-    LatticeIntegrator(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        Lattice< T_model > ( sizeX, sizeY, latticeSizeX, latticeSizeY )
+    LatticeIntegrator() :
+        Lattice< T_model > ()
     {
     }
     /*

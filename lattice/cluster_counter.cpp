@@ -16,16 +16,19 @@
 // --- Cluster Stuff ---
 
 
-ClusterCounter::ClusterCounter(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY,
-                               const LatticeInterface* lattice) :
-    LatticeGeometry( sizeX, sizeY, latticeSizeX, latticeSizeY ), lattice_( lattice ), clusterField(
-        latticeSizeX, latticeSizeY ), nextClusterId_( 0 ), numClusters_( 0 ), distanceThreshold_(
+ClusterCounter::ClusterCounter(const LatticeInterface* lattice) : lattice_( lattice ), nextClusterId_( 0 ), numClusters_( 0 ), distanceThreshold_(
         20 ), sizeThreshold_( 4.0 ), clusterThreshold_( 0 )
 {
 }
 
 ClusterCounter::~ClusterCounter()
 {
+}
+
+void ClusterCounter::init(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY)
+{
+    setGeometry( sizeX, sizeY, latticeSizeX, latticeSizeY);
+    clusterField.resize( latticeSizeX, latticeSizeY );
 }
 
 void ClusterCounter::setClusterThreshold(double threshold)

@@ -24,7 +24,7 @@ template <> struct Metainfo<BarkleyLattice>::NoiseMapping< secondComponent >{ en
 class BarkleyLattice : public FiniteIntervalIntegrator< BarkleyLattice > {
 public:
 
-    BarkleyLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
+    BarkleyLattice();
 
     Parameter< double > epsilon;
     Parameter< double > a;

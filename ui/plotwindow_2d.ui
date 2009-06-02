@@ -356,6 +356,12 @@
     </widget>
     <addaction name="menuDock_Windows"/>
    </widget>
+   <widget class="QMenu" name="menuSize">
+    <property name="title">
+     <string>Size</string>
+    </property>
+   </widget>
+   <addaction name="menuSize"/>
    <addaction name="menuMode"/>
    <addaction name="menuField"/>
    <addaction name="menuProgram_Settings"/>
@@ -949,6 +955,11 @@
    </property>
    <property name="text">
     <string>PNG/Movie</string>
+   </property>
+  </action>
+  <action name="actionOther_size">
+   <property name="text">
+    <string>Other size</string>
    </property>
   </action>
  </widget>

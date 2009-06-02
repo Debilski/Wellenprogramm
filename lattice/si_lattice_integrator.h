@@ -21,8 +21,8 @@
 template<typename T_model>
 class SI_LatticeIntegrator : public LatticeIntegrator< T_model > {
 public:
-    SI_LatticeIntegrator(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        LatticeIntegrator< T_model > ( sizeX, sizeY, latticeSizeX, latticeSizeY )
+    SI_LatticeIntegrator() :
+        LatticeIntegrator< T_model > (  )
     {
     }
 };

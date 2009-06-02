@@ -32,12 +32,41 @@
  *
  */
 template<typename T_model>
-Lattice< T_model >::Lattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-    LatticeInterface( sizeX, sizeY, latticeSizeX, latticeSizeY ), clusterCounter_(
-        sizeX, sizeY, latticeSizeX, latticeSizeY ), tau( 0.001 ), time_( 0 ), numSteps_( 0 ),
+Lattice< T_model >::Lattice() : tau( 0.001 ), time_( 0 ), numSteps_( 0 ),
         lastClusterCountTime_( -1 ), noiseIntensity_( 0 ), noiseCorrelation_( -1 ),
         componentHasPlan( false )
 {
+    Components comp = Components();
+    comp.components = 0;
+    setDiffusion( comp );
+
+    componentInfos.resize( Components::number_of_Variables );
+}
+
+
+/**
+ * Räumt die Pläne auf und entfernt die Referenzen zum Rauschgenerator.
+ */
+template<typename T_model>
+Lattice< T_model >::~Lattice()
+{
+    std::cout << "Destroy Lattice... " << std::flush;
+    for (uint i = 0; i < Components::number_of_Variables; ++i) {
+        destroyFftwPlanForComponent( i );
+    }
+    std::cout << "done\n" << std::flush;
+
+    for (uint noiseComponent = 0; noiseComponent < number_of_Noise_Variables; ++noiseComponent) {
+        delete originalNoiseGenerator_[ noiseComponent ];
+    }
+    fftw3Wrapper->release();
+}
+
+template<typename T_model>
+void Lattice< T_model >::init(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) {
+    setGeometry( sizeX, sizeY, latticeSizeX, latticeSizeY );
+    clusterCounter_.init( sizeX, sizeY, latticeSizeX, latticeSizeY );
+
     std::cout << sizeX << "x" << sizeY << " / " << latticeSizeX << "x" << latticeSizeY << std::endl;
 
     for (uint noiseComponent = 0; noiseComponent < number_of_Noise_Variables; ++noiseComponent) {
@@ -71,34 +100,10 @@ Lattice< T_model >::Lattice(int sizeX, int sizeY, int latticeSizeX, int latticeS
 
     fftw3Wrapper->exportWisdom();
 
-    Components comp = Components();
-    comp.components = 0;
-    setDiffusion( comp );
-
-    componentInfos.resize( Components::number_of_Variables );
-
     // Works as long as fixpoint is not virtual!
     clear();
 }
 
-
-/**
- * Räumt die Pläne auf und entfernt die Referenzen zum Rauschgenerator.
- */
-template<typename T_model>
-Lattice< T_model >::~Lattice()
-{
-    std::cout << "Destroy Lattice... " << std::flush;
-    for (uint i = 0; i < Components::number_of_Variables; ++i) {
-        destroyFftwPlanForComponent( i );
-    }
-    std::cout << "done\n" << std::flush;
-
-    for (uint noiseComponent = 0; noiseComponent < number_of_Noise_Variables; ++noiseComponent) {
-        delete originalNoiseGenerator_[ noiseComponent ];
-    }
-    fftw3Wrapper->release();
-}
 
 /**
  * Erzeugt einen Plan für die FFTW in einer bestimmten Komponente.

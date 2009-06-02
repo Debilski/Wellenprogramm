@@ -29,7 +29,7 @@ public:
         /// Get name of the Lattice driver
         virtual const std::string &getName() const = 0;
         /// Create a renderer
-        virtual std::auto_ptr< LatticeInterface > createRenderer(int x, int y, int lx, int ly) = 0;
+        virtual std::auto_ptr< LatticeInterface > createRenderer() = 0;
         virtual void destroy( LatticeInterface* l) = 0;
     };
 
@@ -88,8 +88,8 @@ class lattice_class##_LatticeDriver : public LatticeServer::LatticeDriver {     
     }                                                                               \
                                                                                     \
     /* Create a renderer */                                                         \
-    std::auto_ptr<LatticeInterface> createRenderer(int x,int y,int lx, int ly) {    \
-      return std::auto_ptr<LatticeInterface>(new lattice_class(x,y,lx,ly));         \
+    std::auto_ptr<LatticeInterface> createRenderer() {    \
+      return std::auto_ptr<LatticeInterface>(new lattice_class());         \
     }                                                                               \
     void destroy(LatticeInterface* l) {                                             \
       delete l;                                                                     \

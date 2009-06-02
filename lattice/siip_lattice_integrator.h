@@ -44,10 +44,8 @@ typedef    typename Base::Components Components;
 
 public:
 
-    SIIP_LatticeIntegrator(int sizeX, int sizeY, int latticeSizeX,
-        int latticeSizeY) :
-            SI_LatticeIntegrator< T_model> (
-        sizeX, sizeY, latticeSizeX, latticeSizeY )
+    SIIP_LatticeIntegrator() :
+            SI_LatticeIntegrator< T_model> ()
     {
         Base::INTEGRATOR_NAME = std::string( "Semi Implicit Interaction Picture" );
     }

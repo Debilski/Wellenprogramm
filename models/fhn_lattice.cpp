@@ -9,8 +9,8 @@
 
 
 
-FhnLattice::FhnLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-    SIIP_LatticeIntegrator< FhnLattice > ( sizeX, sizeY, latticeSizeX, latticeSizeY ), epsilon(
+FhnLattice::FhnLattice() :
+    SIIP_LatticeIntegrator< FhnLattice > (), epsilon(
         0.1, "epsilon", 0.0, 100.0 ), gamma( 0.1, "gamma", -10.0, 100.0 ),
         gamma_high(0.55, "γ high"),
         gamma_low(0.1, "γ low"),
