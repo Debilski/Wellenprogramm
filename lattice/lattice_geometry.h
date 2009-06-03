@@ -315,8 +315,9 @@ inline double LatticeGeometry::latticeDistance(const LatticePoint& a, const Latt
 inline LatticeGeometry LatticeGeometry::sizeFromString(std::string size)
 {
     int sizeX, sizeY, latticeSizeX, latticeSizeY;
-    sscanf( size.c_str(), "%dx%d / %dx%d", &sizeX, &sizeY, &latticeSizeX, &latticeSizeY );
-    return LatticeGeometry( sizeX, sizeY, latticeSizeX, latticeSizeY );
+    if (sscanf( size.c_str(), "%dx%d / %dx%d", &sizeX, &sizeY, &latticeSizeX, &latticeSizeY ) == 4)
+        return LatticeGeometry( sizeX, sizeY, latticeSizeX, latticeSizeY );
+    return LatticeGeometry();
 }
 
 inline std::string LatticeGeometry::stringFromSize(LatticeGeometry size)

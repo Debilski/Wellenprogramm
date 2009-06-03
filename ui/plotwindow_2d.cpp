@@ -141,11 +141,6 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     saveAsPngToolButton->setDefaultAction(actionSave_as_Png);
     saveAsPngMovieToolButton->setDefaultAction(actionSave_as_Movie_Pngs);
 
-    setUpDockWindows();
-
-    statusBar();
-    //setUnifiedTitleAndToolBarOnMac( true );
-
     this->show();
 
     QString lastUsedModel = config.option( "last_model" ).value().toString();
@@ -316,15 +311,6 @@ void Waveprogram2DPlot::updateUpdatePeriod(QAction* a)
     d_data->timer->setInterval( updatePeriodTime_ );
     if ( d_data->timer->isActive() )
         d_data->timer->start();
-}
-
-#include "parameter_dock_widget.h"
-
-void Waveprogram2DPlot::setUpDockWindows()
-{
-    ParameterDockWidget* p = new ParameterDockWidget( this );
-    p->setFloating( true );
-    p->show();
 }
 
 void Waveprogram2DPlot::setUpColorMap()
@@ -957,7 +943,7 @@ void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX
     QString delayMsg = QString( "Creating a lattice of %1 x %2. This might take some time." ).arg(
         latticeSizeX ).arg( latticeSizeY );
 
-    statusBar()->showMessage( delayMsg );
+    Ui::plotWindow_2d::statusBar->showMessage( delayMsg );
     // Schnell letzte Updates ausführen, bevor das Modell geladen wird
     QCoreApplication::processEvents();
 
@@ -976,7 +962,7 @@ void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX
     latticeController_->lattice()->clear();
     latticeController_->lattice()->toInitial( 0 );
 
-    statusBar()->clearMessage();
+    Ui::plotWindow_2d::statusBar->clearMessage();
 
     setUpViews();
     reorderTabs();
