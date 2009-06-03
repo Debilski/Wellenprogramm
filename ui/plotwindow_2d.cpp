@@ -987,6 +987,13 @@ void Waveprogram2DPlot::killField()
 {
     writeParameterSets();
 
+    for (uint i = 0; i < plotViewVector_.size(); ++i) {
+        PlotView* w = plotViewVector_[ i ];
+        disconnect( this, 0, w, 0 );
+        w->deleteLater();
+    }
+    plotViewVector_.clear();
+
     latticeController_->closeLattice();
 
     setTitle();
