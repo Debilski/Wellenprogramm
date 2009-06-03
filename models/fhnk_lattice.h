@@ -41,11 +41,10 @@ class FhnKLattice4 : public SIIP_LatticeIntegrator< FhnKLattice4 > {
 public:
     Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l;
     blitz::Array< bool, 2 > isFhnField;
-    FhnKLattice4(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnKLattice4 > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnKLattice4() :
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
-                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), isFhnField( latticeSizeX, latticeSizeY )
+                0.2, "gamma" ), tau_l( 2.0, "tau_l" )
     {
         modelName_ = "FhnKLattice 4er";
 
@@ -209,6 +208,7 @@ protected:
 
     void toInitial(int number)
     {
+        isFhnField.resize( latticeSizeX(), latticeSizeY() );
         isFhnField = false;
         for (int i = 2; i < latticeSizeX() - 3; ++i) {
             for (int j = 2; j < latticeSizeY() - 3; ++j) {
@@ -276,11 +276,10 @@ class FhnKLattice8 : public SIIP_LatticeIntegrator< FhnKLattice8 > {
 public:
     Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l;
     blitz::Array< bool, 2 > isFhnField;
-    FhnKLattice8(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnKLattice8 > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnKLattice8() :
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
-                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), isFhnField( latticeSizeX, latticeSizeY )
+                0.2, "gamma" ), tau_l( 2.0, "tau_l" )
     {
         modelName_ = "FhnKLattice 8er";
 
@@ -426,6 +425,7 @@ protected:
 
     void toInitial(int number)
     {
+        isFhnField.resize( latticeSizeX(), latticeSizeY() );
         isFhnField = false;
         for (int i = 5; i < latticeSizeX() - 6; ++i) {
             for (int j = 5; j < latticeSizeY() - 6; ++j) {
@@ -487,11 +487,10 @@ class FhnKLattice_z4 : public SIIP_LatticeIntegrator< FhnKLattice_z4 > {
 public:
     Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l;
     blitz::Array< bool, 2 > isFhnField;
-    FhnKLattice_z4(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnKLattice_z4 > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnKLattice_z4() :
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
-                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), isFhnField( latticeSizeX, latticeSizeY )
+                0.2, "gamma" ), tau_l( 2.0, "tau_l" )
     {
         modelName_ = "FhnKLattice global z 4er";
 
@@ -624,6 +623,7 @@ protected:
 
     void toInitial(int number)
     {
+        isFhnField.resize( latticeSizeX(), latticeSizeY() );
         isFhnField = false;
         for (int i = 5; i < latticeSizeX() - 6; ++i) {
             for (int j = 5; j < latticeSizeY() - 6; ++j) {
@@ -685,11 +685,10 @@ class FhnKLattice_z8 : public SIIP_LatticeIntegrator< FhnKLattice_z8 > {
 public:
     Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l;
     blitz::Array< bool, 2 > isFhnField;
-    FhnKLattice_z8(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnKLattice_z8 > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnKLattice_z8() :
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
-                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), isFhnField( latticeSizeX, latticeSizeY )
+                0.2, "gamma" ), tau_l( 2.0, "tau_l" )
     {
         modelName_ = "FhnKLattice global z 8er";
 
@@ -819,6 +818,7 @@ protected:
 
     void toInitial(int number)
     {
+        isFhnField.resize( latticeSizeX(), latticeSizeY() );
         isFhnField = false;
         for (int i = 5; i < latticeSizeX() - 6; ++i) {
             for (int j = 5; j < latticeSizeY() - 6; ++j) {
@@ -885,11 +885,10 @@ class FhnKLattice_laplace : public SIIP_LatticeIntegrator< FhnKLattice_laplace >
 public:
     Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l;
     blitz::Array< bool, 2 > isFhnField;
-    FhnKLattice_laplace(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnKLattice_laplace > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnKLattice_laplace() :
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
-                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), isFhnField( latticeSizeX, latticeSizeY )
+                0.2, "gamma" ), tau_l( 2.0, "tau_l" )
     {
         modelName_ = "FhnKLattice laplace";
         modelInformation_ = "FHN-K-Modell mit 8-er Nachbarschaft und Abstandsgewichtung.";
@@ -1099,6 +1098,7 @@ protected:
 
     void toInitial(int number)
     {
+        isFhnField.resize( latticeSizeX(), latticeSizeY() );
         isFhnField = false;
         for (int i = 2; i < latticeSizeX() - 3; ++i) {
             for (int j = 2; j < latticeSizeY() - 3; ++j) {
@@ -1178,11 +1178,10 @@ class FhnKLattice_laplace_extended : public SIIP_LatticeIntegrator< FhnKLattice_
 public:
     Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l, max_distance;
     blitz::Array< bool, 2 > isFhnField;
-    FhnKLattice_laplace_extended(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnKLattice_laplace_extended > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnKLattice_laplace_extended() :
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
-                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), max_distance( 2.0, "max_distance" ), isFhnField( latticeSizeX, latticeSizeY )
+                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), max_distance( 2.0, "max_distance" )
     {
         modelName_ = "FhnKLattice laplace ex.";
         modelInformation_ = "FHN-K-Modell mit noch größerer Nachbarschaft und Abstandsgewichtung.";
@@ -1370,6 +1369,7 @@ protected:
 
     void toInitial(int number)
     {
+        isFhnField.resize( latticeSizeX(), latticeSizeY() );
         isFhnField = false;
         for (int i = 2; i < latticeSizeX() - 3; ++i) {
             for (int j = 2; j < latticeSizeY() - 3; ++j) {
@@ -1452,11 +1452,11 @@ class FhnKLattice_layers : public SIIP_LatticeIntegrator< FhnKLattice_layers > {
 public:
     Parameter< double > epsilon, a, C_z, tau_r, x_0, x_s, alpha, beta, gamma, tau_l;
     blitz::Array< bool, 2 > isFhnField;
-    FhnKLattice_layers(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< FhnKLattice_layers > ( sizeX, sizeY, latticeSizeX, latticeSizeY ),
+    FhnKLattice_layers() :
+
             epsilon( 0.04, "epsilon" ), a( 1.04, "a" ), C_z( 0.1, "C_z" ), tau_r( 1.0, "tau_r" ),
             x_0( 0, "x0" ), x_s( 0.05, "xs" ), alpha( 11.0, "alpha" ), beta( 0.6, "beta" ), gamma(
-                0.2, "gamma" ), tau_l( 2.0, "tau_l" ), isFhnField( latticeSizeX, latticeSizeY )
+                0.2, "gamma" ), tau_l( 2.0, "tau_l" )
     {
         modelName_ = "FhnKLattice Layers";
         modelInformation_ = "FHN-K-Modell mit 8er Nachbarschaft und Abstandsgewichtung. Neuronen sind aufgelegt. Das z-Medium ist durchgängig.";
@@ -1637,6 +1637,7 @@ protected:
 
     void toInitial(int number)
     {
+        isFhnField.resize( latticeSizeX(), latticeSizeY() );
         isFhnField = false;
         for (int i = 2; i < latticeSizeX() - 3; ++i) {
             for (int j = 2; j < latticeSizeY() - 3; ++j) {
