@@ -1022,47 +1022,15 @@ void Waveprogram2DPlot::toggleStartStop()
 {
     if ( latticeController_->loopRuns() == false ) {
         d_data->timer->start( updatePeriodTime_ );
-
         startStopButton->setText( "Stop" );
         actionStartStop->setText( "Stop" );
         latticeController_->startLoop();
     } else {
-        qDebug() << "Stop";
         latticeController_->stopLoop();
         d_data->timer->stop();
         startStopButton->setText( "Start" );
         actionStartStop->setText( "Start" );
     }
-    return;
-
-    static bool a = false;
-    a = !a;
-    if ( a ) {
-        d_data->timer->start( updatePeriodTime_ );
-
-        startStopButton->setText( "Stop" );
-        actionStartStop->setText( "Stop" );
-        latticeController_->start( 6 );
-    } else {
-        qDebug() << "Stop";
-        latticeController_->stop();
-        d_data->timer->stop();
-        startStopButton->setText( "Start" );
-        actionStartStop->setText( "Start" );
-    }
-    return;/*
-     if ( loopruns == false ) {
-     d_data->timer->start( updatePeriodTime_ );
-     startStopButton->setText( "Stop" );
-     actionStartStop->setText( "Stop" );
-     this->loopStart();
-     } else {
-     d_data->timer->stop();
-     startStopButton->setText( "Start" );
-     actionStartStop->setText( "Start" );
-     this->loopStop();
-     }
-     */
 }
 
 void Waveprogram2DPlot::on_actionSave_triggered()
