@@ -17,6 +17,7 @@
 
 #include <cmath>
 #include <vector>
+#include <string>
 
 /**
  * Symbolises a point on the internal lattice.
