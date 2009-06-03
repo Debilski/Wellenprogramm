@@ -18,6 +18,7 @@
 #include <cmath>
 #include <vector>
 #include <string>
+#include <sstream>
 
 /**
  * Symbolises a point on the internal lattice.
