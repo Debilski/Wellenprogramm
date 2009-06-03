@@ -81,7 +81,9 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     // setAttribute( Qt::WA_DeleteOnClose );
     //    sliceWidget->setVisible( false );
 
-    //    setAttribute( Qt::WA_MacMetalStyle );
+    //setAttribute( Qt::WA_MacMetalStyle );
+    //statusBar();
+
     setTitle();
 
     boundaryConditionIdentifier[ FixedBoundary ] = "Fixed Boundary";
@@ -114,30 +116,13 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
 
     setUpColorSchemeMenu();
 
-    QString lastUsedModel = config.option( "last_model" ).value().toString();
-    qDebug() << lastUsedModel;
-    initField( config.option("last_size_x").value().toInt(), config.option("last_size_y").value().toInt(), config.option("last_lattice_size_x").value().toInt(), config.option("last_lattice_size_y").value().toInt(), lastUsedModel );
-
-    boundaryConditionsComboBox->setCurrentIndex( latticeController_->lattice()->boundaryCondition() );
-
-    correlationSpinBox->setValue( latticeController_->lattice()->noiseCorrelation() );
-    timestepSpinBox->setValue( latticeController_->lattice()->timeStep() );
-
-    showClusterIds_ = false;
-
-    //QwtValueList contourLevels;
-
-    /*for (double level = 0.5; level < 10.0; level += 1.0)
-     contourLevels += level;
-     d_spectrogram->setContourLevels(contourLevels);
-     d_curvature_spectrogram->setContourLevels(contourLevels);
-     */
 
     updatePeriodTime_ = 100;
     setUpUpdatePeriodMenu();
     defectsEditor = 0;
 
-    // menuWindow->addAction( simulationWidget->toggleViewAction() );
+
+    menuDock_Windows->addAction( simulationWidget->toggleViewAction() );
 
     parameterWidget->toggleViewAction()->setText( "Model Properties" );
     menuDock_Windows->addAction( parameterWidget->toggleViewAction() );
@@ -156,11 +141,28 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     saveAsPngToolButton->setDefaultAction(actionSave_as_Png);
     saveAsPngMovieToolButton->setDefaultAction(actionSave_as_Movie_Pngs);
 
-    setUnifiedTitleAndToolBarOnMac( true );
-
     setUpDockWindows();
 
+    statusBar();
+    //setUnifiedTitleAndToolBarOnMac( true );
+
     this->show();
+
+    QString lastUsedModel = config.option( "last_model" ).value().toString();
+    qDebug() << lastUsedModel;
+    initField(
+        config.option( "last_size_x" ).value().toInt(),
+        config.option( "last_size_y" ).value().toInt(),
+        config.option( "last_lattice_size_x" ).value().toInt(), config.option(
+            "last_lattice_size_y" ).value().toInt(), lastUsedModel );
+
+    boundaryConditionsComboBox->setCurrentIndex( latticeController_->lattice()->boundaryCondition() );
+
+    correlationSpinBox->setValue( latticeController_->lattice()->noiseCorrelation() );
+    timestepSpinBox->setValue( latticeController_->lattice()->timeStep() );
+
+    showClusterIds_ = false;
+
 
     replot();
 
@@ -175,6 +177,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     readSettings();
 
     connect( simulationTimeLabel, SIGNAL( reset() ), this, SLOT( resetTime()) );
+    setUnifiedTitleAndToolBarOnMac(true);
 }
 
 
@@ -953,12 +956,11 @@ void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX
 {
     QString delayMsg = QString( "Creating a lattice of %1 x %2. This might take some time." ).arg(
         latticeSizeX ).arg( latticeSizeY );
-    if ( parent != 0 ) {
-        if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
-            parent->statusBar()->showMessage( delayMsg );
-        }
-    }
-    qDebug() << delayMsg;
+
+    statusBar()->showMessage( delayMsg );
+    // Schnell letzte Updates ausführen, bevor das Modell geladen wird
+    QCoreApplication::processEvents();
+
 
     latticeController_->load( model, realSizeX, realSizeY, latticeSizeX, latticeSizeY );
 
@@ -974,11 +976,7 @@ void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX
     latticeController_->lattice()->clear();
     latticeController_->lattice()->toInitial( 0 );
 
-    if ( parent != 0 ) {
-        if ( QLatin1String( parent->metaObject()->className() ) == QLatin1String( "mainWin" ) ) {
-            parent->statusBar()->clearMessage();
-        }
-    }
+    statusBar()->clearMessage();
 
     setUpViews();
     reorderTabs();

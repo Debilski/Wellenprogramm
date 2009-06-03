@@ -373,7 +373,7 @@
   </widget>
   <widget class="QDockWidget" name="simulationWidget">
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>Simulation</string>
