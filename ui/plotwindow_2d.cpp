@@ -338,7 +338,8 @@ void Waveprogram2DPlot::reorderTabs()
 void Waveprogram2DPlot::setUpViews()
 {
     //    disconnect( this, SIGNAL( replotTab() ), 0, 0 );
-    //    disconnect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), 0, 0 );
+    disconnect( this, SIGNAL( colorMapChanged( const QwtColorMap& )), 0, 0 );
+    disconnect( this, SIGNAL( colorMapChanged( const QwtColorMap&, ColorMapAdaptationModes )), 0, 0);
 
     for (uint i = 0; i < plotViewVector_.size(); ++i) {
         PlotView* w = plotViewVector_[ i ];
@@ -987,11 +988,6 @@ void Waveprogram2DPlot::killField()
 {
     writeParameterSets();
 
-    for (uint i = 0; i < plotViewVector_.size(); ++i) {
-        PlotView* w = plotViewVector_[ i ];
-        disconnect( this, 0, w, 0 );
-        w->deleteLater();
-    }
     plotViewVector_.clear();
 
     latticeController_->closeLattice();
@@ -1687,7 +1683,7 @@ void Waveprogram2DPlot::writeParameterSets()
         ParameterValueMap::const_iterator it = p.constBegin();
         for (; it != p.constEnd(); ++it) {
             settings.setValue( it.key(), it.value() );
-            qDebug() << it.key() << it.value();
+            // qDebug() << it.key() << it.value();
         }
 
     }
