@@ -69,7 +69,7 @@ Q_PROPERTY(int sizeY READ sizeY)
 Q_PROPERTY(int latticeSizeX READ latticeSizeX)
 Q_PROPERTY(int latticeSizeY READ latticeSizeY)
 Q_PROPERTY(int adaptationMode READ adaptationMode WRITE setAdaptationMode)
-Q_PROPERTY(QString modelName READ modelName)
+Q_PROPERTY(QString modelTitle READ modelTitle)
 Q_PROPERTY(double time READ time WRITE setTime)
 Q_PROPERTY(int numberOfClusters READ numberOfClusters)
 public:
@@ -96,7 +96,8 @@ public:
     void setTime(double time);
 
     QStringList getModelNames();
-    QString modelName() const;
+    QString getModelName();
+    QString modelTitle() const;
 
     LatticeScripter* getLatticeScripter() const;
 

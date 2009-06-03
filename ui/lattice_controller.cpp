@@ -102,6 +102,7 @@ public:
     int stepsAtOnce;
     bool adaptationMode;
     bool stopped;
+    std::string internalName;
 
     QTemporaryFile temporaryLattice;
 };
@@ -192,6 +193,7 @@ bool LatticeController::load(const QString& name, int sizeX, int sizeY, int latt
         }
     }
 
+    d_data->internalName = LS.getDriver( n ).getName();
     d_data->lattice = d_data->TheKernel.getLatticeServer().getDriver( n ).createRenderer();
     lattice()->init(sizeX, sizeY, latticeSizeX, latticeSizeY);
     thread.setLattice( lattice() );
@@ -258,8 +260,13 @@ QStringList LatticeController::getModelNames()
         n << QString::fromStdString( *it );
     }
     return n;
-
 }
+
+QString LatticeController::getModelName()
+{
+    return QString::fromStdString( d_data->internalName );
+}
+
 
 void LatticeController::stepMany()
 {
@@ -325,7 +332,7 @@ QSize LatticeController::latticeSize() const
     return QSize( latticeSizeX(), latticeSizeY() );
 }
 
-QString LatticeController::modelName() const
+QString LatticeController::modelTitle() const
 {
     return QString::fromStdString( d_data->lattice->modelName() );
 }

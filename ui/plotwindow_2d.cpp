@@ -35,7 +35,7 @@ void Waveprogram2DPlot::setTitle()
     if ( latticeController_->isValid() ) {
         setWindowTitle( QString::fromUtf8(
             "‘%1’: Simulate a field size of %2×%3 on a lattice of %4×%5 " ).arg(
-            latticeController_->modelName() ).arg( latticeController_->sizeX() ).arg(
+            latticeController_->modelTitle() ).arg( latticeController_->sizeX() ).arg(
             latticeController_->sizeY() ).arg( latticeController_->latticeSizeX() ).arg(
             latticeController_->latticeSizeY() ) );
         if ( latticeController_->lattice()->modelInformation().empty() ) {
@@ -896,14 +896,6 @@ void Waveprogram2DPlot::updateSizeMenu()
     menuSize->addAction(createLatticeWithNewSize);
 }
 
-void Waveprogram2DPlot::changeSize( const QString& size )
-{
-    qDebug() << QString::fromStdString( LatticeGeometry::stringFromSize( LatticeGeometry::sizeFromString(size.toStdString()) ) );
-    LatticeGeometry s = LatticeGeometry::sizeFromString(size.toStdString());
-    if ( s != LatticeGeometry() ) {
-        initField( s.sizeX(), s.sizeY(), s.latticeSizeX(), s.latticeSizeY(), latticeController_->modelName() );
-    }
-}
 
 void Waveprogram2DPlot::setUpActions()
 {
@@ -920,6 +912,21 @@ void Waveprogram2DPlot::setUpActions()
         }
 
     connect( mapper, SIGNAL(mapped(const QString&)), this, SLOT(changeModel(const QString&) ) );
+}
+
+
+void Waveprogram2DPlot::changeSize(const QString& size)
+{
+    QString modelName = latticeController_->getModelName();
+    emit
+    modelClosed();
+
+    qDebug() << QString::fromStdString( LatticeGeometry::stringFromSize( LatticeGeometry::sizeFromString(size.toStdString()) ) );
+        LatticeGeometry s = LatticeGeometry::sizeFromString(size.toStdString());
+        if ( s != LatticeGeometry() ) {
+            killField();
+            initField( s.sizeX(), s.sizeY(), s.latticeSizeX(), s.latticeSizeY(), modelName );
+        }
 }
 
 void Waveprogram2DPlot::changeModel(const QString& modelName)
@@ -940,6 +947,7 @@ void Waveprogram2DPlot::changeModel(const QString& modelName)
 void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX, int latticeSizeY,
                                   const QString& model)
 {
+    qDebug() << model;
     QString delayMsg = QString( "Creating a lattice of %1 x %2. This might take some time." ).arg(
         latticeSizeX ).arg( latticeSizeY );
 
@@ -1471,9 +1479,9 @@ void Waveprogram2DPlot::loop()
         }
 
         if ( !matlabExportFile_.isEmpty() ) {
-            QString modelName( latticeController_->lattice()->modelName().c_str() );
-            modelName = modelName.remove( QRegExp( "[^A-Za-z]" ) );
-            exportAsMatlabStructure( matlabExportFile_, modelName, matlabExportIndex_, true );
+            QString modelTitle( latticeController_->lattice()->modelTitle().c_str() );
+            modelTitle = modelTitle.remove( QRegExp( "[^A-Za-z]" ) );
+            exportAsMatlabStructure( matlabExportFile_, modelTitle, matlabExportIndex_, true );
             ++matlabExportIndex_;
         }
 
