@@ -41,6 +41,9 @@ RightclickableToolBar::~RightclickableToolBar()
 
 void RightclickableToolBar::init()
 {
+    setIconSize( QSize( 32, 32 ) );
+    setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+
     typedef QPair<QString, Qt::ToolButtonStyle> T_toolBarString;
     QList< T_toolBarString > listPairs;
     listPairs << T_toolBarString( tr("Only Icons"), Qt::ToolButtonIconOnly );

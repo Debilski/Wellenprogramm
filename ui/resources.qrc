@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons" >
+    <file>icons/lpl.svg</file>
     <file>icons/photos_overlay.svg</file>
     <file>icons/photos.svg</file>
     <file>icons/photo.svg</file>
@@ -11,7 +12,5 @@
     <file>icons/savebinary.svg</file>
     <file>icons/paint_pref.svg</file>
     <file>icons/paint.svg</file>
-    <file>icons/photo-multiple.png</file>
-    <file>icons/photo.png</file>
   </qresource>
 </RCC>

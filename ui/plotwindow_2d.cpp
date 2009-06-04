@@ -23,6 +23,9 @@
 
 #include "spectrogram_data.h"
 
+#include "export_preferences.h"
+#include "preference_pager.h"
+
 
 class Waveprogram2DPlot::PrivateData {
 public:
@@ -103,8 +106,6 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
 
     movieQueue = QQueue< QString > ();
 
-    connect( parent, SIGNAL(window_closed() ), this, SLOT(close() ) );
-
     connect( startStopButton, SIGNAL( clicked() ), this, SLOT( toggleStartStop() ) );
     connect( actionStartStop, SIGNAL( triggered() ), this, SLOT( toggleStartStop() ) );
 
@@ -123,6 +124,24 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     setUpUpdatePeriodMenu();
     defectsEditor = 0;
 
+    exportPreferences = new PreferencePager(this);
+    {
+    QWidget* p = new QWidget(this);
+    exportPreferences->addPage(p, QIcon(":/icons/icons/photo.svg"), "PNG");
+    }
+    {
+        QWidget* p = new QWidget(this);
+        QSpinBox* b = new QSpinBox(p);
+        exportPreferences->addPage(p, QIcon(":/icons/icons/matlab.svg"), "Matlab");
+        }
+//    exportPreferences->setFeatures( QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
+
+//    addDockWidget(Qt::NoDockWidgetArea, exportPreferences);
+
+/*    connect(
+        this, SIGNAL( viewsChanged( const QStringList& )), exportPreferences,
+        SLOT( setViewNames( const QStringList& ) ) ); */
+    //exportPreferencesDockWidget->show();
 
     menuDock_Windows->addAction( simulationWidget->toggleViewAction() );
 
@@ -130,14 +149,11 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     menuDock_Windows->addAction( parameterWidget->toggleViewAction() );
     adaptationParameterWidget->toggleViewAction()->setText( "Adaptation Properties" );
     menuDock_Windows->addAction( adaptationParameterWidget->toggleViewAction() );
-    pngSaveDockWidget->toggleViewAction()->setText( "PNG Properties" );
-    menuDock_Windows->addAction( pngSaveDockWidget->toggleViewAction() );
+    exportPreferences->toggleViewAction()->setText( "Export Properties" );
+    menuDock_Windows->addAction( exportPreferences->toggleViewAction() );
 
     menuDock_Windows->addAction( extrasWidget->toggleViewAction() );
     menuDock_Windows->addAction( paintDockWidget->toggleViewAction() );
-
-    saveAsPngToolButton->setDefaultAction(actionSave_as_Png);
-    saveAsPngMovieToolButton->setDefaultAction(actionSave_as_Movie_Pngs);
 
     QString lastUsedModel = config.option( "last_model" ).value().toString();
     qDebug() << lastUsedModel;
@@ -176,8 +192,6 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
 void Waveprogram2DPlot::setUpToolBars()
 {
     toolBar = new RightclickableToolBar( tr( "Save Toolbar" ), this );
-    toolBar->setIconSize( QSize( 32, 32 ) );
-    toolBar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 
     toolBar->addAction( actionSave );
     toolBar->addAction( actionRecall );
@@ -193,8 +207,8 @@ void Waveprogram2DPlot::setUpToolBars()
     paintToolBar = new RightclickableToolBar( tr( "Paint Toolbar" ), this );
     paintToolBar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 
-    pngSaveDockWidget->toggleViewAction()->setIcon(QIcon(QPixmap(QString::fromUtf8(":/icons/icons/paint_pref.svg"))));
-    paintToolBar->addAction( pngSaveDockWidget->toggleViewAction() );
+    exportPreferences->toggleViewAction()->setIcon(QIcon(QPixmap(QString::fromUtf8(":/icons/icons/paint_pref.svg"))));
+    paintToolBar->addAction( exportPreferences->toggleViewAction() );
     QIcon icon;
     icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/icons/paint.svg")), QIcon::Normal, QIcon::Off);
     paintDockWidget->toggleViewAction()->setIcon(icon);
@@ -503,6 +517,14 @@ void Waveprogram2DPlot::setUpViews()
         //            SLOT(setToFixpoint(const uint&, const QPointF&)) );
 
     }
+
+
+    QStringList viewNames_;
+    foreach( PlotView* view, plotViewVector_ ) {
+        viewNames_ << view->name();
+    }
+
+    emit viewsChanged( viewNames_ );
 }
 
 void Waveprogram2DPlot::paint(const uint& component, const QPointF& point)

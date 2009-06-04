@@ -37,6 +37,10 @@
 
 #include "color_maps.h"
 
+class ExportPreferences;
+class PreferencePager;
+
+
 class Waveprogram2DPlot : public QMainWindow, private Ui::plotWindow_2d {
 Q_OBJECT
 public:
@@ -155,6 +159,7 @@ signals:
     void colorMapModeChanged(ColorMapAdaptationModes);
     void colorMapChanged(const QwtColorMap&, ColorMapAdaptationModes);
 
+    void viewsChanged( const QStringList& viewNames );
     void modelChanged();
     void modelClosed();
 
@@ -169,6 +174,8 @@ private:
     void setUpToolBars();
     QToolBar* toolBar;
     QToolBar* paintToolBar;
+
+    PreferencePager* exportPreferences;
 
     bool showClusterIds_;
 
@@ -199,6 +206,7 @@ private:
     QList< QAction* > actionLatticeModels;
 
     QVector< PlotView* > plotViewVector_;
+    QStringList viewNames_;
 
     ScriptEditor* scriptEditor;
     QPointer< DefectsEditor > defectsEditor;
