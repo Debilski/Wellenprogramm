@@ -1,0 +1,17 @@
+<RCC>
+  <qresource prefix="icons" >
+    <file>icons/photos_overlay.svg</file>
+    <file>icons/photos.svg</file>
+    <file>icons/photo.svg</file>
+    <file>icons/movie.svg</file>
+    <file>icons/matlab.svg</file>
+    <file>icons/loadascii.svg</file>
+    <file>icons/saveascii.svg</file>
+    <file>icons/loadbinary.svg</file>
+    <file>icons/savebinary.svg</file>
+    <file>icons/paint_pref.svg</file>
+    <file>icons/paint.svg</file>
+    <file>icons/photo-multiple.png</file>
+    <file>icons/photo.png</file>
+  </qresource>
+</RCC>
