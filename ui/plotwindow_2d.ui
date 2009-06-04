@@ -347,6 +347,7 @@
     <addaction name="separator"/>
     <addaction name="actionSave_as_Png"/>
     <addaction name="actionLoad_from_Png"/>
+    <addaction name="actionExport_as_Matlab_Structure"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -855,6 +856,9 @@
    <property name="text">
     <string>Save as Movie PNGs</string>
    </property>
+   <property name="iconText">
+    <string>Save as Movie PNGs</string>
+   </property>
    <property name="statusTip">
     <string>Save lattice data as set of PNGs</string>
    </property>
@@ -972,6 +976,9 @@
    </property>
    <property name="text">
     <string>Export as Matlab Structure</string>
+   </property>
+   <property name="iconText">
+    <string>Matlab-Export</string>
    </property>
   </action>
   <action name="actionEdit_Script">
