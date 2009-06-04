@@ -19,6 +19,7 @@
 
 #include "parameter_spin_box.h"
 #include "diffusion_spin_box.h"
+#include "rightclickable_tool_bar.h"
 
 #include "spectrogram_data.h"
 
@@ -28,6 +29,7 @@ public:
     QList< QwtPlotMarker* > markers;
     QList< QwtPlotCurve* > curves;
     QTimer* timer;
+    QMenu toolBarRightClickMenu;
 };
 
 void Waveprogram2DPlot::setTitle()
@@ -132,16 +134,10 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     menuDock_Windows->addAction( pngSaveDockWidget->toggleViewAction() );
 
     menuDock_Windows->addAction( extrasWidget->toggleViewAction() );
-
-    toolBar->addAction( pngSaveDockWidget->toggleViewAction() );
-
     menuDock_Windows->addAction( paintDockWidget->toggleViewAction() );
-    toolBar->addAction( paintDockWidget->toggleViewAction() );
 
     saveAsPngToolButton->setDefaultAction(actionSave_as_Png);
     saveAsPngMovieToolButton->setDefaultAction(actionSave_as_Movie_Pngs);
-
-    this->show();
 
     QString lastUsedModel = config.option( "last_model" ).value().toString();
     qDebug() << lastUsedModel;
@@ -172,9 +168,40 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     readSettings();
 
     connect( simulationTimeLabel, SIGNAL( reset() ), this, SLOT( resetTime()) );
+
+    setUpToolBars();
     setUnifiedTitleAndToolBarOnMac(true);
 }
 
+void Waveprogram2DPlot::setUpToolBars()
+{
+    toolBar = new RightclickableToolBar( tr( "Save Toolbar" ), this );
+    toolBar->setIconSize( QSize( 32, 32 ) );
+    toolBar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+
+    toolBar->addAction( actionSave );
+    toolBar->addAction( actionRecall );
+    toolBar->addAction( actionDump );
+    toolBar->addAction( actionUndump );
+    toolBar->addAction( actionSave_as_Png );
+    //toolBar->addAction( actionLoad_from_Png );
+    toolBar->addAction( actionSave_as_Movie_Pngs );
+    toolBar->addAction( actionExport_as_Matlab_Structure );
+    this->addToolBar( toolBar );
+
+
+    paintToolBar = new RightclickableToolBar( tr( "Paint Toolbar" ), this );
+    paintToolBar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+
+    pngSaveDockWidget->toggleViewAction()->setIcon(QIcon(QPixmap(QString::fromUtf8(":/icons/icons/paint_pref.svg"))));
+    paintToolBar->addAction( pngSaveDockWidget->toggleViewAction() );
+    QIcon icon;
+    icon.addPixmap(QPixmap(QString::fromUtf8(":/icons/icons/paint.svg")), QIcon::Normal, QIcon::Off);
+    paintDockWidget->toggleViewAction()->setIcon(icon);
+    paintToolBar->addAction( paintDockWidget->toggleViewAction() );
+
+    this->addToolBar( paintToolBar );
+}
 
 
 void Waveprogram2DPlot::resetTime()
@@ -1300,11 +1327,18 @@ void Waveprogram2DPlot::on_actionLoad_from_Png_triggered()
 #endif
 }
 
+
+
+
+
+
+
 void Waveprogram2DPlot::on_actionSave_as_Movie_Pngs_triggered()
 {
     if ( !movieQueue.empty() ) {
         movieQueue = QQueue< QString > ();
-        actionSave_as_Movie_Pngs->setText( QString( "savetomultiple" ) );
+        actionSave_as_Movie_Pngs->setText( QString( "Save as Movie PNGs" ) );
+        actionSave_as_Movie_Pngs->setIcon(QPixmap(":/icons/icons/photos.svg"));
         return;
     }
     QString fileName = QFileDialog::getSaveFileName( this, tr( "Image File" ), "movie.png", tr(
@@ -1328,6 +1362,22 @@ void Waveprogram2DPlot::on_actionSave_as_Movie_Pngs_triggered()
         }
         actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
             movieQueue.size() ) );
+
+        QFile file(":/icons/icons/photos_overlay.svg");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+        QByteArray whole;
+        while (!file.atEnd()) {
+            QByteArray line = file.readLine();
+            whole.append(line);
+        }
+
+        whole.replace("$REPLACE_THIS_WITH_NUMBER$", QString("%1").arg(movieQueue.size()).toAscii() );
+        QPixmap p;
+        if ( p.loadFromData(whole, "SVG") ) {
+            QIcon icon = QIcon(p);
+            actionSave_as_Movie_Pngs->setIcon(icon);
+        }
     }
 }
 
@@ -1402,10 +1452,27 @@ void Waveprogram2DPlot::movieExport()
     if ( !movieQueue.empty() ) {
         savePng( movieQueue.head() );
         movieQueue.dequeue();
-        actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
+        actionSave_as_Movie_Pngs->setText( QString( "Stop" ).append( " (%1)" ).arg(
             movieQueue.size() ) );
+
+        QFile file(":/icons/icons/photos_overlay.svg");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+        QByteArray whole;
+        while (!file.atEnd()) {
+            QByteArray line = file.readLine();
+            whole.append(line);
+        }
+
+        whole.replace("$REPLACE_THIS_WITH_NUMBER$", QString("%1").arg(movieQueue.size()).toAscii() );
+        QPixmap p;
+        if ( p.loadFromData(whole, "SVG") ) {
+            QIcon icon = QIcon(p);
+            actionSave_as_Movie_Pngs->setIcon(icon);
+        }
+
         if ( movieQueue.empty() ) {
-            actionSave_as_Movie_Pngs->setText( QString( "savetomultiple" ) );
+            actionSave_as_Movie_Pngs->setText( QString( "Save as Movie PNGs" ) );
         }
     }
 

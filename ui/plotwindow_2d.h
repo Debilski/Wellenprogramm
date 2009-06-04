@@ -145,7 +145,6 @@ public slots:
     void paint(const uint& component, const QPointF& point) ;
 
     void movieExport();
-
 signals:
 
     void updateParameters();
@@ -167,6 +166,10 @@ protected:
     void saveViews(const QString& name);
 
 private:
+    void setUpToolBars();
+    QToolBar* toolBar;
+    QToolBar* paintToolBar;
+
     bool showClusterIds_;
 
     // Plotting Elements

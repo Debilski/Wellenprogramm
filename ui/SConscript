@@ -8,8 +8,9 @@ Import("env", 'target_bin_dir')
 
 def takebasename(file) : return os.path.splitext(os.path.basename(file))[0]
 
-resources = [ env.Qrc(qrc, QT4_QRCFLAGS='-name '+takebasename(qrc))
+resources = [ env.Qrc(qrc)#, QT4_QRCFLAGS='-name '+takebasename(qrc))
             for qrc in glob.glob('../../../ui/*.qrc')]
+            
 interfaces = [env.Uic4(uic)
             for uic in glob.glob('../../../ui/*.ui')]
 
@@ -39,7 +40,10 @@ for g in glob:
     for d in subdirectories:
         if str(g).startswith( d + "moc_" ):
             append = 0
+#        if str(g).startswith( d + "qrc_" ):
+#            append = 0
     if append == 1:
         plotFile.append(g)
 
+#plotFile.append(resources)
 env.Program('plot', plotFile, LIBS=["plugin"]+env["LIBS"], LINKFLAGS = linkflags)#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")
