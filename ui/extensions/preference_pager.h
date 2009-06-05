@@ -40,6 +40,8 @@ public slots:
 signals:
     void pngChecked(QVector< QPair< bool, bool > > );
     void matlabChecked();
+    void changed();
+
 protected slots:
     void showEvent(QShowEvent * event);
     void closeEvent(QCloseEvent * event);

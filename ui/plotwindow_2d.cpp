@@ -124,24 +124,11 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     setUpUpdatePeriodMenu();
     defectsEditor = 0;
 
-    exportPreferences = new PreferencePager(this);
-    {
-    QWidget* p = new QWidget(this);
-    exportPreferences->addPage(p, QIcon(":/icons/icons/photo.svg"), "PNG");
-    }
-    {
-        QWidget* p = new QWidget(this);
-        QSpinBox* b = new QSpinBox(p);
-        exportPreferences->addPage(p, QIcon(":/icons/icons/matlab.svg"), "Matlab");
-        }
-//    exportPreferences->setFeatures( QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
+    exportPreferences = new ExportPreferences(this);
 
-//    addDockWidget(Qt::NoDockWidgetArea, exportPreferences);
-
-/*    connect(
+    connect(
         this, SIGNAL( viewsChanged( const QStringList& )), exportPreferences,
-        SLOT( setViewNames( const QStringList& ) ) ); */
-    //exportPreferencesDockWidget->show();
+        SLOT( setViewNames( const QStringList& ) ) );
 
     menuDock_Windows->addAction( simulationWidget->toggleViewAction() );
 
