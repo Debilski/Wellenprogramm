@@ -302,12 +302,9 @@
     <addaction name="actionShow_Slice"/>
     <addaction name="actionEdit_Script"/>
     <addaction name="actionShow_Single_Plot"/>
-   </widget>
-   <widget class="QMenu" name="menuCluster_Tracking">
-    <property name="title">
-     <string>Cluster Tracking</string>
-    </property>
     <addaction name="actionShow_Cluster_Ids"/>
+    <addaction name="separator"/>
+    <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuDefects">
     <property name="title">
@@ -370,7 +367,6 @@
    <addaction name="menuField"/>
    <addaction name="menuProgram_Settings"/>
    <addaction name="menuDefects"/>
-   <addaction name="menuCluster_Tracking"/>
    <addaction name="menuUpdate_Period"/>
    <addaction name="menuWindow"/>
    <addaction name="menuAbout"/>
@@ -952,6 +948,14 @@
   <action name="actionOther_size">
    <property name="text">
     <string>Other size</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences…</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
    </property>
   </action>
  </widget>

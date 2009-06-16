@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons" >
+    <file>icons/circle.svg</file>
+    <file>icons/globe.svg</file>
     <file>icons/lpl.svg</file>
     <file>icons/photos_overlay.svg</file>
     <file>icons/photos.svg</file>

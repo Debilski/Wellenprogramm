@@ -54,8 +54,6 @@ void PreferencePager::PrivateData::init()
 PreferencePager::PreferencePager(QWidget* parent) :
     QMainWindow( parent )
 {
-
-
     d_data = new PrivateData( this );
     d_data->init();
 
@@ -76,7 +74,7 @@ PreferencePager::PreferencePager(QWidget* parent) :
     d_data->toggleViewAction->setText( windowTitle() );
 
     connect( d_data->toggleViewAction, SIGNAL(triggered(bool)), this, SLOT(toggleView(bool)) );
-    connect( this, SIGNAL(visibilityChanged(bool)), d_data->toggleViewAction, SLOT(triggered(bool)) );
+    // connect( this, SIGNAL(visibilityChanged(bool)), d_data->toggleViewAction, SLOT(triggered(bool)) );
 
     d_data->toolbar = new RightclickableToolBar( "toolbar", this );
 

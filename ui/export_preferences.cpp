@@ -32,6 +32,8 @@ public:
 ExportPreferences::ExportPreferences(QWidget* parent) :
     PreferencePager( parent ), d_data( new PrivateData() )
 {
+    QWidget* globalExport = new QWidget( parent );
+    addPage( globalExport, QIcon(":/icons/icons/circle.svg"), tr("General"));
 
     pngExport = new QWidget( parent );
     QVBoxLayout* vlayout = new QVBoxLayout( pngExport );
@@ -42,7 +44,7 @@ ExportPreferences::ExportPreferences(QWidget* parent) :
     d_data->layout->setSizeConstraint( QLayout::SetFixedSize );
     //setLayout( d_data->layout );
 
-    addPage( pngExport, QIcon( ":/icons/icons/photo.svg" ), "PNG" );
+    addPage( pngExport, QIcon( ":/icons/icons/photo.svg" ), tr("PNG" ));
     QWidget* p = new QWidget( parent );
 
     QGridLayout* l = new QGridLayout( p );
@@ -51,7 +53,7 @@ ExportPreferences::ExportPreferences(QWidget* parent) :
     l->addWidget(new QLabel( "3" ));
     l->addWidget(new QLabel( "4" ));
 
-    addPage( p, QIcon( ":/icons/icons/matlab.svg" ), "Matlab" );
+    addPage( p, QIcon( ":/icons/icons/matlab.svg" ), tr("Matlab" ));
 }
 
 void ExportPreferences::setViewNames(const QStringList& names)

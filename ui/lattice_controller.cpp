@@ -262,6 +262,25 @@ QStringList LatticeController::getModelNames()
     return n;
 }
 
+void LatticeController::setDiffusion( int component, double value ) {
+    lattice()->setDiffusion( component, value );
+}
+
+void LatticeController::setNoiseIntensity(double d)
+{
+    lattice()->setNoiseIntensity( d );
+}
+
+void LatticeController::setNoiseCorrelation(int d)
+{
+    lattice()->setNoiseCorrelation( d );
+}
+
+void LatticeController::setTimeStep(double d)
+{
+    lattice()->setTimeStep( d );
+}
+
 QString LatticeController::getModelName()
 {
     return QString::fromStdString( d_data->internalName );

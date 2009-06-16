@@ -344,6 +344,15 @@ struct OneComponentSystem : ComponentSystem< 1 > {
     _COMPONENT_SYSTEM_ACCESSOR( 2, var_name_2 )                                             \
     _COMPONENT_SYSTEM_END
 
+#define FOUR_COMPONENT_SYSTEM(system_name, var_name_0, var_name_1, var_name_2, var_name_3)                                       \
+    _COMPONENT_SYSTEM_BEGIN( (4), system_name )                                             \
+    system_name( double var_name_0, double var_name_1, double var_name_2, double var_name_3 ) : ComponentSystem< 4 >( T_vector( var_name_0, var_name_1, var_name_2, var_name_3 ) ) {}    \
+    _COMPONENT_SYSTEM_ACCESSOR( 0, var_name_0 )                                             \
+    _COMPONENT_SYSTEM_ACCESSOR( 1, var_name_1 )                                             \
+    _COMPONENT_SYSTEM_ACCESSOR( 2, var_name_2 )                                             \
+    _COMPONENT_SYSTEM_ACCESSOR( 3, var_name_3 )                                             \
+    _COMPONENT_SYSTEM_END
+
 
 ONE_COMPONENT_SYSTEM(fhn, u)
 TWO_COMPONENT_SYSTEM(fhn2, u, v)

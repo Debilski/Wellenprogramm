@@ -106,12 +106,23 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
 
     movieQueue = QQueue< QString > ();
 
+    connect( actionClose_Window, SIGNAL( triggered()), this, SLOT( close() ) );
+
     connect( startStopButton, SIGNAL( clicked() ), this, SLOT( toggleStartStop() ) );
     connect( actionStartStop, SIGNAL( triggered() ), this, SLOT( toggleStartStop() ) );
 
     connect( actionClear, SIGNAL( triggered() ), latticeController_, SLOT( clear() ) );
     connect( clearButton, SIGNAL( clicked() ), latticeController_, SLOT( clear() ) );
 
+    connect(
+        noiseSpinBox, SIGNAL( valueChanged(double) ), latticeController_,
+        SLOT( setNoiseIntensity( double ) ) );
+    connect(
+        correlationSpinBox, SIGNAL( valueChanged(int) ), latticeController_,
+        SLOT( setNoiseCorrelation( int ) ) );
+    connect(
+        timestepSpinBox, SIGNAL( valueChanged(double) ), latticeController_,
+        SLOT( setTimeStep( double ) ) );
 
     setUpSizeMenu();
     updateSizeMenu();
@@ -149,11 +160,6 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
         config.option( "last_size_y" ).value().toInt(),
         config.option( "last_lattice_size_x" ).value().toInt(), config.option(
             "last_lattice_size_y" ).value().toInt(), lastUsedModel );
-
-    boundaryConditionsComboBox->setCurrentIndex( latticeController_->lattice()->boundaryCondition() );
-
-    correlationSpinBox->setValue( latticeController_->lattice()->noiseCorrelation() );
-    timestepSpinBox->setValue( latticeController_->lattice()->timeStep() );
 
     showClusterIds_ = false;
 
@@ -219,35 +225,8 @@ void Waveprogram2DPlot::closeEvent(QCloseEvent * event)
     event->accept();
 }
 
-void Waveprogram2DPlot::on_actionClose_Window_triggered()
-{
-    close();
-}
-
-void Waveprogram2DPlot::on_actionEdit_Script_triggered()
-{
-    scriptEditor = new ScriptEditor( this, latticeController_ );
-    scriptEditor->show();
-    scriptEditor->raise();
-    scriptEditor->activateWindow();
-}
-
-void Waveprogram2DPlot::on_actionEdit_defects_triggered()
-{
-    if ( !defectsEditor ) {
-        defectsEditor = new DefectsEditor( defectsList, boundaryConditionIdentifier, this );
-        connect( defectsEditor, SIGNAL(accepted()), this, SLOT(updateDefects()) );
-    }
-
-    defectsEditor->show();
-    defectsEditor->raise();
-    defectsEditor->activateWindow();
-
-}
-
 void Waveprogram2DPlot::updateDefects()
 {
-    std::cout << "updateDefects";
     defectsList = defectsEditor->defects;
     latticeController_->lattice()->removeDefects();
     for (int i = 0; i < defectsList.size(); ++i) {
@@ -425,9 +404,10 @@ void Waveprogram2DPlot::setUpViews()
     }
 
     // Sollte irgendwie so ausgearbeitet werden, dass es im Modell definierbar ist.
-    if ( QString::fromStdString( latticeController_->lattice()->modelName() ).contains(
-        "FHNK", Qt::CaseInsensitive ) )
-    {
+    QString name = latticeController_->getModelName();
+    int i1 = name.indexOf( QString("FhnKLattice"), 0, Qt::CaseSensitive );
+    if ( i1 != -1 ) {
+        qDebug() << "Yes";
         QString name = "View";
         QString label;
         PlotLayer* layer;
@@ -502,7 +482,6 @@ void Waveprogram2DPlot::setUpViews()
         //        connect(
         //            view, SIGNAL( selected(const uint&, const QPointF& )), latticeController_,
         //            SLOT(setToFixpoint(const uint&, const QPointF&)) );
-
     }
 
 
@@ -541,14 +520,9 @@ void Waveprogram2DPlot::setUpDiffusion()
         QLabel* label = new QLabel( name, parameterWidgetContents );
         parameterWidgetFormLayout->addRow( label, diffusionBox );
         connect(
-            diffusionBox, SIGNAL( valueChanged(const int&, const double&) ), this,
-            SLOT( changeDiffusion(const int&, const double&) ) );
+            diffusionBox, SIGNAL( valueChanged(const int&, const double&) ), latticeController_,
+            SLOT( setDiffusion(const int&, const double&) ) );
     }
-}
-
-void Waveprogram2DPlot::changeDiffusion(int component, double value)
-{
-    latticeController_->lattice()->setDiffusion( component, value );
 }
 
 void Waveprogram2DPlot::setUpModelProperties()
@@ -701,45 +675,6 @@ void Waveprogram2DPlot::changeParameter(Parameter< double >* p, double value)
 void Waveprogram2DPlot::setUpBoundaryConditionsSelector()
 {
     //  boundaryConditionsComboBox;
-}
-
-void Waveprogram2DPlot::on_boundaryConditionsComboBox_currentIndexChanged(int i)
-{
-    if ( i == 0 )
-        latticeController_->lattice()->setBoundaryCondition( FixedBoundary );
-    if ( i == 1 )
-        latticeController_->lattice()->setBoundaryCondition( PeriodicBoundary );
-    if ( i == 2 )
-        latticeController_->lattice()->setBoundaryCondition( NoFluxBoundary );
-}
-
-void Waveprogram2DPlot::on_noiseSpinBox_valueChanged(double d)
-{
-    latticeController_->lattice()->setNoiseIntensity( d );
-}
-
-void Waveprogram2DPlot::on_correlationSpinBox_valueChanged(int d)
-{
-    latticeController_->lattice()->setNoiseCorrelation( d );
-}
-
-void Waveprogram2DPlot::on_timestepSpinBox_valueChanged(double d)
-{
-    latticeController_->lattice()->setTimeStep( d );
-}
-
-void Waveprogram2DPlot::on_actionShow_Curvature_triggered(bool b)
-{
-    //! if (b==true) curvaturePlot->show();
-    //! else curvaturePlot->hide();
-}
-
-void Waveprogram2DPlot::on_actionShow_Cluster_Ids_triggered(bool b)
-{
-    showClusterIds_ = b;
-    if ( !showClusterIds_ )
-        bufferMap.clear();
-    replot();
 }
 
 QList< QwtPlotMarker* > Waveprogram2DPlot::plotMarkers()
@@ -1003,7 +938,7 @@ void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX
 
     config.write();
 
-    latticeController_->lattice()->setDiffusion( 0, 1. );
+    //latticeController_->lattice()->setDiffusion( 0, 1. );
     latticeController_->lattice()->clear();
     latticeController_->lattice()->toInitial( 0 );
 
@@ -1013,6 +948,11 @@ void Waveprogram2DPlot::initField(int realSizeX, int realSizeY, int latticeSizeX
     reorderTabs();
     setUpColorMap();
     setUpModelProperties();
+
+    boundaryConditionsComboBox->setCurrentIndex( latticeController_->lattice()->boundaryCondition() );
+    correlationSpinBox->setValue( latticeController_->lattice()->noiseCorrelation() );
+    timestepSpinBox->setValue( latticeController_->lattice()->timeStep() );
+
     setUpBoundaryConditionsSelector();
     setTitle();
 
@@ -1046,83 +986,9 @@ void Waveprogram2DPlot::toggleStartStop()
     }
 }
 
-void Waveprogram2DPlot::on_actionSave_triggered()
-{
-    d_data->timer->stop();
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save to binary format" ), ".", tr(
-        "Binary (*.bin)" ) );
-    if ( !fileName.isEmpty() ) {
-        latticeController_->lattice()->save( false, fileName.toStdString() );
-    }
-    d_data->timer->start();
-}
-
-void Waveprogram2DPlot::on_actionRecall_triggered()
-{
-    d_data->timer->stop();
-    //latticeController_->lattice()->recall();
-    QString fileName = QFileDialog::getOpenFileName(
-        this, tr( "Load from binary format" ), ".", tr( "Binary (*.bin);; All (*)" ) );
-    //std::cout << fileName;
-    if ( !fileName.isEmpty() ) {
-        latticeController_->lattice()->recall( fileName.toStdString() );
-        replot();
-    }
-    d_data->timer->start();
-}
-
-void Waveprogram2DPlot::on_actionDump_triggered()
-{
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save to text format" ), ".", tr(
-        "Data (*.dat)" ) );
-    if ( !fileName.isEmpty() ) {
-        std::ofstream ofile;
-        ofile.open( fileName.toLatin1() );
-        latticeController_->lattice()->dump( ofile, 1 );
-        ofile.close();
-    }
-}
-
-void Waveprogram2DPlot::on_actionUndump_triggered()
-{
-    QString fileName = QFileDialog::getOpenFileName( this, tr( "Load from text format" ), ".", tr(
-        "Data (*.dat);; All (*)" ) );
-
-    if ( !fileName.isEmpty() ) {
-        std::ifstream ifile;
-        ifile.open( fileName.toLatin1() );
-        latticeController_->lattice()->undump( ifile, 1 );
-        ifile.close();
-        replot();
-    }
-}
-
 /**
  * Schreibt den aktuellen Plot in einem Matlab-lesbaren Format in die Zwischenablage.
  */
-void Waveprogram2DPlot::on_actionCopy_to_Clipboard_triggered()
-{
-    int component = plotTabWidget->currentIndex();
-    component = (component < latticeController_->lattice()->numberOfVariables()) ? component : 0;
-
-    QString text;
-    text += QString( "[" );
-    for (int j = 0; j < latticeController_->lattice()->latticeSizeY(); ++j) {
-        text += QString( "[" );
-        for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
-            double value = latticeController_->lattice()->getComponentAt( component, i, j );
-            text += QString( "%1" ).arg( value, 0, 'f', 4 );
-            if ( i != latticeController_->lattice()->latticeSizeX() - 1 )
-                text += QString( ", " );
-        }
-        text += QString( "]" );
-        if ( j != latticeController_->lattice()->latticeSizeY() - 1 )
-            text += QString( "; " );
-    }
-    text += QString( "]" );
-    clipboard->setText( text );
-}
-
 /**
  * Exportiert eine Zeitreihe in eine matlab-lesbare Datei
  */
@@ -1185,7 +1051,7 @@ void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString struct
 
 void Waveprogram2DPlot::saveViews(const QString& name)
 {
-    for (uint i = 0; i < plotViewVector_.size(); ++i) {
+    for (uint i = 3; i < plotViewVector_.size(); ++i) {
         saveViews( name, i );
     }
 }
@@ -1213,226 +1079,9 @@ void Waveprogram2DPlot::saveViews(const QString& name, uint num)
     }
 }
 
-void Waveprogram2DPlot::on_actionSave_as_Png_triggered()
-{
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Image File" ), "img.png", tr(
-        "Images (*.png)" ) );
-
-    if ( !fileName.isEmpty() ) {
-        saveViews( fileName );
-    }
-
-    /*
-     QImage image = QImage(graph->width(), graph->height(), QImage::Format_ARGB32);
-     for (int i = 0; i <= latticeController_->lattice()->sizeX() + 1; ++i) {
-     for (int j = 0; j <= latticeController_->lattice()->sizeY() + 1; ++j) {
-     image.setPixel(i, j, QColor("white").rgb() );
-     }
-     }
-     graph->print(image);
-     */
-#if 0
-    foreach( PlotView* view, plotViewVector_ ) {
-        static int i=0;
-
-        QImage pixmap(600, 600, QImage::Format_ARGB32);
-        pixmap.fill(Qt::white); // Qt::transparent ?
-
-        QwtPlotPrintFilter filter;
-        int options = 0;//= QwtPlotPrintFilter::PrintAll;
-        options &= ~QwtPlotPrintFilter::PrintBackground;
-        options &= ~QwtPlotPrintFilter::PrintFrameWithScales;
-        options &= ~QwtPlotPrintFilter::PrintMargin;
-        options &= ~QwtPlotPrintFilter::PrintTitle;
-        options &= ~QwtPlotPrintFilter::PrintLegend;
-        options &= ~QwtPlotPrintFilter::PrintGrid;
-
-        filter.setOptions(options);
-
-        view->plot_->print(pixmap, filter);
-
-        pixmap.save( fileName + QString( ".%1.new.png" ).arg( i ), "PNG" );
-#if 0
-        QImage image = QImage(
-            latticeController_->lattice()->latticeSizeX()*10, latticeController_->lattice()->latticeSizeY()*10, QImage::Format_ARGB32 );
-        QwtPlotPrintFilter filter;
-        filter.setOptions(QwtPlotPrintFilter::PrintBackground);
-
-        view->plot_->print(image, filter);
-
-        image.save( fileName + QString( ".%1.new.png" ).arg( i ), "PNG" );
-
-        QSvgGenerator generator;
-        generator.setFileName(fileName + QString( ".%1.new.svg" ).arg( i ));
-        generator.setSize(QSize(800, 600));
-
-        view->plot_->canvas()->->print(generator);
-#endif
-        ++i;
-    }
-
-    for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component) {
-        QImage image = QImage(
-            latticeController_->lattice()->latticeSizeX(), latticeController_->lattice()->latticeSizeY(), QImage::Format_ARGB32 );
-
-        for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
-            for (int j = 0; j < latticeController_->lattice()->latticeSizeY(); ++j) {
-                image.setPixel(
-                    i, j, colorMaps_.getColorMap().color( QwtDoubleInterval( -2.2, 2.5 ), latticeController_->lattice()->getComponentAt(
-                            component, i, j ) ).rgb() );
-            }
-        }
-        image.mirrored( false, true ).save( fileName + QString( ".%1.png" ).arg( component ), "PNG" );
-
-    }
-#endif
-    //std::cout << (fileName.append("-inh"));
-}
-
-void Waveprogram2DPlot::on_actionLoad_from_Png_triggered()
-{
-    QMessageBox msgBox( this );
-    msgBox.setWindowModality( Qt::WindowModal );
-    msgBox.setText( "This function has been deprecated." );
-    msgBox.setIcon( QMessageBox::Information );
-    msgBox.exec();
-
-#if 0
-    QString fileName = QFileDialog::getOpenFileName( this, tr( "Image File" ), ".", tr(
-            "Images (*.png)" ) );
-    for (uint component = 0; component < 1 /*latticeController_->lattice()->numberOfVariables()*/; ++component) {
-        QImage image = QImage( fileName ).mirrored( true, false );
-        //QImage image_inhib = QImage(fileName.append("-inh.png")).mirrored(true, false);
-
-        QHash< QRgb, double > reversableMap;
-        for (int i = 0; i < 100000; ++i) {
-            double d = -2.5 + (2.5 - (-2.5)) / 100000. * i;
-            QRgb rgbval = plotViewVector_[ 0 ]->firstSpectrogram()->colorMap().color(
-                plotViewVector_[ 0 ]->firstSpectrogram()->data().range(), d ).rgb();
-            reversableMap.insert( rgbval, d );
-        }
-        /*QHash<QRgb, double> reversableMap_inhib;
-         for(int i=0; i<100000; ++i) {
-         double d = -2.5 + (3.5 - (-2.5))/100000. * i;
-         QRgb rgbval = d_spectrogram->colorMap().color(QwtDoubleInterval (-2.5,3.5), d).rgb();
-         reversableMap_inhib.insert(rgbval, d );
-         }
-         */
-
-        for (int i = 0; i < image.width(); ++i) {
-            for (int j = 0; j < image.height(); ++j) {
-                QRgb rgb = image.pixel( i, j );
-                //QRgb rgb_inhib = image_inhib.pixel(i, j);
-                //std::cout << rgb << std::flush;
-                if ( reversableMap.value( rgb ) == 0 )
-                std::cout << rgb << " " << reversableMap.value( rgb ) << std::endl
-                << std::flush;
-                latticeController_->lattice()->setComponentAt( component, i, j, reversableMap.value( rgb ) );
-                //latticeController_->lattice()->setV(i,j, reversableMap.value(rgb_inhib) );
-            }
-        }
-    }
-    replot();
-#endif
-}
-
-
-
-
-
-
-
-void Waveprogram2DPlot::on_actionSave_as_Movie_Pngs_triggered()
-{
-    if ( !movieQueue.empty() ) {
-        movieQueue = QQueue< QString > ();
-        actionSave_as_Movie_Pngs->setText( QString( "Save as Movie PNGs" ) );
-        actionSave_as_Movie_Pngs->setIcon(QPixmap(":/icons/icons/photos.svg"));
-        return;
-    }
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Image File" ), "movie.png", tr(
-        "Images (*.png)" ) );
-
-    if ( !fileName.isEmpty() ) {
-        for (int i = 1; i <= 999; ++i) {
-            QString path = QFileInfo( fileName ).path();
-            QString baseName = QFileInfo( fileName ).completeBaseName();
-            QString suffix = QFileInfo( fileName ).suffix();
-            if ( i < 10 ) {
-                movieQueue.enqueue( QString( path.append( "/" )
-                    + baseName.append( "00%1." ).arg( i ) + suffix ) );
-            } else if ( i < 100 ) {
-                movieQueue.enqueue( QString( path.append( "/" ) + baseName.append( "0%1." ).arg( i )
-                    + suffix ) );
-            } else {
-                movieQueue.enqueue( QString( path.append( "/" ) + baseName.append( "%1." ).arg( i )
-                    + suffix ) );
-            }
-        }
-        actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
-            movieQueue.size() ) );
-
-        QFile file(":/icons/icons/photos_overlay.svg");
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-            return;
-        QByteArray whole;
-        while (!file.atEnd()) {
-            QByteArray line = file.readLine();
-            whole.append(line);
-        }
-
-        whole.replace("$REPLACE_THIS_WITH_NUMBER$", QString("%1").arg(movieQueue.size()).toAscii() );
-        QPixmap p;
-        if ( p.loadFromData(whole, "SVG") ) {
-            QIcon icon = QIcon(p);
-            actionSave_as_Movie_Pngs->setIcon(icon);
-        }
-    }
-}
-
-void Waveprogram2DPlot::on_actionExport_as_Matlab_Structure_triggered()
-{
-    if ( matlabExportFile_.isEmpty() ) {
-        matlabExportFile_ = QFileDialog::getSaveFileName(
-            this, tr( "Matlab File" ), "matlabexport.m", tr( "Matlab Files (*.m)" ) );
-        if ( !matlabExportFile_.isEmpty() ) {
-            matlabExportIndex_ = 1;
-            actionExport_as_Matlab_Structure->setText( "is Exporting" );
-        }
-    } else {
-        matlabExportFile_.clear();
-        actionExport_as_Matlab_Structure->setText( "Export as Matlab Structure" );
-    }
-}
-
 void Waveprogram2DPlot::savePng(QString filename)
 {
     saveViews( filename );
-#if 0
-    for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component) {
-        QImage image = QImage(
-            latticeController_->lattice()->latticeSizeX(), latticeController_->lattice()->latticeSizeY(), QImage::Format_ARGB32 );
-        uint save_component = component;
-
-        for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
-            for (int j = 0; j < latticeController_->lattice()->latticeSizeY(); ++j) {
-
-                if ( plotViewVector_.size() > 0 ) {
-                    image.setPixel(
-                        i, j, plotViewVector_[ save_component ]->firstSpectrogram()->colorMap().color(
-                            plotViewVector_[ save_component ]->firstSpectrogram()->data().range(),
-                            latticeController_->lattice()->getComponentAt( save_component, i, j ) ).rgb() );
-                } else {
-                    image.setPixel( i, j, colorMaps_.getColorMap().color(
-                            QwtDoubleInterval( -2.2, 2.5 ), latticeController_->lattice()->getComponentAt(
-                                save_component, i, j ) ).rgb() );
-                }
-            }
-        }
-        image.mirrored( false, true ).save(
-            filename + QString( ".%1" ).arg( save_component ), "PNG" );
-    }
-#endif
 }
 
 void Waveprogram2DPlot::resizeWindowToForceUpdate()
@@ -1461,7 +1110,7 @@ void Waveprogram2DPlot::movieExport()
     if ( !movieQueue.empty() ) {
         savePng( movieQueue.head() );
         movieQueue.dequeue();
-        actionSave_as_Movie_Pngs->setText( QString( "Stop" ).append( " (%1)" ).arg(
+        actionSave_as_Movie_Pngs->setText( tr( "Stop" ).append( " (%1)" ).arg(
             movieQueue.size() ) );
 
         QFile file(":/icons/icons/photos_overlay.svg");
@@ -1481,7 +1130,7 @@ void Waveprogram2DPlot::movieExport()
         }
 
         if ( movieQueue.empty() ) {
-            actionSave_as_Movie_Pngs->setText( QString( "Save as Movie PNGs" ) );
+            actionSave_as_Movie_Pngs->setText( tr( "Save as Movie PNGs" ) );
         }
     }
 
@@ -1491,109 +1140,6 @@ void Waveprogram2DPlot::movieExport()
         exportAsMatlabStructure( matlabExportFile_, modelName, matlabExportIndex_, true );
         ++matlabExportIndex_;
     }
-}
-
-#if 0
-void Waveprogram2DPlot::loop()
-{
-    while (loopruns) {
-        //for(int j=0; j < 5; j++) {
-        {
-
-            if ( adaptationMode() ) {
-                latticeController_->lattice()->adaptParameters();
-                emit updateParameters();
-            }
-            latticeController_->stepNum( 5 );
-
-            updateLabels();
-        }
-        if ( actionResize_program_window_to_force_update->isChecked() ) {
-            static int resizeCount = 0;
-            ++resizeCount;
-            if ( resizeCount == 2 ) {
-                this->resize( this->size().rwidth(), this->size().rheight() + 1 );
-            }
-            if ( resizeCount == 4 ) {
-                this->resize( this->size().rwidth(), this->size().rheight() - 1 );
-                resizeCount = 0;
-            }
-        }
-        //this->resize(this->size().rwidth(), this->size().rheight() + (( (int) (latticeController_->lattice()->time() * 10) % 2)*2 - 1));
-        //this->replot();
-        static int count = 0;
-        count++;
-        //if (count % 2 == 0)
-        QCoreApplication::processEvents();
-
-        /*
-         static QList<double> buffer;
-
-         if (buffer.size() == 10) {
-         buffer.pop_back();
-         }
-         buffer.push_front( latticeController_->lattice()->getMaxU() );
-         std::cout << buffer.front() << "\t";
-         double deriv1, deriv2;
-         if (buffer.size() > 4) {
-         deriv1 = (3.*buffer[0] - 4.*buffer[1] + 1.*buffer[2]) / (2.0 * latticeController_->lattice()->timeStep() );
-         deriv2 = (2*buffer[0] - 5*buffer[1] + 4*buffer[2] -1* buffer[3] ) / (latticeController_->lattice()->timeStep() * latticeController_->lattice()->timeStep() );
-         std::cout << deriv1 << "\t" << deriv2;
-         }
-         std::cout << "\n";
-         */
-        /*
-         std::pair<double, double> curv = latticeController_->lattice()->getCurvature();
-         std::cout << "Curv " << curv.first << " Error: " << curv.second << std::endl;
-         */
-
-        if ( !movieQueue.empty() ) {
-            savePng( movieQueue.head() );
-            movieQueue.dequeue();
-            actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
-                    movieQueue.size() ) );
-            if ( movieQueue.empty() ) {
-                actionSave_as_Movie_Pngs->setText( QString( "savetomultiple" ) );
-            }
-        }
-
-        if ( !matlabExportFile_.isEmpty() ) {
-            QString modelTitle( latticeController_->lattice()->modelTitle().c_str() );
-            modelTitle = modelTitle.remove( QRegExp( "[^A-Za-z]" ) );
-            exportAsMatlabStructure( matlabExportFile_, modelTitle, matlabExportIndex_, true );
-            ++matlabExportIndex_;
-        }
-
-        /*        QScriptEngine engine;
-
-         QScriptValue objectValue = engine.newQObject(this);
-         engine.globalObject().setProperty("myObject", objectValue);
-         qDebug() << engine.evaluate( "myObject.changeDiffusion( 10 ) " ).toNumber();
-
-         */
-
-    }
-}
-#endif
-
-void Waveprogram2DPlot::on_numInitialPushButton_clicked()
-{
-    int i = numInitialComboBox->currentIndex();
-    latticeController_->lattice()->toInitial( i );
-    replot();
-}
-
-void Waveprogram2DPlot::on_actionAbout_triggered()
-{
-    std::stringstream s;
-    latticeController_->lattice()->status( s );
-    QString status = QString( "<pre>" ) + QString::fromUtf8( s.str().c_str() ) + QString( "</pre>" );
-    QMessageBox::about( this, "Wellenprogramm", status );
-}
-
-void Waveprogram2DPlot::on_actionShow_Slice_triggered(bool b)
-{
-    //    sliceWidget->setVisible( b );
 }
 
 void Waveprogram2DPlot::readSettings()
@@ -1661,6 +1207,234 @@ void Waveprogram2DPlot::updateParametersToSet(int setNum)
 
 }
 
+
+void Waveprogram2DPlot::showSinglePlot()
+{
+
+}
+
+void Waveprogram2DPlot::showSlicePlot()
+{
+
+}
+
+
+
+void Waveprogram2DPlot::on_actionSave_triggered()
+{
+    d_data->timer->stop();
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save to binary format" ), ".", tr(
+        "Binary (*.bin)" ) );
+    if ( !fileName.isEmpty() ) {
+        latticeController_->lattice()->save( false, fileName.toStdString() );
+    }
+    d_data->timer->start();
+}
+
+void Waveprogram2DPlot::on_actionRecall_triggered()
+{
+    d_data->timer->stop();
+    //latticeController_->lattice()->recall();
+    QString fileName = QFileDialog::getOpenFileName(
+        this, tr( "Load from binary format" ), ".", tr( "Binary (*.bin);; All (*)" ) );
+    //std::cout << fileName;
+    if ( !fileName.isEmpty() ) {
+        latticeController_->lattice()->recall( fileName.toStdString() );
+        replot();
+    }
+    d_data->timer->start();
+}
+
+void Waveprogram2DPlot::on_actionDump_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save to text format" ), ".", tr(
+        "Data (*.dat)" ) );
+    if ( !fileName.isEmpty() ) {
+        std::ofstream ofile;
+        ofile.open( fileName.toLatin1() );
+        latticeController_->lattice()->dump( ofile, 1 );
+        ofile.close();
+    }
+}
+
+void Waveprogram2DPlot::on_actionUndump_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName( this, tr( "Load from text format" ), ".", tr(
+        "Data (*.dat);; All (*)" ) );
+
+    if ( !fileName.isEmpty() ) {
+        std::ifstream ifile;
+        ifile.open( fileName.toLatin1() );
+        latticeController_->lattice()->undump( ifile, 1 );
+        ifile.close();
+        replot();
+    }
+}
+
+void Waveprogram2DPlot::on_actionCopy_to_Clipboard_triggered()
+{
+    int component = plotTabWidget->currentIndex();
+    component = (component < latticeController_->lattice()->numberOfVariables()) ? component : 0;
+
+    QString text;
+    text += QString( "[" );
+    for (int j = 0; j < latticeController_->lattice()->latticeSizeY(); ++j) {
+        text += QString( "[" );
+        for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
+            double value = latticeController_->lattice()->getComponentAt( component, i, j );
+            text += QString( "%1" ).arg( value, 0, 'f', 4 );
+            if ( i != latticeController_->lattice()->latticeSizeX() - 1 )
+                text += QString( ", " );
+        }
+        text += QString( "]" );
+        if ( j != latticeController_->lattice()->latticeSizeY() - 1 )
+            text += QString( "; " );
+    }
+    text += QString( "]" );
+    clipboard->setText( text );
+}
+
+void Waveprogram2DPlot::on_actionSave_as_Png_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Image File" ), "img.png", tr(
+        "Images (*.png)" ) );
+
+    if ( !fileName.isEmpty() ) {
+        saveViews( fileName );
+    }
+}
+
+void Waveprogram2DPlot::on_actionLoad_from_Png_triggered()
+{
+    QMessageBox msgBox( this );
+    msgBox.setWindowModality( Qt::WindowModal );
+    msgBox.setText( "This function has been deprecated." );
+    msgBox.setIcon( QMessageBox::Information );
+    msgBox.exec();
+
+#if 0
+    QString fileName = QFileDialog::getOpenFileName( this, tr( "Image File" ), ".", tr(
+            "Images (*.png)" ) );
+    for (uint component = 0; component < 1 /*latticeController_->lattice()->numberOfVariables()*/; ++component) {
+        QImage image = QImage( fileName ).mirrored( true, false );
+        //QImage image_inhib = QImage(fileName.append("-inh.png")).mirrored(true, false);
+
+        QHash< QRgb, double > reversableMap;
+        for (int i = 0; i < 100000; ++i) {
+            double d = -2.5 + (2.5 - (-2.5)) / 100000. * i;
+            QRgb rgbval = plotViewVector_[ 0 ]->firstSpectrogram()->colorMap().color(
+                plotViewVector_[ 0 ]->firstSpectrogram()->data().range(), d ).rgb();
+            reversableMap.insert( rgbval, d );
+        }
+        /*QHash<QRgb, double> reversableMap_inhib;
+         for(int i=0; i<100000; ++i) {
+         double d = -2.5 + (3.5 - (-2.5))/100000. * i;
+         QRgb rgbval = d_spectrogram->colorMap().color(QwtDoubleInterval (-2.5,3.5), d).rgb();
+         reversableMap_inhib.insert(rgbval, d );
+         }
+         */
+
+        for (int i = 0; i < image.width(); ++i) {
+            for (int j = 0; j < image.height(); ++j) {
+                QRgb rgb = image.pixel( i, j );
+                //QRgb rgb_inhib = image_inhib.pixel(i, j);
+                //std::cout << rgb << std::flush;
+                if ( reversableMap.value( rgb ) == 0 )
+                std::cout << rgb << " " << reversableMap.value( rgb ) << std::endl
+                << std::flush;
+                latticeController_->lattice()->setComponentAt( component, i, j, reversableMap.value( rgb ) );
+                //latticeController_->lattice()->setV(i,j, reversableMap.value(rgb_inhib) );
+            }
+        }
+    }
+    replot();
+#endif
+}
+
+
+void Waveprogram2DPlot::on_actionSave_as_Movie_Pngs_triggered()
+{
+    if ( !movieQueue.empty() ) {
+        movieQueue = QQueue< QString > ();
+        actionSave_as_Movie_Pngs->setText( QString( "Save as Movie PNGs" ) );
+        actionSave_as_Movie_Pngs->setIcon(QPixmap(":/icons/icons/photos.svg"));
+        return;
+    }
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Image File" ), "movie.png", tr(
+        "Images (*.png)" ) );
+
+    if ( !fileName.isEmpty() ) {
+        for (int i = 1; i <= 999; ++i) {
+            QString path = QFileInfo( fileName ).path();
+            QString baseName = QFileInfo( fileName ).completeBaseName();
+            QString suffix = QFileInfo( fileName ).suffix();
+            if ( i < 10 ) {
+                movieQueue.enqueue( QString( path.append( "/" )
+                    + baseName.append( "00%1." ).arg( i ) + suffix ) );
+            } else if ( i < 100 ) {
+                movieQueue.enqueue( QString( path.append( "/" ) + baseName.append( "0%1." ).arg( i )
+                    + suffix ) );
+            } else {
+                movieQueue.enqueue( QString( path.append( "/" ) + baseName.append( "%1." ).arg( i )
+                    + suffix ) );
+            }
+        }
+        actionSave_as_Movie_Pngs->setText( QString( "stop" ).append( " (%1)" ).arg(
+            movieQueue.size() ) );
+
+        QFile file(":/icons/icons/photos_overlay.svg");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+        QByteArray whole;
+        while (!file.atEnd()) {
+            QByteArray line = file.readLine();
+            whole.append(line);
+        }
+
+        whole.replace("$REPLACE_THIS_WITH_NUMBER$", QString("%1").arg(movieQueue.size()).toAscii() );
+        QPixmap p;
+        if ( p.loadFromData(whole, "SVG") ) {
+            QIcon icon = QIcon(p);
+            actionSave_as_Movie_Pngs->setIcon(icon);
+        }
+    }
+}
+
+void Waveprogram2DPlot::on_actionExport_as_Matlab_Structure_triggered()
+{
+    if ( matlabExportFile_.isEmpty() ) {
+        matlabExportFile_ = QFileDialog::getSaveFileName(
+            this, tr( "Matlab File" ), "matlabexport.m", tr( "Matlab Files (*.m)" ) );
+        if ( !matlabExportFile_.isEmpty() ) {
+            matlabExportIndex_ = 1;
+            actionExport_as_Matlab_Structure->setText( "is Exporting" );
+        }
+    } else {
+        matlabExportFile_.clear();
+        actionExport_as_Matlab_Structure->setText( "Export as Matlab Structure" );
+    }
+}
+
+void Waveprogram2DPlot::on_numInitialPushButton_clicked()
+{
+    int i = numInitialComboBox->currentIndex();
+    latticeController_->lattice()->toInitial( i );
+    replot();
+}
+
+void Waveprogram2DPlot::on_actionAbout_triggered()
+{
+    std::stringstream s;
+    latticeController_->lattice()->status( s );
+    QString status = QString( "<pre>" ) + QString::fromUtf8( s.str().c_str() ) + QString( "</pre>" );
+    QMessageBox::about( this, "Wellenprogramm", status );
+}
+
+void Waveprogram2DPlot::on_actionShow_Slice_triggered(bool b)
+{
+    //    sliceWidget->setVisible( b );
+}
+
 void Waveprogram2DPlot::on_parameterSetsDropDown_currentIndexChanged(int i)
 {
     if ( i <= 0 ) {
@@ -1713,6 +1487,70 @@ void Waveprogram2DPlot::on_parameterSetsDelete_clicked()
         parameterSetsDropDown->setCurrentIndex( 0 );
     }
 }
+
+void Waveprogram2DPlot::on_actionShow_Single_Plot_triggered()
+{
+    PlotSingle* p = new PlotSingle( latticeController_->lattice(), this );
+    p->show();
+    connect( this, SIGNAL( modelClosed() ), p, SLOT( close() ) );
+    connect( this, SIGNAL( replotAllChildren() ), p, SLOT( update() ) );
+}
+
+void Waveprogram2DPlot::on_boundaryConditionsComboBox_currentIndexChanged(int i)
+{
+    if ( i == 0 )
+        latticeController_->lattice()->setBoundaryCondition( FixedBoundary );
+    if ( i == 1 )
+        latticeController_->lattice()->setBoundaryCondition( PeriodicBoundary );
+    if ( i == 2 )
+        latticeController_->lattice()->setBoundaryCondition( NoFluxBoundary );
+}
+
+void Waveprogram2DPlot::on_actionShow_Curvature_triggered(bool b)
+{
+    //! if (b==true) curvaturePlot->show();
+    //! else curvaturePlot->hide();
+}
+
+void Waveprogram2DPlot::on_actionShow_Cluster_Ids_triggered(bool b)
+{
+    showClusterIds_ = b;
+    if ( !showClusterIds_ )
+        bufferMap.clear();
+    replot();
+}
+
+void Waveprogram2DPlot::on_actionEdit_Script_triggered()
+{
+    if (!scriptEditor ) {
+        scriptEditor = new ScriptEditor( this, latticeController_ );
+    }
+    scriptEditor->show();
+    scriptEditor->raise();
+    scriptEditor->activateWindow();
+}
+
+void Waveprogram2DPlot::on_actionEdit_defects_triggered()
+{
+    if ( !defectsEditor ) {
+        defectsEditor = new DefectsEditor( defectsList, boundaryConditionIdentifier, this );
+        connect( defectsEditor, SIGNAL(accepted()), this, SLOT(updateDefects()) );
+    }
+    defectsEditor->show();
+    defectsEditor->raise();
+    defectsEditor->activateWindow();
+}
+
+
+void Waveprogram2DPlot::on_actionPreferences_triggered()
+{
+    if ( !globalPreferences )
+        globalPreferences = new PreferencePager( this );
+    if ( globalPreferences )
+        globalPreferences->show();
+}
+
+
 
 void Waveprogram2DPlot::readParameterSets()
 {
@@ -1767,23 +1605,3 @@ void Waveprogram2DPlot::writeParameterSets()
     settings.endGroup();
     settings.endGroup();
 }
-
-void Waveprogram2DPlot::on_actionShow_Single_Plot_triggered()
-{
-    PlotSingle* p = new PlotSingle( latticeController_->lattice(), this );
-
-    p->show();
-    connect( this, SIGNAL( modelClosed() ), p, SLOT( close() ) );
-    connect( this, SIGNAL( replotAllChildren() ), p, SLOT( update() ) );
-}
-
-void Waveprogram2DPlot::showSinglePlot()
-{
-
-}
-
-void Waveprogram2DPlot::showSlicePlot()
-{
-
-}
-

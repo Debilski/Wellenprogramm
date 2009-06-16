@@ -115,6 +115,12 @@ public slots:
     void setToFixpoint(uint component, const QPointF& realPoint, uint size);
     void setComponentAt(uint component, const QPointF& realPoint, uint size, double value);
 
+    void setNoiseIntensity(double d);
+    void setNoiseCorrelation(int d);
+    void setTimeStep(double d);
+
+    void setDiffusion( int component, double value );
+
     void adaptParameters();
     bool adaptationMode();
     void setAdaptationMode(bool b);

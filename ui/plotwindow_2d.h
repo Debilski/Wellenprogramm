@@ -84,15 +84,7 @@ public slots:
 
     void changeSize( const QString& size );
 
-    void on_noiseSpinBox_valueChanged(double d);
-
     void on_boundaryConditionsComboBox_currentIndexChanged(int i);
-
-    void on_correlationSpinBox_valueChanged(int d);
-    void on_timestepSpinBox_valueChanged(double d);
-
-
-    void on_actionClose_Window_triggered();
 
     void on_actionEdit_Script_triggered();
 
@@ -120,9 +112,13 @@ public slots:
 
     void on_actionCopy_to_Clipboard_triggered();
 
-    void savePng(QString filename);
+    void on_parameterSetsDropDown_currentIndexChanged(int index);
+    void on_parameterSetsSave_clicked();
+    void on_parameterSetsDelete_clicked();
 
-    void changeDiffusion(int component, double value);
+    void on_actionPreferences_triggered();
+
+    void savePng(QString filename);
 
     void changeParameter(const QString& paramName, double value);
     void changeParameter(Parameter< double >* p, double value);
@@ -141,9 +137,6 @@ public slots:
 
     void setUpParameterSets();
     void updateParametersToSet(int setNum);
-    void on_parameterSetsDropDown_currentIndexChanged(int index);
-    void on_parameterSetsSave_clicked();
-    void on_parameterSetsDelete_clicked();
 
     void resetTime();
     void paint(const uint& component, const QPointF& point) ;
@@ -175,7 +168,8 @@ private:
     QToolBar* toolBar;
     QToolBar* paintToolBar;
 
-    PreferencePager* exportPreferences;
+    ExportPreferences* exportPreferences;
+    QPointer<PreferencePager> globalPreferences;
 
     bool showClusterIds_;
 
@@ -208,7 +202,7 @@ private:
     QVector< PlotView* > plotViewVector_;
     QStringList viewNames_;
 
-    ScriptEditor* scriptEditor;
+    QPointer< ScriptEditor > scriptEditor;
     QPointer< DefectsEditor > defectsEditor;
     QList< Defect< GeneralComponentSystem > > defectsList;
 
