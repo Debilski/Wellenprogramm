@@ -22,13 +22,12 @@
 Configuration::Configuration()
 {
     QSettings settings;
-
+// Ist noch nicht Environment-spezifisch.
+    QString libDir = "builds/models";
 #ifdef Q_OS_DARWIN
     QString libPattern = "*lattice.dylib";
-    QString libDir = "builds/darwin/models";
 #else
     QString libPattern = "*lattice.so";
-    QString libDir = "builds/lomo/models";
 #endif
 
     addOption( "libraryDirectory", libDir, "global/libraryDirectory" ). addCommandLineString(
