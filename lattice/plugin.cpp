@@ -29,9 +29,9 @@
  */
 Plugin::Plugin(const std::string& sFilename)
     :  libHandle_( 0 ),
+       libRefCount_( 0 ),
        pfnGetEngineVersion_( 0 ),
-       pfnRegisterPlugin_( 0 ),
-       libRefCount_( 0 )
+       pfnRegisterPlugin_( 0 )
 {
     // Try to load the plugin as a dynamic library
     libHandle_ = dlopen( sFilename.c_str(), RTLD_LAZY);
