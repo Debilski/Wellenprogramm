@@ -49,6 +49,8 @@ public:
     Parameter< double > epsilon;
     Parameter< double > gamma;
 
+    Parameter< double > var_intensity, var_size, var_speed;
+
     Parameter< double > gamma_high, gamma_low, gamma_spacing, waveSize_threshold;
 
     inline double fixpointU() const
@@ -63,7 +65,7 @@ public:
     inline double step_u(double u, double v)
     {
         //return u - u*u*u - v;
-        return (1.0 / epsilon.get()) * (3.0 * u - u * u * u - v);
+        return (1.0 / epsilon.get() ) * (3.0 * u - u * u * u - v);
     }
     inline double step_v(double u, double v)
     {
@@ -79,7 +81,6 @@ public:
      {
      return TwoComponentSystem( sys.u(), 0 );
      }*/
-    Parameter< double > var_intensity, var_size, var_speed;
     inline TwoComponentSystem step_h(TwoComponentSystem sys, long int)
     {
         return TwoComponentSystem( var_intensity(), 0 );

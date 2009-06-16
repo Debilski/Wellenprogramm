@@ -15,7 +15,7 @@ env = Environment(ENV = {'PATH' : "/home/rikebs/bin:"+os.environ['PATH'],
 #env.Replace(CXX = "icc")
 
 # ccache als Option machen
-env.Replace(CXX = "ccache g++ ")
+#env.Replace(CXX = "ccache g++ ")
 
 
 # setup the include paths where FLTK and silc should live
@@ -89,8 +89,10 @@ if "lomo" in environment :
     env.Append(LIBS=static_libs + ['qwt-qt4', 'boost_thread', "fftw3" , "fftw3_threads" ,"m", "mpi", "gomp"])
 
 if "dong" in environment :
+    env.Append(CPPPATH=['/users/tsp/schuppner/local/include/'])
     env.Append(CCFLAGS= ' -mtune=native -march=native -msse3 -msse2 -msse -fPIC ')
     env.Append(LIBS=static_libs + ['qwt', 'boost_thread', "fftw3" , "fftw3_threads" ,"m"])
+    env.Append(LIBPATH = ['/users/tsp/schuppner/local/lib'])
 
 if "darwin" in environment :
     env.Append(CCFLAGS= ' -fast -fopenmp -O4 ')
