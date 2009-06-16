@@ -45,5 +45,8 @@ for g in glob:
     if append == 1:
         plotFile.append(g)
 
-#plotFile.append(resources)
+if ARGUMENTS.get('build_res', 0):
+    plotFile.append(resources)
 env.Program('plot', plotFile, LIBS=["plugin"]+env["LIBS"], LINKFLAGS = linkflags)#, LINKFLAGS = "-static-libgcc -ldl -static -Wl -lstdc++")
+
+
