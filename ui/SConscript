@@ -9,10 +9,10 @@ Import("env", 'target_bin_dir')
 def takebasename(file) : return os.path.splitext(os.path.basename(file))[0]
 
 resources = [ env.Qrc(qrc)#, QT4_QRCFLAGS='-name '+takebasename(qrc))
-            for qrc in glob.glob('../../../ui/*.qrc')]
+            for qrc in glob.glob('../../ui/*.qrc')]
             
 interfaces = [env.Uic4(uic)
-            for uic in glob.glob('../../../ui/*.ui')]
+            for uic in glob.glob('../../ui/*.ui')]
 
 env.Append( CPPPATH = "extensions")
 env.Append( CPPPATH = "3rd-party" )
