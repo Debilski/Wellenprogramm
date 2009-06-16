@@ -38,8 +38,10 @@ oregonatorlatticeS = pluginEnv.SharedLibrary('oregonator_lattice', ['oregonator_
 brusselatorlattice = env.Library('brusselator_lattice', ['brusselator_lattice.cpp'] + library_files)
 brusselatorlatticeS = pluginEnv.SharedLibrary('brusselator_lattice', ['brusselator_lattice.cpp'] + library_files)
 
-
-
 fhnklattice = env.Library('fhnk_lattice_s', ['fhnk_lattice.cpp'] + library_files)
 fhnklatticeS = pluginEnv.SharedLibrary('fhnk_lattice', ['fhnk_lattice.cpp'] + library_files)
+
+GLlattice = env.Library('ginzburg_landau_lattice_s', ['ginzburg_landau_lattice.cpp'] + library_files)
+GLlatticeS = pluginEnv.SharedLibrary('ginzburg_landau_lattice', ['ginzburg_landau_lattice.cpp'] + library_files)
+
 
