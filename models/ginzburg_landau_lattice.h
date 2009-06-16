@@ -10,8 +10,10 @@
 
 #include "../lattice/siip_lattice_integrator.h"
 
+// Legt ein System fest mit vier Komponenten A, AI, B, BI und dem Namen GLComponentSystem
 FOUR_COMPONENT_SYSTEM( GLComponentSystem, A, AI, B, BI)
 
+// Klasse muss vordeklariert werden
 class GinzburgLandauLattice;
 /**
  * Helper Class for additional but dependend Information
@@ -19,6 +21,7 @@ class GinzburgLandauLattice;
 template<>
 struct Metainfo< GinzburgLandauLattice > : MetainfoBase {
     typedef GLComponentSystem Components;
+    // Optimierungen
     static const int number_of_Noise_Variables = 1;
     template<int N> struct NoiseMapping {
         enum {
@@ -35,6 +38,7 @@ template<> struct Metainfo< GinzburgLandauLattice >::NoiseMapping< secondCompone
     };
 };
 
+// Hauptteil
 class GinzburgLandauLattice : public SIIP_LatticeIntegrator< GinzburgLandauLattice > {
 public:
     GinzburgLandauLattice();
