@@ -52,31 +52,10 @@ def ParseConfig(env,command,options):
     return static_libs
      
 
-def SelectBuildBaseDir(build_dir, platform_=None):
-    # if no platform is specified, then default to sys.platform
-    if not(platform_):
-        platform = os.uname()
-    
-    if [p for p in platform_ if "linux" in p.lower()] != []:
-      if [p for p in platform_ if "lomo" in p.lower()] != []:
-        platform = "lomo"
-      elif [p for p in platform_ if "dong" in p.lower()] != []:
-        platform = "dong"
-        if [p for p in platform_ if "amd64" in p.lower()] != []:
-          platform = "dong-amd64"
-        if [p for p in platform_ if "x86_64" in p.lower()] != []:
-          platform = "dong-64"
-        if os.system('grep -i quad /proc/cpuinfo') == 0:
-          platform = "dong-64quad"
-      else: platform = "linux-default"
-    elif [p for p in platform_ if "darwin" in p.lower()] != []:
-      platform = "darwin"
-    else: platform = "undefined"
-    
-    print "Looking for build directory for platform '%s'" % platform
+def SelectBuildBaseDir(build_dir):
 
     # setup where we start looking at first
-    test_dir = build_dir + os.sep + platform
+    test_dir = build_dir 
 
     # we look for a directory named exactly after the
     # platform so that very specific builds can be done

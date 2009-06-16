@@ -31,10 +31,11 @@ debug = ARGUMENTS.get('debug', 0)
 noopt = ARGUMENTS.get('noopt', 0)
 release = ARGUMENTS.get('release', 0)
 
-target_dir_argument = ARGUMENTS.get('build', None)
+target_dir_argument = ARGUMENTS.get('build_dir', None)
 
 # start the build
-build_base_dir = SelectBuildBaseDir(build_base_dir, platform.uname())
+build_base_dir = SelectBuildBaseDir(build_base_dir)
+
 if target_dir_argument is not None:
   target_dir = '#' + target_dir_argument
 else:
