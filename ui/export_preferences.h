@@ -25,6 +25,7 @@ class ExportPreferences : public PreferencePager {
 Q_OBJECT
 public:
     ExportPreferences(QWidget* parent = 0);
+    bool hasPngExportComponentChecked( uint component, bool raw );
 public slots:
     void setViewNames(const QStringList& names);
 
