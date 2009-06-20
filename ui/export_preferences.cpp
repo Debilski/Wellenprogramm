@@ -99,7 +99,7 @@ void ExportPreferences::setViewNames(const QStringList& names)
     resizeToMinimalSize();
 }
 
-bool ExportPreferences::hasPngExportComponentChecked(uint component, bool raw)
+bool ExportPreferences::hasPngExportComponentChecked(uint component, bool raw) const
 {
     if ( raw ) {
         return d_data->pngCheckBoxMatrix->isChecked( component, 0 );

@@ -46,7 +46,7 @@ void CheckBoxMatrix::associateCheckBox(QCheckBox* checkBox, int row, int col,
     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( checkBoxToggled() ) );
 }
 
-bool CheckBoxMatrix::isChecked(int row, int col)
+bool CheckBoxMatrix::isChecked(int row, int col) const
 {
     qDebug() << matrix_;
     return matrix_[ row ] & (2 << col);
@@ -67,7 +67,7 @@ void CheckBoxMatrix::setMatrix(QVector< int > matrix)
     matrix_ = matrix;
 }
 
-QVector< int > CheckBoxMatrix::getMatrix()
+QVector< int > CheckBoxMatrix::getMatrix() const
 {
     return matrix_;
 }

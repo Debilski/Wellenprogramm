@@ -25,10 +25,10 @@ Q_OBJECT
 public:
     CheckBoxMatrix(int rows, int cols);
     void associateCheckBox( QCheckBox* checkBox, int row, int col, bool keepStateOfCheckBox );
-    bool isChecked(int row, int col);
+    bool isChecked(int row, int col) const;
     void setChecked(bool check, int row, int col);
     void setMatrix( QVector< int > matrix );
-    QVector< int > getMatrix();
+    QVector< int > getMatrix() const;
 protected slots:
     void checkBoxToggled();
 private:
