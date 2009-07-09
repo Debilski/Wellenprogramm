@@ -70,6 +70,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
 
     connect( latticeController_, SIGNAL( changed() ), this, SLOT( replot() ) );
     connect( latticeController_, SIGNAL( changed() ), this, SLOT( updateLabels() ) );
+    connect( this, SIGNAL( modelChanged() ), this, SLOT( updateLabels() ) );
 
     connect( latticeController_, SIGNAL( processed(int) ), this, SLOT( resizeWindowToForceUpdate() ) );
     connect( latticeController_, SIGNAL( processed(int) ), this, SLOT( updateLabels() ) );
@@ -997,15 +998,15 @@ void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString struct
     for (int component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
     {
         text += QString( "%1{%2,%3} = " ).arg( structureName ).arg( timeIndex ).arg( component + 1 );
-        text += QString( "[" );
+        /*        text += QString( "[" );
 
         double value = latticeController_->lattice()->getComponentAt( component, 16, 16 );
         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
-        /*value = latticeController_->lattice()->getComponentAt( component, 17, 16 );
-         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
-         value = latticeController_->lattice()->getComponentAt( component, 18, 16 );
-         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
-         */
+        //value = latticeController_->lattice()->getComponentAt( component, 17, 16 );
+         //text += QString( "%1, " ).arg( value, 0, 'f', 4 );
+         //value = latticeController_->lattice()->getComponentAt( component, 18, 16 );
+         //text += QString( "%1, " ).arg( value, 0, 'f', 4 );
+         //
         value = latticeController_->lattice()->getComponentAt( component, 30, 32 );
         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
         //        value = latticeController_->lattice()->getComponentAt( component, 31, 32 );
@@ -1018,25 +1019,23 @@ void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString struct
         text += QString( "%1 " ).arg( value, 0, 'f', 4 );
 
         text += QString( "];\n" );
+*/
 
-        /*
          for (int j = 0; j < latticeController_->lattice()->latticeSizeY(); ++j) {
-         text += QString( "[" );
-         for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
-         double value = latticeController_->lattice()->getComponentAt( component, i, j );
+            text += QString( "[" );
+            for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
+                double value = latticeController_->lattice()->getComponentAt( component, i, j );
 
-         if ( i!= 13 && j!=13) continue;
+                text += QString( "%1" ).arg( value, 0, 'f', 4 );
+                if ( i != latticeController_->lattice()->latticeSizeX() - 1 )
+                    text += QString( ", " );
+            }
+            text += QString( "]" );
+            if ( j != latticeController_->lattice()->latticeSizeY() - 1 )
+                text += QString( "; " );
+        }
+        text += QString( "];\n" );
 
-         text += QString( "%1" ).arg( value, 0, 'f', 4 );
-         if ( i != latticeController_->lattice()->latticeSizeX() - 1 )
-         text += QString( ", " );
-         }
-         text += QString( "]" );
-         if ( j != latticeController_->lattice()->latticeSizeY() - 1 )
-         text += QString( "; " );
-         }
-         text += QString( "];\n" );
-         */
     }
     QFile data( fileName );
     if ( append ? data.open( QFile::Append ) : data.open( QFile::WriteOnly | QFile::Truncate ) ) {
@@ -1099,7 +1098,27 @@ void Waveprogram2DPlot::updateLabels()
 {
     simulationTimeLabel->setNum( latticeController_->lattice()->time() );
     clusterNumberLabel->setNum( latticeController_->lattice()->numberOfClusters() );
+
+    QString minMax = "%1 [%2, %3]";
+    QString s;
+    for (uint component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
+    {
+        QString name = QString::fromStdString(
+            latticeController_->lattice()->componentInfos[ component ].shortName() );
+        double min = latticeController_->lattice()->getMin( component );
+        double max = latticeController_->lattice()->getMax( component );
+        s += minMax.arg( name ).arg( min , 0, 'G', 2 ).arg( max, 0, 'G', 2 );
+        s.append(", ");
+    }
+
+    Ui::plotWindow_2d::statusBar->showMessage(s);
+    if (! latticeController_->lattice()->isAlive() ) {
+        Ui::plotWindow_2d::statusBar->showMessage("Lattice crashed.");
+    } else {
+    //    Ui::plotWindow_2d::statusBar->clearMessage();
+    }
 }
+
 
 void Waveprogram2DPlot::movieExport()
 {

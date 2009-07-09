@@ -26,12 +26,13 @@ Q_OBJECT
 public:
     ExportPreferences(QWidget* parent = 0);
     bool hasPngExportComponentChecked( uint component, bool raw ) const;
+    bool hasMatlabExportComponentChecked( uint component ) const;
 public slots:
     void setViewNames(const QStringList& names);
 
 signals:
     void pngChecked(QVector< QPair< bool, bool > > );
-    void matlabChecked();
+    void matlabChecked(QVector< bool >);
 
 private:
     class PrivateData;

@@ -1135,7 +1135,6 @@ bool Lattice< T_model >::isAlive() const
                 return false;
         }
     } else {
-
         for (uint component = 0; component < Components::number_of_Variables; ++component) {
             if ( blitz::max( lattice[ component ] ) < blitz::min( lattice[ component ] )
                 || blitz::any( lattice[ component ] >= blitz::huge< double >( d ) ) || blitz::any(
@@ -1143,6 +1142,18 @@ bool Lattice< T_model >::isAlive() const
                 return false;
         }
     }
+    if ( blitz::has_signalling_NaN< double >( d ) ) {
+        for (uint component = 0; component < Components::number_of_Variables; ++component) {
+            if ( blitz::any( lattice[ component ] == blitz::signalling_NaN< double >( d ) ) )
+              return false;
+        }
+    }
+#ifndef NO_IEEE_BLITZ_FUNCTIONS
+        for (uint component = 0; component < Components::number_of_Variables; ++component) {
+            if ( blitz::any( blitz::blitz_isnan( lattice[ component ] ) != 0 ) )
+              return false;
+        }
+#endif
     return true;
 }
 

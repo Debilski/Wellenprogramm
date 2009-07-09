@@ -32,6 +32,7 @@ public:
     QGroupBox* groupBox;
 
     QPointer< CheckBoxMatrix > pngCheckBoxMatrix;
+    QPointer< CheckBoxMatrix > matlabCheckBoxMatrix;
 };
 
 ExportPreferences::ExportPreferences(QWidget* parent) :
@@ -106,4 +107,10 @@ bool ExportPreferences::hasPngExportComponentChecked(uint component, bool raw) c
     } else {
         return d_data->pngCheckBoxMatrix->isChecked( component, 1 );
     }
+}
+
+
+bool ExportPreferences::hasMatlabExportComponentChecked(uint component) const
+{
+        return d_data->matlabCheckBoxMatrix->isChecked( component, 0 );
 }
