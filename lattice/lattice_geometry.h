@@ -294,6 +294,11 @@ inline int LatticeGeometry::indexToY(int idx) const
     return idx % (latticeSizeY_);
 }
 
+/**
+ * Returns the distance between two points on the surface with coordinates (@a ax, @a ay) and (@a bx, @a by), respectively.
+ *
+ * Assumes periodic boundary conditions.
+ */
 inline double LatticeGeometry::euklidianDistance(double ax, double ay, double bx, double by) const
 {
     double xdist = (ax - bx < sizeX_ / 2) ? (ax - bx) : (sizeX_ - (ax - bx));
@@ -302,6 +307,11 @@ inline double LatticeGeometry::euklidianDistance(double ax, double ay, double bx
     return dist;
 }
 
+/**
+ * Returns the distance between two SurfacePoints @a a and @a b.
+ *
+ * Assumes periodic boundary conditions.
+ */
 inline double LatticeGeometry::euklidianDistance(const SurfacePoint& a, const SurfacePoint& b) const
 {
     return euklidianDistance( a.x, a.y, b.x, b.y );
