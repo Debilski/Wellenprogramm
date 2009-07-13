@@ -92,12 +92,12 @@ void ClusterCounter::countClusters()
             }
         }
     }
-
+#ifdef DEBUG
     if ( clusterIgnoreCounter != 0 )
         std::cout << "# " << clusterIgnoreCounter << " cluster(s) with a total size of "
             << clusterIgnoreSize << " were each smaller than " << sizeThreshold_
             << " lattice points and are going to be ignored.\n";
-
+#endif
     // Ordne den Centroid jedes Clusters zu
     // Für den Rest cv. Czink et al
     //    int* marginalised_mass_x = new int[ latticeSizeX() ];
