@@ -70,7 +70,7 @@ private:
 class ColorMaps {
 public:
     enum ColorMapTypes {
-        standardColorMap, greyColorMap, jetColorMap
+        standardColorMap, greyColorMap, jetColorMap, halfJetColorMap
     };
 
     ColorMapTypes colorMapType;
@@ -118,6 +118,27 @@ public:
                 pos = 1.0 / 13.0 * 13.0;
                 colorMap.addColorStop( pos, QColor( 189, 0, 0 ) );
                 break;
+            case halfJetColorMap:
+                colorMap = QwtLinearColorMap( QColor( 0, 0, 189 ), QColor( 255, 255, 0 ) );
+                pos = 1.0 / 9.0 * 1.0;
+                colorMap.addColorStop( pos, QColor( 0, 0, 255 ) );
+                pos = 1.0 / 9.0 * 2.0;
+                colorMap.addColorStop( pos, QColor( 0, 66, 255 ) );
+                pos = 1.0 / 9.0 * 3.0;
+                colorMap.addColorStop( pos, QColor( 0, 132, 255 ) );
+                pos = 1.0 / 9.0 * 4.0;
+                colorMap.addColorStop( pos, QColor( 0, 189, 255 ) );
+                pos = 1.0 / 9.0 * 5.0;
+                colorMap.addColorStop( pos, QColor( 0, 255, 255 ) );
+                pos = 1.0 / 9.0 * 6.0;
+                colorMap.addColorStop( pos, QColor( 66, 255, 189 ) );
+                pos = 1.0 / 9.0 * 7.0;
+                colorMap.addColorStop( pos, QColor( 132, 255, 132 ) );
+                pos = 1.0 / 9.0 * 8.0;
+                colorMap.addColorStop( pos, QColor( 189, 255, 66 ) );
+                pos = 1.0 / 9.0 * 9.0;
+                colorMap.addColorStop( pos, QColor( 255, 255, 0 ) );
+                break;
             case standardColorMap:
             default:
                 colorMap = QwtLinearColorMap( Qt::darkBlue, Qt::darkRed ); // -2.2, 2.5
@@ -135,6 +156,7 @@ public:
         colorMapNames_.append(QPair< ColorMapTypes, QString > ( standardColorMap, "Standard Color Map" ) );
         colorMapNames_.append(QPair< ColorMapTypes, QString > ( greyColorMap, "Grey Color Map" ) );
         colorMapNames_.append(QPair< ColorMapTypes, QString > ( jetColorMap, "Jet Color Map" ) );
+        colorMapNames_.append(QPair< ColorMapTypes, QString > ( halfJetColorMap, "Half-Jet Color Map" ) );
         getColorMap(standardColorMap);
     }
     ~ColorMaps()

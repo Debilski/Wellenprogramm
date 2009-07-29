@@ -992,14 +992,22 @@ void Waveprogram2DPlot::toggleStartStop()
 void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString structureName,
                                                 int timeIndex, bool append /*= true*/)
 {
+    std::ofstream stream;
+    stream.open( qPrintable(fileName), std::ios::app );
+    latticeController_->lattice()->dump(stream);
+    stream << "\n";
+    stream.close();
+
+#if 0
     QString text;
-    text += QString( "Time_%1{%2} = %3;\n" ).arg( structureName ).arg( timeIndex ).arg(
+    text += QString( "%1_Time(%2) = %3;\n" ).arg( structureName ).arg( timeIndex ).arg(
         latticeController_->lattice()->time(), 0, 'f', 4 );
     for (int component = 0; component < latticeController_->lattice()->numberOfVariables(); ++component)
     {
-        text += QString( "%1{%2,%3} = " ).arg( structureName ).arg( timeIndex ).arg( component + 1 );
-        /*        text += QString( "[" );
-
+        //if (component != 2) continue;
+        text += QString( "%1_%3(%2,:) = " ).arg( structureName ).arg( timeIndex ).arg( component + 1 );
+                text += QString( "[" );
+                /*
         double value = latticeController_->lattice()->getComponentAt( component, 16, 16 );
         text += QString( "%1, " ).arg( value, 0, 'f', 4 );
         //value = latticeController_->lattice()->getComponentAt( component, 17, 16 );
@@ -1022,17 +1030,16 @@ void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString struct
 */
 
          for (int j = 0; j < latticeController_->lattice()->latticeSizeY(); ++j) {
-            text += QString( "[" );
+            //text += QString( "[" );
             for (int i = 0; i < latticeController_->lattice()->latticeSizeX(); ++i) {
                 double value = latticeController_->lattice()->getComponentAt( component, i, j );
 
                 text += QString( "%1" ).arg( value, 0, 'f', 4 );
-                if ( i != latticeController_->lattice()->latticeSizeX() - 1 )
-                    text += QString( ", " );
+                text += QString( ", " );
             }
-            text += QString( "]" );
-            if ( j != latticeController_->lattice()->latticeSizeY() - 1 )
-                text += QString( "; " );
+            //text += QString( "]" );
+            //if ( j != latticeController_->lattice()->latticeSizeY() - 1 )
+            //    text += QString( "; " );
         }
         text += QString( "];\n" );
 
@@ -1042,6 +1049,7 @@ void Waveprogram2DPlot::exportAsMatlabStructure(QString fileName, QString struct
         QTextStream out( &data );
         out << text;
     }
+#endif
 }
 
 void Waveprogram2DPlot::saveViews(const QString& name)
