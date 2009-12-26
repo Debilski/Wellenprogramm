@@ -15,6 +15,8 @@
 #include <QtGui>
 #include <QtCore>
 
+#include "plot_global.h"
+
 #include "plot_layer.h"
 
 #include "parameter_spin_box.h"
@@ -82,6 +84,7 @@ Waveprogram2DPlot::Waveprogram2DPlot(QMainWindow * parent) :
     colorMapMode = defaultColorMapMode;
 
     setupUi( this ); // this sets up GUI
+    smallWidgetSizePolicyOnMac( this );
 
     // setAttribute( Qt::WA_DeleteOnClose );
     //    sliceWidget->setVisible( false );
@@ -516,6 +519,7 @@ void Waveprogram2DPlot::setUpDiffusion()
         QString name = "Diffusion " + QString::fromStdString(
             latticeController_->lattice()->componentInfos[ component ].shortName() );
         QLabel* label = new QLabel( name, parameterWidgetContents );
+        smallWidgetSizePolicyOnMac( label );
         parameterWidgetFormLayout->addRow( label, diffusionBox );
         connect(
             diffusionBox, SIGNAL( valueChanged(const int&, const double&) ), latticeController_,
@@ -536,10 +540,12 @@ void Waveprogram2DPlot::setUpModelProperties()
     parameterWidget->setUpdatesEnabled( false );
 
     parameterWidgetContents = new QWidget();
+    smallWidgetSizePolicyOnMac( parameterWidgetContents );
     parameterWidgetContents->setObjectName( QString::fromUtf8( "parameterWidgetContents" ) );
     verticalLayout = new QVBoxLayout( parameterWidgetContents );
     verticalLayout->setObjectName( QString::fromUtf8( "verticalLayout" ) );
     parameterWidgetFormLayout = new QFormLayout();
+
     parameterWidgetFormLayout->setObjectName( QString::fromUtf8( "parameterWidgetFormLayout" ) );
 
     verticalLayout->addLayout( parameterWidgetFormLayout );
@@ -603,6 +609,7 @@ void Waveprogram2DPlot::setUpParameters()
         ParameterSpinBox* parameterBox = new ParameterSpinBox( *param, parameterWidgetContents );
 
         QLabel* label = new QLabel( paramName, parameterWidgetContents );
+        smallWidgetSizePolicyOnMac( label );
         parameterWidgetFormLayout->addRow( label, parameterBox );
         connect(
             parameterBox, SIGNAL( valueChanged(const QString&, const double&) ), this,
@@ -636,6 +643,7 @@ void Waveprogram2DPlot::setUpAdaptationParameters()
          parameterBox->setValue( (*param)->get() );
          */
         QLabel* label = new QLabel( paramName, adaptationParameterWidgetContents );
+        smallWidgetSizePolicyOnMac( label );
         adaptationParameterWidgetFormLayout->addRow( label, parameterBox );
         connect(
             parameterBox, SIGNAL( valueChanged(const QString&, const double&) ), this,
