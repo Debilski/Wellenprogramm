@@ -84,7 +84,7 @@ if "linux-default" in environment :
     env.Append(LIBS=static_libs + ['qwt-qt4', 'QtGui', 'QtCore','boost_thread-gcc41-mt', "fftw3" , "fftw3_threads" ,"m" ])
 
 if "lomo" in environment :
-    env.Append(CCFLAGS= ' -mtune=native -march=native -msse3 -msse2 -msse -fopenmp ') # -ffast-math # -fbranch-probabilities
+    env.Append(CCFLAGS= ' -mtune=native -msse3 -msse2 -msse -fopenmp ') # -ffast-math # -fbranch-probabilities
     env.Append(CPPPATH=['/usr/include/qwt-qt4/'])
     env.Append(LIBS=static_libs + ['qwt-qt4', 'boost_thread', "fftw3" , "fftw3_threads" ,"m", "mpi", "gomp"])
 
