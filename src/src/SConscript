@@ -1,0 +1,18 @@
+import os
+Import('env', 'progressbar', 'target_bin_dir')
+
+modeltest = env.Program('modeltest', ['modeltest.cpp'], LIBS=['lattice_plugin_registration','fhn_lattice_s', 'barkley_lattice_s', progressbar]+env["LIBS"])
+speedtest = env.Program('speedtest', ['speedtest.cpp'], LIBS=['lattice_plugin_registration','fhn_lattice_s', 'barkley_lattice_s', progressbar]+env["LIBS"])
+makestablewaves = env.Program('makestablewaves', ['makestablewaves.cpp'], LIBS=['lattice', progressbar]+env["LIBS"])
+
+stabilitycheck = env.Program('stabilitycheck', ['stabilitycheck.cpp'], LIBS=['lattice', progressbar]+env["LIBS"])
+
+crashline = env.Program('crashline', ['crashline.cpp'], LIBS=['lattice', progressbar]+env["LIBS"])
+crashline2 = env.Program('crashline2', ['crashline2.cpp'], LIBS=['lattice', progressbar]+env["LIBS"])
+
+makestablewavesdifferentws = env.Program('makestablewaves-differentwavesizes', ['makestablewaves-differentwavesizes.cpp'], LIBS=['lattice', progressbar]+env["LIBS"])
+
+excitationpiecewise = env.Program('excitation-piecewise', ['excitation-piecewise.cpp'], LIBS=['lattice', progressbar]+env["LIBS"])
+
+excitationbarkley = env.Program('excitation-barkley', ['excitation-barkley.cpp'], LIBS=['lattice', progressbar]+env["LIBS"])
+
