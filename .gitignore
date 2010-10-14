@@ -5,12 +5,6 @@ builds/
 latex/
 !SC*
 !Doxy*
-!helper/*
-!models/*
-!lattice/*
-!share/*
-!tools/*
-!ui/*
 !*.py
 .*
 !.gitignore
