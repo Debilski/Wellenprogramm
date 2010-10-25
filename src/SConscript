@@ -5,11 +5,17 @@ import platform
 
 # Setup some of our requirements
 
-env = Environment(ENV = {'PATH' : "/home/rikebs/bin:"+os.environ['PATH'],
-                         'TERM' : os.environ['TERM'],
-                         'HOME' : os.environ['HOME']                 
-                         })#CXX = 'mpicxx.openmpi')
+env = Environment() #CXX = 'mpicxx.openmpi')
 env.Tool('qt4', toolpath=['#scons-qt4'])
+
+## Paths to adapt
+qt_headers = [ "/usr/local/Cellar/qt/4.7.0/Frameworks/QtCore.framework/Headers",
+        "/usr/local/Cellar/qt/4.7.0/Frameworks/QtGui.framework/Headers",
+        "/usr/local/Cellar/qt/4.7.0/Frameworks/QtScript.framework/Headers"]
+
+frameworks_paths = [ "/usr/local/Cellar/qt/4.7.0/Frameworks" ]
+
+
 
 #print env.Dump()
 debug = ARGUMENTS.get('debug', 0)
@@ -39,7 +45,11 @@ if int(release):
 env['CXXFILESUFFIX']='.cpp'
 
 
-env.Append(CCFLAGS= ' -fast -fopenmp -O4 -F/usr/local/Cellar/qt/4.7.0/Frameworks -I/usr/local/Cellar/qt/4.7.0/Frameworks/QtCore.framework/Headers  -I/usr/local/Cellar/qt/4.7.0/Frameworks/QtGui.framework/Headers -I/usr/local/Cellar/qt/4.7.0/Frameworks/QtScript.framework/Headers ')
+frameworks = " ".join(["-F" + f for f in frameworks_paths])
+header_files = qt_headers
+headers = " ".join(["-I" + f for f in header_files])
+
+env.Append(CCFLAGS= ' -fast -fopenmp -O4 ' + frameworks + headers)
 env.Append(LIBS=['qwt', 'boost_thread-mt', "fftw3" , "fftw3_threads" ,"m", "gomp", "blitz"])
 env.Replace(CXX = 'ccache g++ ')#/Developer/usr/bin/llvm-g++-4.2 ')
 
