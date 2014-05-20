@@ -2,7 +2,7 @@ language: cpp
 
 before_script:
   - sudo apt-get update -qq
-  - sudo apt-get install -y libqt4-dev libfftw3-dev libboost-all-dev
+  - sudo apt-get install -y libqt4-dev libfftw3-dev libboost-all-dev libblitz0-dev
   - mkdir build
   - cd build
   - cmake ..
