@@ -5,23 +5,35 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 
-build/
+# C++ objects and libs
 
-*.os
+*.slo
+*.lo
+*.o
+*.a
+*.la
+*.lai
+*.so
+*.dll
+*.dylib
+
+# Qt
+
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+
+# build directories
+
+build/
 output/
 builds/
 latex/
-!SC*
-!Doxy*
-!*.py
-.*
-!.gitignore
-!README*
-*.os
-*.o
-*.dylib
+
+# other
 *.pyc
-*~
-moc_*.cpp
-ui_*.h
+*.swp
+*.swo
+
 
