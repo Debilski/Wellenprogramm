@@ -28,7 +28,7 @@
 #include <map>
 #include <queue>
 
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#if _OPENMP
 #include <omp.h>
 #endif
 
@@ -38,7 +38,7 @@
 #include <fftw3.h>
 #include <blitz/array.h>
 #include <blitz/array/stencil-et.h>
-#include <blitz/tinyvec-et.h>
+#include <blitz/tinyvec2.h>
 #include <blitz/numinquire.h>
 
 #include "fftw3_wrapper.h"

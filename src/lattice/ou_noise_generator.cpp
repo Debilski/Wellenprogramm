@@ -14,6 +14,7 @@
  */
 
 #include "noise_lattice.h"
+#include "ou_noise_generator.h"
 
 #include <iostream>
 

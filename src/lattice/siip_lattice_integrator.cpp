@@ -190,7 +190,7 @@ void SIIP_LatticeIntegrator< T_model >::integration(
             &Base::precomputeNoise, this ) );
         Base::setBoundary();
         Base::applyDefects();
-        executeDiffusion( firstStep );
+        this->executeDiffusion( firstStep );
         noiseThread.join();
 
         for (uint component = 0; component
@@ -217,7 +217,7 @@ void SIIP_LatticeIntegrator< T_model >::integration(
     } else {
         Base::setBoundary();
         Base::applyDefects();
-        executeDiffusion( firstStep );
+        this->executeDiffusion( firstStep );
 
         for (uint component = 0; component
             < Components::number_of_Variables; ++component)
@@ -243,7 +243,7 @@ void SIIP_LatticeIntegrator< T_model >::integration(
     if ( lastStep != Base::IgnoreStep ) {
         Base::setBoundary();
         Base::applyDefects();
-        executeDiffusion( lastStep );
+        this->executeDiffusion( lastStep );
     }
 }
 

@@ -387,12 +387,12 @@ struct Parameter {
     }
     inline Parameter& operator=(T value)
     {
-        this.value_ = value;
+        this->value_ = value;
         return *this;
     }
     inline Parameter& operator=(const Parameter& p)
     {
-        this.value_ = p.value_;
+        this->value_ = p.value_;
         return *this;
     }
     std::string name;
