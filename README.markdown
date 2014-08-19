@@ -4,7 +4,7 @@
 
 For historical reasons only. Slightly updated to use current libraries.
 
-# Prerequisites
+## Prerequisites
 
     * Qt 4.x (tested with 4.8)
     * Qwt 5.2 (will be downloaded)
@@ -13,7 +13,7 @@ For historical reasons only. Slightly updated to use current libraries.
     * fftw3, fftw3-threads
     * Boost (system, threads)
 
-# Build info
+## Build info
 
     # create build directory
     $ mkdir build
@@ -27,7 +27,7 @@ For historical reasons only. Slightly updated to use current libraries.
     # copy Qwt shared library
     $ cp external/Qwt/src/Qwt-build/lib/libqwt.5.2.4.dylib libqwt.5.dylib
 
-# Run
+## Run
 
     $ ./src/ui/plot
 
