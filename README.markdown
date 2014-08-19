@@ -30,4 +30,17 @@ For historical reasons only. Slightly updated to use current libraries.
 # Run
 
     $ ./src/ui/plot
-   
+
+# Example Screenshots
+
+## FitzHugh–Nagumo model
+
+![FHN model](/example_fhn.png?raw=true)
+
+[Wikipedia](http://en.wikipedia.org/wiki/FitzHugh–Nagumo_model) | [Scholarpedia](http://scholarpedia.org/article/FitzHugh-Nagumo_model)
+
+## Barkley model
+
+![Barkley model](/example_barkley.png?raw=true)
+
+[Scholarpedia](http://www.scholarpedia.org/article/Barkley_model)
