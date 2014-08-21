@@ -8,5 +8,5 @@ before_script:
   - cmake ..
 
 script:
-  - make -j
+  - make VERBOSE=1
 
