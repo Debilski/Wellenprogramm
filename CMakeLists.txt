@@ -1,6 +1,6 @@
-cmake_minimum_required (VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-project(Wellenprogramm)
+PROJECT(Wellenprogramm)
 
 FIND_PACKAGE( Boost REQUIRED
     COMPONENTS thread system
@@ -12,5 +12,5 @@ SET( CMAKE_CXX_FLAGS_RELEASE "-DBOOST_THREADS=4 -O3" )
 
 SET( CMAKE_CXX_FLAGS_DEBUG "-g -ggdb" )
 
-add_subdirectory(src)
+ADD_SUBDIRECTORY(src)
 

@@ -1,13 +1,13 @@
 
-if (FFTW_INCLUDES)
+IF (FFTW_INCLUDES)
   # Already in cache, be silent
-  set (FFTW_FIND_QUIETLY TRUE)
-endif (FFTW_INCLUDES)
+  SET (FFTW_FIND_QUIETLY TRUE)
+ENDIF (FFTW_INCLUDES)
 
-find_path (FFTW_INCLUDES fftw3.h)
+FIND_PATH (FFTW_INCLUDES fftw3.h)
 
-find_library (FFTW_LIBRARIES NAMES fftw3)
-find_library (FFTW_THREADS_LIBRARIES NAMES fftw3_threads)
+FIND_LIBRARY (FFTW_LIBRARIES NAMES fftw3)
+FIND_LIBRARY (FFTW_THREADS_LIBRARIES NAMES fftw3_threads)
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ../lattice )
 
@@ -21,7 +21,8 @@ ADD_LIBRARY( fhn_lattice SHARED
   ${FFTW_INCLUDES}
   "../lattice/rds_helper.cpp"
   )
-set_target_properties( fhn_lattice
+ADD_DEPENDENCIES( fhn_lattice Blitz )
+SET_TARGET_PROPERTIES( fhn_lattice
   PROPERTIES
   COMPILE_FLAGS -DRDS_PLUGIN
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target/models"

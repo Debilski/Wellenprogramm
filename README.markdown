@@ -9,7 +9,7 @@ For historical reasons only. Slightly updated to use current libraries.
     * Qt 4.x (tested with 4.8)
     * Qwt 5.2 (will be downloaded)
     * CMake 2.8 or later
-    * blitz++
+    * blitz++ (will be downloaded)
     * fftw3, fftw3-threads
     * Boost (system, threads)
 

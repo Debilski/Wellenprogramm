@@ -42,8 +42,8 @@ void savePng(QString fileName, LatticeInterface* lattice)
 int main(int argc, char** argv)
 {
 #ifndef __APPLE__
-    omp_set_dynamic(0);
-    omp_set_num_threads(2);
+// omp_set_dynamic(0);
+// omp_set_num_threads(2);
 #endif
 
     Fftw3Wrapper* fftw = Fftw3Wrapper::instance();
