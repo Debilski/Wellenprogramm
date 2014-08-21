@@ -22,7 +22,7 @@ include(ExternalProject)
 
 ExternalProject_add(QWT
   PREFIX ${QwtBuildDir}
-  SVN_REPOSITORY svn://svn.code.sf.net/p/qwt/code/branches/qwt-5.2
+  URL "http://sourceforge.net/projects/qwt/files/qwt/5.2.3/qwt-5.2.3.tar.bz2"
   PATCH_COMMAND sed -i -e "s|^.*INSTALLBASE=.*|INSTALLBASE=${QwtBuildDir}|" "../QWT/qwtconfig.pri"
   CONFIGURE_COMMAND qmake ../QWT/qwt.pro
   BUILD_COMMAND make -j
