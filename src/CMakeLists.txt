@@ -6,19 +6,29 @@ SET( CMAKE_AUTOMOC TRUE )
 INCLUDE( ${QT_USE_FILE} )
 
 SET( QwtBuildDir ${CMAKE_BINARY_DIR}/external/Qwt )
+SET( BlitzBuildDir ${CMAKE_BINARY_DIR}/external/Blitz++ )
 
 SET( QwtHeaders ${QwtBuildDir}/src/Qwt/src )
+SET( BlitzHeaders ${BlitzBuildDir}/include )
 SET( QwtLibrary ${QwtBuildDir}/src/Qwt-build/lib/libqwt.dylib )
 
-INCLUDE_DIRECTORIES( ${QwtHeaders} )
+INCLUDE_DIRECTORIES( ${QwtHeaders} ${BlitzHeaders} )
 
 include(ExternalProject)
 ExternalProject_Add( Qwt
   PREFIX ${QwtBuildDir}
   SVN_REPOSITORY "svn://svn.code.sf.net/p/qwt/code/branches/qwt-5.2"
-  CONFIGURE_COMMAND qmake -set prefix ${QwtBuildDir} ../Qwt/qwt.pro
-  BUILD_COMMAND make
+  CONFIGURE_COMMAND qmake PREFIX=${QwtBuildDir} ../Qwt/qwt.pro
+  BUILD_COMMAND make -j
   )
+
+ExternalProject_Add( Blitz
+  PREFIX ${BlitzBuildDir}
+  URL "http://downloads.sourceforge.net/project/blitz/blitz/Blitz%2B%2B%200.10/blitz-0.10.tar.gz"
+  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${BlitzBuildDir}
+  BUILD_COMMAND make -j
+  )
+
 
 ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 
@@ -51,6 +61,6 @@ ADD_EXECUTABLE( modeltest
   "share/progressbar/progressbar.cpp"
   "models/fhn_lattice.cpp"
   )
-ADD_DEPENDENCIES( modeltest Qwt )
+ADD_DEPENDENCIES( modeltest Qwt Blitz )
 TARGET_LINK_LIBRARIES( modeltest ${QT_LIBRARIES} ${Boost_LIBRARIES} ${QwtLibrary} ${lattice} ${FFTW_LIBRARIES} ${FFTW_THREADS_LIBRARIES} )
 
