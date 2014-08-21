@@ -10,7 +10,11 @@ SET( BlitzBuildDir ${CMAKE_BINARY_DIR}/external/Blitz++ )
 
 SET( QwtHeaders ${QwtBuildDir}/src/QWT/src )
 SET( BlitzHeaders ${BlitzBuildDir}/include )
-SET( QwtLibrary ${QwtBuildDir}/src/QWT-build/lib/libqwt.dylib )
+IF( APPLE )
+  SET( QwtLibrary ${QwtBuildDir}/src/QWT-build/lib/libqwt.dylib )
+ELSE()
+  SET( QwtLibrary ${QwtBuildDir}/src/QWT-build/lib/libqwt.so )
+ENDIF()
 
 INCLUDE_DIRECTORIES( ${QwtHeaders} ${BlitzHeaders} )
 
