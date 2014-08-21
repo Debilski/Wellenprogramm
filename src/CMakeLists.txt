@@ -8,19 +8,22 @@ INCLUDE( ${QT_USE_FILE} )
 SET( QwtBuildDir ${CMAKE_BINARY_DIR}/external/Qwt )
 SET( BlitzBuildDir ${CMAKE_BINARY_DIR}/external/Blitz++ )
 
-SET( QwtHeaders ${QwtBuildDir}/src/Qwt/src )
+SET( QwtHeaders ${QwtBuildDir}/src/QWT/src )
 SET( BlitzHeaders ${BlitzBuildDir}/include )
-SET( QwtLibrary ${QwtBuildDir}/src/Qwt-build/lib/libqwt.dylib )
+SET( QwtLibrary ${QwtBuildDir}/src/QWT-build/lib/libqwt.dylib )
 
 INCLUDE_DIRECTORIES( ${QwtHeaders} ${BlitzHeaders} )
 
 include(ExternalProject)
-ExternalProject_Add( Qwt
+
+ExternalProject_add(QWT
   PREFIX ${QwtBuildDir}
-  SVN_REPOSITORY "svn://svn.code.sf.net/p/qwt/code/branches/qwt-5.2"
-  CONFIGURE_COMMAND qmake PREFIX=${QwtBuildDir} ../Qwt/qwt.pro
+  SVN_REPOSITORY svn://svn.code.sf.net/p/qwt/code/branches/qwt-5.2
+  PATCH_COMMAND sed -i -e "s|^.*INSTALLBASE=.*|INSTALLBASE=${QwtBuildDir}|" "../QWT/qwtconfig.pri"
+  CONFIGURE_COMMAND qmake ../QWT/qwt.pro
   BUILD_COMMAND make -j
-  )
+  INSTALL_COMMAND ""
+)
 
 ExternalProject_Add( Blitz
   PREFIX ${BlitzBuildDir}
