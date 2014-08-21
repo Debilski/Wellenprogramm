@@ -17,5 +17,5 @@ ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 ADD_EXECUTABLE( plot ${PLOT_UI_HEADERS} ${PLOT_HEADER_MOCS} ${PLOT_SOURCES} ${resources_rcc} ../lattice/plugin.cpp )
 ADD_DEPENDENCIES( plot Qwt Blitz )
 
-TARGET_LINK_LIBRARIES( plot ${QT_LIBRARIES} ${Boost_LIBRARIES} ${QwtLibrary} ${lattice} )
+TARGET_LINK_LIBRARIES( plot ${QT_LIBRARIES} ${Boost_LIBRARIES} ${QwtLibrary} ${lattice} dl )
 
