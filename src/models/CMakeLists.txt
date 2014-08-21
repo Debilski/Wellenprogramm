@@ -21,6 +21,7 @@ ADD_LIBRARY( fhn_lattice SHARED
   ${FFTW_INCLUDES}
   "../lattice/rds_helper.cpp"
   )
+ADD_DEPENDENCIES( fhn_lattice Blitz )
 set_target_properties( fhn_lattice
   PROPERTIES
   COMPILE_FLAGS -DRDS_PLUGIN
