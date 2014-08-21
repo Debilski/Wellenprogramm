@@ -5,11 +5,11 @@ SET( CMAKE_AUTOMOC TRUE )
 
 INCLUDE( ${QT_USE_FILE} )
 
-SET( QwtBuildDir ${CMAKE_BINARY_DIR}/external/Qwt )
 SET( BlitzBuildDir ${CMAKE_BINARY_DIR}/external/Blitz++ )
-
-SET( QwtHeaders ${QwtBuildDir}/src/QWT/src )
 SET( BlitzHeaders ${BlitzBuildDir}/include )
+
+SET( QwtBuildDir ${CMAKE_BINARY_DIR}/external/Qwt )
+SET( QwtHeaders ${QwtBuildDir}/src/QWT/src )
 IF( APPLE )
   SET( QwtLibrary ${QwtBuildDir}/src/QWT-build/lib/libqwt.dylib )
 ELSE()
@@ -18,7 +18,7 @@ ENDIF()
 
 INCLUDE_DIRECTORIES( ${QwtHeaders} ${BlitzHeaders} )
 
-include(ExternalProject)
+INCLUDE(ExternalProject)
 
 ExternalProject_add(QWT
   PREFIX ${QwtBuildDir}
@@ -26,8 +26,7 @@ ExternalProject_add(QWT
   PATCH_COMMAND sed -i -e "s|^.*INSTALLBASE=.*|INSTALLBASE=${QwtBuildDir}|" "../QWT/qwtconfig.pri"
   CONFIGURE_COMMAND qmake ../QWT/qwt.pro
   BUILD_COMMAND make -j
-  INSTALL_COMMAND ""
-)
+  )
 
 ExternalProject_Add( Blitz
   PREFIX ${BlitzBuildDir}
@@ -39,20 +38,9 @@ ExternalProject_Add( Blitz
 
 ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 
-add_subdirectory(models)
+ADD_SUBDIRECTORY(models)
 
-add_subdirectory( ui )
-
-
-#if (FFTW_INCLUDES)
-  # Already in cache, be silent
-  #  set (FFTW_FIND_QUIETLY TRUE)
-  #endif (FFTW_INCLUDES)
-
-  #find_path (FFTW_INCLUDES fftw3.h)
-
-  #find_library (FFTW_LIBRARIES NAMES fftw3)
-  #find_library (FFTW_THREADS_LIBRARIES NAMES fftw3_threads)
+ADD_SUBDIRECTORY( ui )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} lattice models share )
 
@@ -69,5 +57,6 @@ ADD_EXECUTABLE( modeltest
   "models/fhn_lattice.cpp"
   )
 ADD_DEPENDENCIES( modeltest Qwt Blitz )
+
 TARGET_LINK_LIBRARIES( modeltest ${QT_LIBRARIES} ${Boost_LIBRARIES} ${QwtLibrary} ${lattice} ${FFTW_LIBRARIES} ${FFTW_THREADS_LIBRARIES} )
 
