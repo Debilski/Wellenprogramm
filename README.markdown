@@ -4,6 +4,8 @@
 
 For historical reasons only. Slightly updated to use current libraries.
 
+[![Build Status](https://travis-ci.org/Debilski/Wellenprogramm.svg?branch=master)](https://travis-ci.org/Debilski/Wellenprogramm)
+
 ## Prerequisites
 
     * Qt 4.x (tested with 4.8)
