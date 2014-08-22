@@ -23,7 +23,7 @@ INCLUDE(ExternalProject)
 ExternalProject_add(QWT
   PREFIX ${QwtBuildDir}
   URL "http://sourceforge.net/projects/qwt/files/qwt/5.2.3/qwt-5.2.3.tar.bz2"
-  PATCH_COMMAND perl -pi -e "s|^.*INSTALLBASE=.*|INSTALLBASE=${QwtBuildDir}|" "../QWT/qwtconfig.pri"
+  PATCH_COMMAND perl -pi -e "s|^.*INSTALLBASE.*=.*|INSTALLBASE=${QwtBuildDir}|" "../QWT/qwtconfig.pri"
   CONFIGURE_COMMAND qmake ../QWT/qwt.pro
   BUILD_COMMAND make -j
   )
