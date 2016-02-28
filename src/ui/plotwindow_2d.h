@@ -179,8 +179,8 @@ private:
 
     QVector<QwtPlotCurve*> slice;  //[ ModelLattice::number_of_Variables ];
 
-    QMap<long int, QList<QPair<SurfacePoint, double>>> bufferMap;  // + timestamp
-    QMap<long int, QList<QPair<SurfacePoint, double>>> temporaryBufferMap;
+    QMap<long int, QList<QPair<SurfacePoint, double> > > bufferMap;  // + timestamp
+    QMap<long int, QList<QPair<SurfacePoint, double> > > temporaryBufferMap;
     QMap<long int, SurfacePoint> lastStepClusters;
     double lastClustersUpdateTime;
 
@@ -205,7 +205,7 @@ private:
 
     QPointer<ScriptEditor> scriptEditor;
     QPointer<DefectsEditor> defectsEditor;
-    QList<Defect<GeneralComponentSystem>> defectsList;
+    QList<Defect<GeneralComponentSystem> > defectsList;
 
     typedef QMap<QString, Parameter<double>*> ParameterMap;
     typedef QMap<QString, double> ParameterValueMap;

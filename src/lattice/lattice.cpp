@@ -477,7 +477,7 @@ void Lattice<T_model>::computeDiffusionOperator(uint component)
             std::complex<double> multiplier(-f_x * f_x - f_y * f_y);
             precomputedDiffusionOperator[component](i, j) = (exp(multiplier
                                                                  * diffusion_[component] * tau / 2.)
-                / static_cast<std::complex<double>>(latticeSize()));
+                / static_cast<std::complex<double> >(latticeSize()));
         }
     }
 }

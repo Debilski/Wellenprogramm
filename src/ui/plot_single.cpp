@@ -27,7 +27,7 @@ class PlotSingle::PrivateData
 public:
     LatticeInterface* lattice;
     QVector<QwtPlotCurve*> curves;
-    QVector<QVector<double>> curveData;
+    QVector<QVector<double> > curveData;
     QVector<double> timeArray;
 
     double timeShown;

@@ -63,7 +63,7 @@ class LatticePluginRegistration
 {
 public:
     typedef std::pair<LatticeMakerFnc*, LatticeDestroyerFnc*> LatticeHandlerFnc;
-    typedef std::map<std::string, LatticeHandlerFnc, std::less<std::string>> T_factory;
+    typedef std::map<std::string, LatticeHandlerFnc, std::less<std::string> > T_factory;
 
     static LatticePluginRegistration* instance()
     {

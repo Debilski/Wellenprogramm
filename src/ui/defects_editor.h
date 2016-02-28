@@ -21,10 +21,10 @@ class DefectsModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    QList<Defect<GeneralComponentSystem>> defectsList;
+    QList<Defect<GeneralComponentSystem> > defectsList;
     QMap<int, QString> boundaryConditionsIdentifier;
 
-    DefectsModel(const QList<Defect<GeneralComponentSystem>>& defects,
+    DefectsModel(const QList<Defect<GeneralComponentSystem> >& defects,
         const QMap<int, QString>& boundaryConditionsIdentifier, QObject* parent = 0);
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
@@ -43,12 +43,12 @@ class DefectsEditor : public QDialog, private Ui::defectsEditor
 {
     Q_OBJECT
 public:
-    DefectsEditor(const QList<Defect<GeneralComponentSystem>>& defects,
+    DefectsEditor(const QList<Defect<GeneralComponentSystem> >& defects,
         QMap<int, QString>& boundaryConditionsIdentifier, QMainWindow* parent = 0);
     ~DefectsEditor();
 
     QMap<int, QString> boundaryConditionsIdentifier;
-    QList<Defect<GeneralComponentSystem>> defects;
+    QList<Defect<GeneralComponentSystem> > defects;
     DefectsModel* defectsModel;
 public slots:
     void updateData(const QModelIndex&, const QModelIndex&);

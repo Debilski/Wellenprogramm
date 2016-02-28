@@ -734,7 +734,7 @@ void Waveprogram2DPlot::updatePlotAnnotations()
     for (uint i = 0; i < clusterVector.size(); ++i) {
         long int cId = clusterVector[i].clusterId;
         if (!bufferMap.contains(cId)) {
-            QList<QPair<SurfacePoint, double>> cb;
+            QList<QPair<SurfacePoint, double> > cb;
 
             temporaryBufferMap[cId] = cb;
         } else {
@@ -749,8 +749,8 @@ void Waveprogram2DPlot::updatePlotAnnotations()
             sp, latticeController_->lattice()->time()));
     }
 
-    typedef QMap<long int, QList<QPair<SurfacePoint, double>>> T_bufferMap;
-    typedef QList<QPair<SurfacePoint, double>> T_listPairs;
+    typedef QMap<long int, QList<QPair<SurfacePoint, double> > > T_bufferMap;
+    typedef QList<QPair<SurfacePoint, double> > T_listPairs;
     typedef QPair<SurfacePoint, double> T_pair;
 
     // Entfernt alles, was älter als tdiff ist

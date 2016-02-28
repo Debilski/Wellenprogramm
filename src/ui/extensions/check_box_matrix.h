@@ -35,7 +35,7 @@ protected slots:
 
 private:
     QVector<int> matrix_;
-    QVector<QVector<QCheckBox*>> checkBoxMatrix_;
+    QVector<QVector<QCheckBox*> > checkBoxMatrix_;
 };
 
 #endif /* CHECK_BOX_MATRIX_H_ */

@@ -9,8 +9,8 @@
 
 #include <QtGui>
 
-DefectsEditor::DefectsEditor(const QList<Defect<GeneralComponentSystem>>& defects, QMap<int,
-                                                                                       QString>& boundaryConditionsIdentifier,
+DefectsEditor::DefectsEditor(const QList<Defect<GeneralComponentSystem> >& defects, QMap<int,
+                                                                                        QString>& boundaryConditionsIdentifier,
     QMainWindow* parent) : QDialog(parent), boundaryConditionsIdentifier(boundaryConditionsIdentifier), defects(defects)
 {
 
@@ -85,7 +85,7 @@ void DefectsEditor::moveUp()
     }
 }
 
-DefectsModel::DefectsModel(const QList<Defect<GeneralComponentSystem>>& defects, const QMap<int, QString>& boundaryConditionsIdentifier, QObject* parent) : QAbstractTableModel(parent), defectsList(defects), boundaryConditionsIdentifier(boundaryConditionsIdentifier)
+DefectsModel::DefectsModel(const QList<Defect<GeneralComponentSystem> >& defects, const QMap<int, QString>& boundaryConditionsIdentifier, QObject* parent) : QAbstractTableModel(parent), defectsList(defects), boundaryConditionsIdentifier(boundaryConditionsIdentifier)
 {
 }
 

@@ -7,4 +7,4 @@ IndentCaseLabels: true
 MaxEmptyLinesToKeep: 2
 PointerBindsToType: true
 SpacesBeforeTrailingComments: 2
-Standard: Cpp11
+Standard: Cpp03

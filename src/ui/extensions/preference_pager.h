@@ -39,7 +39,7 @@ public slots:
     void toggleView(bool);
 
 signals:
-    void pngChecked(QVector<QPair<bool, bool>>);
+    void pngChecked(QVector<QPair<bool, bool> >);
     void matlabChecked();
     void changed();
 

@@ -377,7 +377,7 @@ protected:
 
     BoundaryCondition boundaryCondition_;
 
-    std::vector<Defect<Components>> defects_;
+    std::vector<Defect<Components> > defects_;
     std::vector<LatticePoint> noReactionList_;
 
     /**

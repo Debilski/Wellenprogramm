@@ -79,7 +79,7 @@ public:
     ColorMapTypes colorMapType;
 
     typedef QPair<ColorMaps::ColorMapTypes, QString> T_identifier;
-    const QList<QPair<ColorMapTypes, QString>>& colorMapNames() const
+    const QList<QPair<ColorMapTypes, QString> >& colorMapNames() const
     {
         return colorMapNames_;
     }
@@ -236,7 +236,7 @@ public:
 
 private:
     QwtLinearColorMap colorMap;
-    QList<QPair<ColorMapTypes, QString>> colorMapNames_;
+    QList<QPair<ColorMapTypes, QString> > colorMapNames_;
 };
 
 Q_DECLARE_METATYPE(ColorMaps::ColorMapTypes)

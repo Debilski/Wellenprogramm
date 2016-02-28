@@ -32,7 +32,7 @@ public slots:
     void setViewNames(const QStringList& names);
 
 signals:
-    void pngChecked(QVector<QPair<bool, bool>>);
+    void pngChecked(QVector<QPair<bool, bool> >);
     void matlabChecked(QVector<bool>);
 
 private:
