@@ -17,7 +17,8 @@
 
 #include <qdockwidget.h>
 
-class ParameterDockWidget : public QDockWidget {
+class ParameterDockWidget : public QDockWidget
+{
     Q_OBJECT
 public:
     ParameterDockWidget(QWidget* parent = 0, Qt::WindowFlags flags = 0);

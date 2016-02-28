@@ -7,10 +7,12 @@
 /**
  * Helper Macro that can be used for automatically creating the Metainfo<> Template
  */
-#define META(model,components) class model;         \
-    template<>                                      \
-    struct Metainfo< model > {                      \
-        typedef components Components;              \
+#define META(model, components)        \
+    class model;                       \
+    template <>                        \
+    struct Metainfo<model>             \
+    {                                  \
+        typedef components Components; \
     };
 
 #if 0
@@ -27,7 +29,6 @@ ONE_COMPONENT_SYSTEM( OCS, v )
 // - Barkley
 // - Scott
 // - Oregonator
-
 
 
 #ifndef HODGKIN_HUXLEY

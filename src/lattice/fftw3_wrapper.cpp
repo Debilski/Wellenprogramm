@@ -18,14 +18,13 @@
 #include "fftw3_wrapper.h"
 
 
-
 #include "singleton_helper.h"
 
 
 /**
  * Zerstört beim Beenden Fftw3Wrapper.
  */
-SingletonCleaner< Fftw3Wrapper > Fftw3WrapperCleanerInst;
+SingletonCleaner<Fftw3Wrapper> Fftw3WrapperCleanerInst;
 
 //
 // static members
@@ -38,9 +37,9 @@ int Fftw3Wrapper::refCount_ = 0;
  */
 void Fftw3Wrapper::release()
 {
-  if ( --refCount_ < 1 ) {
-    destroy();
-  }
+    if (--refCount_ < 1) {
+        destroy();
+    }
 }
 
 /**
@@ -48,10 +47,10 @@ void Fftw3Wrapper::release()
  */
 void Fftw3Wrapper::destroy()
 {
-  if ( instance_ != 0 ) {
-    delete (instance_);
-    instance_ = 0;
-  }
+    if (instance_ != 0) {
+        delete (instance_);
+        instance_ = 0;
+    }
 }
 
 /**
@@ -59,11 +58,11 @@ void Fftw3Wrapper::destroy()
  */
 Fftw3Wrapper::Fftw3Wrapper()
 {
-  std::cout << "FFTW Constructor" << std::endl;
-  if( fftwNumberOfThreads > 1) {
-    fftw_init_threads();
-    fftw_plan_with_nthreads( fftwNumberOfThreads );
-  }
+    std::cout << "FFTW Constructor" << std::endl;
+    if (fftwNumberOfThreads > 1) {
+        fftw_init_threads();
+        fftw_plan_with_nthreads(fftwNumberOfThreads);
+    }
 }
 
 /**
@@ -71,10 +70,10 @@ Fftw3Wrapper::Fftw3Wrapper()
  */
 Fftw3Wrapper::~Fftw3Wrapper()
 {
-  std::cout << "FFTW Destructor" << std::endl;
-  if( fftwNumberOfThreads > 1) {
-    fftw_cleanup_threads();
-  }
+    std::cout << "FFTW Destructor" << std::endl;
+    if (fftwNumberOfThreads > 1) {
+        fftw_cleanup_threads();
+    }
 }
 
 /**
@@ -82,14 +81,13 @@ Fftw3Wrapper::~Fftw3Wrapper()
  */
 void Fftw3Wrapper::importWisdom(const std::string s)
 {
-  FILE *fp;
+    FILE* fp;
 
-  fp = fopen( s.c_str(), "r" );
-  if ( fp != NULL ) {
-    fftw_import_wisdom_from_file( fp );
-    fclose( fp );
-  }
-
+    fp = fopen(s.c_str(), "r");
+    if (fp != NULL) {
+        fftw_import_wisdom_from_file(fp);
+        fclose(fp);
+    }
 }
 
 /**
@@ -97,14 +95,14 @@ void Fftw3Wrapper::importWisdom(const std::string s)
  */
 void Fftw3Wrapper::exportWisdom(const std::string s)
 {
-  FILE *fp;
-  fp = fopen( s.c_str(), "w" );
-  if ( fp != NULL ) {
-    fftw_export_wisdom_to_file( fp );
-    fclose( fp );
-  } else {
-      std::cerr << "Fehler beim Schreiben von Wisdom. Möglicherweise keine Schreibrechte." << std::endl;
-  }
+    FILE* fp;
+    fp = fopen(s.c_str(), "w");
+    if (fp != NULL) {
+        fftw_export_wisdom_to_file(fp);
+        fclose(fp);
+    } else {
+        std::cerr << "Fehler beim Schreiben von Wisdom. Möglicherweise keine Schreibrechte." << std::endl;
+    }
 }
 
 
@@ -118,15 +116,14 @@ void Fftw3Wrapper::exportWisdom(const std::string s)
  * \param in Das reale Eingangsarray
  * \param out Das komplexe Ausgabearray
  */
-fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2c_forward_2d(blitz::Array< std::complex< double >, 2 >& in, blitz::Array<
-    std::complex< double >, 2 >& out)
+fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2c_forward_2d(blitz::Array<std::complex<double>, 2>& in, blitz::Array<std::complex<double>, 2>& out)
 {
-  int x = in.extent( blitz::firstDim );
-  int y = in.extent( blitz::secondDim );
-  assert( out.extent( blitz::firstDim ) == in.extent( blitz::firstDim ) );
-  assert( out.extent( blitz::secondDim ) == in.extent( blitz::secondDim ) );
-  return fftw_plan_dft_2d(
-      x, y, reinterpret_cast< fftw_complex* > ( in.data() ), reinterpret_cast< fftw_complex* > ( out.data() ), FFTW_FORWARD, fftwFlags );
+    int x = in.extent(blitz::firstDim);
+    int y = in.extent(blitz::secondDim);
+    assert(out.extent(blitz::firstDim) == in.extent(blitz::firstDim));
+    assert(out.extent(blitz::secondDim) == in.extent(blitz::secondDim));
+    return fftw_plan_dft_2d(
+        x, y, reinterpret_cast<fftw_complex*>(in.data()), reinterpret_cast<fftw_complex*>(out.data()), FFTW_FORWARD, fftwFlags);
 }
 
 /**
@@ -139,15 +136,14 @@ fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2c_forward_2d(blitz::Array< std::comp
  * \param in Das reale Eingangsarray
  * \param out Das komplexe Ausgabearray
  */
-fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2c_backward_2d(blitz::Array< std::complex< double >, 2 >& in, blitz::Array<
-    std::complex< double >, 2 >& out)
+fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2c_backward_2d(blitz::Array<std::complex<double>, 2>& in, blitz::Array<std::complex<double>, 2>& out)
 {
-  int x = in.extent( blitz::firstDim );
-  int y = in.extent( blitz::secondDim );
-  assert( out.extent( blitz::firstDim ) == in.extent( blitz::firstDim ) );
-  assert( out.extent( blitz::secondDim ) == in.extent( blitz::secondDim ) );
-  return fftw_plan_dft_2d(
-      x, y, reinterpret_cast< fftw_complex* > ( in.data() ), reinterpret_cast< fftw_complex* > ( out.data() ), FFTW_BACKWARD, fftwFlags );
+    int x = in.extent(blitz::firstDim);
+    int y = in.extent(blitz::secondDim);
+    assert(out.extent(blitz::firstDim) == in.extent(blitz::firstDim));
+    assert(out.extent(blitz::secondDim) == in.extent(blitz::secondDim));
+    return fftw_plan_dft_2d(
+        x, y, reinterpret_cast<fftw_complex*>(in.data()), reinterpret_cast<fftw_complex*>(out.data()), FFTW_BACKWARD, fftwFlags);
 }
 
 /**
@@ -161,15 +157,14 @@ fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2c_backward_2d(blitz::Array< std::com
  * \param in Das reale Eingangsarray
  * \param out Das komplexe Ausgabearray
  */
-fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_r2c_2d(blitz::Array< double, 2 >& in, blitz::Array<
-    std::complex< double >, 2 >& out)
+fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_r2c_2d(blitz::Array<double, 2>& in, blitz::Array<std::complex<double>, 2>& out)
 {
-  int x = in.extent( blitz::firstDim );
-  int y = in.extent( blitz::secondDim );
-  assert( out.extent( blitz::firstDim ) == in.extent( blitz::firstDim ) );
-  assert( out.extent( blitz::secondDim ) == in.extent( blitz::secondDim ) / 2 + 1 );
-  return fftw_plan_dft_r2c_2d(
-      x, y, in.data(), reinterpret_cast< fftw_complex* > ( out.data() ), fftwFlags );
+    int x = in.extent(blitz::firstDim);
+    int y = in.extent(blitz::secondDim);
+    assert(out.extent(blitz::firstDim) == in.extent(blitz::firstDim));
+    assert(out.extent(blitz::secondDim) == in.extent(blitz::secondDim) / 2 + 1);
+    return fftw_plan_dft_r2c_2d(
+        x, y, in.data(), reinterpret_cast<fftw_complex*>(out.data()), fftwFlags);
 }
 
 /**
@@ -183,19 +178,18 @@ fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_r2c_2d(blitz::Array< double, 2 >& in, 
  * \param in Das reale Eingangsarray
  * \param out Das komplexe Ausgabearray
  */
-fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2r_2d(blitz::Array< std::complex< double >, 2 >& in,
-    blitz::Array< double, 2 >& out)
+fftw_plan Fftw3Wrapper::blitzFftwPlan_dft_c2r_2d(blitz::Array<std::complex<double>, 2>& in,
+    blitz::Array<double, 2>& out)
 {
-  int x = out.extent( blitz::firstDim );
-  int y = out.extent( blitz::secondDim );
-  assert( in.extent( blitz::firstDim ) == out.extent( blitz::firstDim ) );
-  assert( in.extent( blitz::secondDim ) == out.extent( blitz::secondDim ) / 2 + 1 );
-  return fftw_plan_dft_c2r_2d(
-      x, y, reinterpret_cast< fftw_complex* > ( in.data() ), out.data(), fftwFlags );
-
+    int x = out.extent(blitz::firstDim);
+    int y = out.extent(blitz::secondDim);
+    assert(in.extent(blitz::firstDim) == out.extent(blitz::firstDim));
+    assert(in.extent(blitz::secondDim) == out.extent(blitz::secondDim) / 2 + 1);
+    return fftw_plan_dft_c2r_2d(
+        x, y, reinterpret_cast<fftw_complex*>(in.data()), out.data(), fftwFlags);
 }
 
-int Fftw3Wrapper::fftwFlags = FFTW_PATIENT;// | FFTW_DESTROY_INPUT;
+int Fftw3Wrapper::fftwFlags = FFTW_PATIENT;  // | FFTW_DESTROY_INPUT;
 
 const int Fftw3Wrapper::fftwNumberOfThreads = 2;
 

@@ -57,7 +57,8 @@ typedef uint T_component;
  *
  * Standardmäßig sind alle Optimierungen AUS.
  */
-struct LatticeOptimisations {
+struct LatticeOptimisations
+{
     //! Schaltet die externe Kraft aus: step_h() und external_force() werden ggf ignoriert.
     static const bool OPTIMISE_NO_EXTERNAL_FORCE = false;
     //! Schaltet das multiplikative Rauschen aus: step_g() wird ggf ignoriert.
@@ -70,7 +71,8 @@ struct LatticeOptimisations {
  * Definiert einige Standardkonstanten, welche dann von der Modell-Implementierung überschrieben
  * werden können.
  */
-struct MetainfoBase : public LatticeOptimisations {
+struct MetainfoBase : public LatticeOptimisations
+{
     /**
      * Gibt das Gitter an, für welches die Cluster gezählt werden sollen.
      */

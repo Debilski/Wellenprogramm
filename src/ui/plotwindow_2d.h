@@ -41,10 +41,11 @@ class ExportPreferences;
 class PreferencePager;
 
 
-class Waveprogram2DPlot : public QMainWindow, private Ui::plotWindow_2d {
-Q_OBJECT
+class Waveprogram2DPlot : public QMainWindow, private Ui::plotWindow_2d
+{
+    Q_OBJECT
 public:
-    Waveprogram2DPlot(QMainWindow * parent = 0);
+    Waveprogram2DPlot(QMainWindow* parent = 0);
     ~Waveprogram2DPlot();
 
     void setUpDockWindows();
@@ -65,8 +66,8 @@ public:
     void showSlicePlot();
     void showSinglePlot();
 
-    QList< QwtPlotMarker* > plotMarkers();
-    QList< QwtPlotCurve* > plotCurves();
+    QList<QwtPlotMarker*> plotMarkers();
+    QList<QwtPlotCurve*> plotCurves();
 
     void updatePlotAnnotations();
 
@@ -82,7 +83,7 @@ public slots:
     void updateLabels();
 
 
-    void changeSize( const QString& size );
+    void changeSize(const QString& size);
 
     void on_boundaryConditionsComboBox_currentIndexChanged(int i);
 
@@ -121,7 +122,7 @@ public slots:
     void savePng(QString filename);
 
     void changeParameter(const QString& paramName, double value);
-    void changeParameter(Parameter< double >* p, double value);
+    void changeParameter(Parameter<double>* p, double value);
 
     void changeModel(const QString& modelName);
     void resizeWindowToForceUpdate();
@@ -133,13 +134,13 @@ public slots:
     void updateUpdatePeriod(QAction* a);
 
     void exportAsMatlabStructure(QString fileName, QString structureName, int timeIndex,
-                                 bool append = true);
+        bool append = true);
 
     void setUpParameterSets();
     void updateParametersToSet(int setNum);
 
     void resetTime();
-    void paint(const uint& component, const QPointF& point) ;
+    void paint(const uint& component, const QPointF& point);
 
     void movieExport();
 signals:
@@ -152,14 +153,14 @@ signals:
     void colorMapModeChanged(ColorMapAdaptationModes);
     void colorMapChanged(const QwtColorMap&, ColorMapAdaptationModes);
 
-    void viewsChanged( const QStringList& viewNames );
+    void viewsChanged(const QStringList& viewNames);
     void modelChanged();
     void modelClosed();
 
     void replotAllChildren();
 
 protected:
-    void closeEvent(QCloseEvent * event);
+    void closeEvent(QCloseEvent* event);
     void saveViews(const QString& name, uint num);
     void saveViews(const QString& name);
 
@@ -176,11 +177,11 @@ private:
     // Plotting Elements
 
 
-    QVector< QwtPlotCurve* > slice;//[ ModelLattice::number_of_Variables ];
+    QVector<QwtPlotCurve*> slice;  //[ ModelLattice::number_of_Variables ];
 
-    QMap< long int, QList< QPair< SurfacePoint, double > > > bufferMap; // + timestamp
-    QMap< long int, QList< QPair< SurfacePoint, double > > > temporaryBufferMap;
-    QMap< long int, SurfacePoint > lastStepClusters;
+    QMap<long int, QList<QPair<SurfacePoint, double>>> bufferMap;  // + timestamp
+    QMap<long int, QList<QPair<SurfacePoint, double>>> temporaryBufferMap;
+    QMap<long int, SurfacePoint> lastStepClusters;
     double lastClustersUpdateTime;
 
     QMainWindow* parent;
@@ -192,29 +193,29 @@ private:
 
     // FHNModel *fhnmodel;
 
-    std::auto_ptr< LatticeController > lc_;
+    std::auto_ptr<LatticeController> lc_;
     LatticeController* latticeController_;
 
     ColorMaps colorMaps_;
 
-    QList< QAction* > actionLatticeModels;
+    QList<QAction*> actionLatticeModels;
 
-    QVector< PlotView* > plotViewVector_;
+    QVector<PlotView*> plotViewVector_;
     QStringList viewNames_;
 
-    QPointer< ScriptEditor > scriptEditor;
-    QPointer< DefectsEditor > defectsEditor;
-    QList< Defect< GeneralComponentSystem > > defectsList;
+    QPointer<ScriptEditor> scriptEditor;
+    QPointer<DefectsEditor> defectsEditor;
+    QList<Defect<GeneralComponentSystem>> defectsList;
 
-    typedef QMap< QString, Parameter< double >* > ParameterMap;
-    typedef QMap< QString, double > ParameterValueMap;
+    typedef QMap<QString, Parameter<double>*> ParameterMap;
+    typedef QMap<QString, double> ParameterValueMap;
 
     ParameterMap latticeParameters;
     ParameterMap latticeAdaptationParameters;
 
-    QVector< ParameterValueMap > savedParameterSets;
+    QVector<ParameterValueMap> savedParameterSets;
 
-    QQueue< QString > movieQueue;
+    QQueue<QString> movieQueue;
 
     void initField(int realSizeX, int realSizeY, int latticeSizeX, int latticeSizeY, const QString& model);
     void killField();
@@ -223,7 +224,7 @@ private:
     QDoubleSpinBox* diffusionBox;
     //QTabWidget* plotTabWidget;
 
-    QMap< int, QString > boundaryConditionIdentifier;
+    QMap<int, QString> boundaryConditionIdentifier;
 
     void setUpColorSchemeMenu();
 
@@ -239,9 +240,9 @@ private:
 
     ColorMapAdaptationModes colorMapMode;
 
-    QCheckBox *adaptationModeCheckBox;
+    QCheckBox* adaptationModeCheckBox;
 
-    QClipboard *clipboard;
+    QClipboard* clipboard;
 
     QString matlabExportFile_;
     int matlabExportIndex_;
@@ -254,8 +255,6 @@ private:
 
     class PrivateData;
     PrivateData* d_data;
-
 };
 
 #endif
-

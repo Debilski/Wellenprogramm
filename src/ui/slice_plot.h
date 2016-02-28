@@ -15,8 +15,10 @@
 #ifndef SLICE_PLOT_H_
 #define SLICE_PLOT_H_
 
-class SlicePlot {
-    void replot() {
+class SlicePlot
+{
+    void replot()
+    {
 
         /*
          if ( slicePlot->isVisible() ) {
@@ -41,9 +43,10 @@ class SlicePlot {
 
          */
     }
-void setUpSlices() {
+    void setUpSlices()
+    {
 
-    /*
+        /*
      for (uint i = 0; i < slice.size(); ++i)
      slice[ i ] ->detach();
      slice.resize( latticeController_->lattice()->numberOfVariables() );
@@ -56,9 +59,8 @@ void setUpSlices() {
 
      }
      */
-}
+    }
 };
-
 
 
 #endif /* SLICE_PLOT_H_ */

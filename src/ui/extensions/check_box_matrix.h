@@ -20,20 +20,22 @@
 
 class QCheckBox;
 
-class CheckBoxMatrix : public QObject {
-Q_OBJECT
+class CheckBoxMatrix : public QObject
+{
+    Q_OBJECT
 public:
     CheckBoxMatrix(int rows, int cols);
-    void associateCheckBox( QCheckBox* checkBox, int row, int col, bool keepStateOfCheckBox );
+    void associateCheckBox(QCheckBox* checkBox, int row, int col, bool keepStateOfCheckBox);
     bool isChecked(int row, int col) const;
     void setChecked(bool check, int row, int col);
-    void setMatrix( QVector< int > matrix );
-    QVector< int > getMatrix() const;
+    void setMatrix(QVector<int> matrix);
+    QVector<int> getMatrix() const;
 protected slots:
     void checkBoxToggled();
+
 private:
-    QVector< int > matrix_;
-    QVector< QVector < QCheckBox* > > checkBoxMatrix_;
+    QVector<int> matrix_;
+    QVector<QVector<QCheckBox*>> checkBoxMatrix_;
 };
 
 #endif /* CHECK_BOX_MATRIX_H_ */

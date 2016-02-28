@@ -25,8 +25,9 @@ class QIcon;
  * Stellt eine OS-X-ähnliche Preferences-Umgebung her, mit einzelnen Seiten, welche durch Buttons aufgerufen werden können.
  */
 
-class PreferencePager : public QMainWindow {
-Q_OBJECT
+class PreferencePager : public QMainWindow
+{
+    Q_OBJECT
 public:
     PreferencePager(QWidget* parent = 0);
 
@@ -38,13 +39,14 @@ public slots:
     void toggleView(bool);
 
 signals:
-    void pngChecked(QVector< QPair< bool, bool > > );
+    void pngChecked(QVector<QPair<bool, bool>>);
     void matlabChecked();
     void changed();
 
 protected slots:
-    void showEvent(QShowEvent * event);
-    void closeEvent(QCloseEvent * event);
+    void showEvent(QShowEvent* event);
+    void closeEvent(QCloseEvent* event);
+
 private:
     class PrivateData;
     PrivateData* d_data;

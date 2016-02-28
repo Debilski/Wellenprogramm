@@ -19,19 +19,21 @@
 
 #include "lattice_interface.h"
 
-class ParameterSpinBox : public QDoubleSpinBox {
-Q_OBJECT
+class ParameterSpinBox : public QDoubleSpinBox
+{
+    Q_OBJECT
 public:
-    ParameterSpinBox(Parameter< double >* parameterReference, QWidget* parent = 0);
+    ParameterSpinBox(Parameter<double>* parameterReference, QWidget* parent = 0);
     ~ParameterSpinBox();
-    void updateReference(Parameter< double >* parameterReference);
+    void updateReference(Parameter<double>* parameterReference);
 public slots:
     void updateValue();
     void update();
 signals:
     void valueChanged(const QString&, const double&);
+
 private:
-    Parameter< double >* parameter_;
+    Parameter<double>* parameter_;
     QString parameterName_;
 private slots:
     void emitChanged(const double& val);

@@ -17,7 +17,8 @@
 
 class QwtPlotMarker;
 
-class SimplePlotLabel {
+class SimplePlotLabel
+{
 public:
     QwtPlotMarker toQwtPlotMarker();
 };

@@ -25,8 +25,9 @@ class QwtColorMap;
 
 class LatticeController;
 
-class PlotLayer : public QObject {
-Q_OBJECT
+class PlotLayer : public QObject
+{
+    Q_OBJECT
 public:
     uint component;
 

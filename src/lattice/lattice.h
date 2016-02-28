@@ -16,7 +16,7 @@
 /**
  * Helper Class for additional but dependent Information
  */
-template<typename T_model>
+template <typename T_model>
 struct Metainfo;
 
 /**
@@ -24,13 +24,14 @@ struct Metainfo;
  *  \param Components  Die Klasse, welche die Komponenten bereitstellt.
  *
  */
-template<typename T_model>
-class Lattice : public LatticeInterface {
+template <typename T_model>
+class Lattice : public LatticeInterface
+{
 public:
     /**
      * Die Komponenten des Modells.
      */
-typedef    typename Metainfo<T_model>::Components Components;
+    typedef typename Metainfo<T_model>::Components Components;
 
     /**
      * Enum, welches den Zeitschritt bei der Diffusion angibt.
@@ -43,7 +44,8 @@ typedef    typename Metainfo<T_model>::Components Components;
      * Quadrierung), was jedoch ebenfalls den Overhead nicht verringert.
      *
      */
-    enum DiffusionStepWidth {
+    enum DiffusionStepWidth
+    {
         /// Führt die Diffusion um einen halben Zeitschritt durch: \f$t \rightarrow t + \tau / 2\f$
         HalfStep,
         /// Führt die Diffusion um einen ganzen Zeitschritt durch: \f$t \rightarrow t + \tau \f$
@@ -79,7 +81,7 @@ public:
 
     double getFixpoint(uint component) const
     {
-        return fixpoint()[ component ];
+        return fixpoint()[component];
     }
     Components fixpoint(long int position = -1) const;
 
@@ -93,13 +95,13 @@ public:
     void clear();
     void toZero();
     void toFixpoint();
-    virtual void toInitial(int num=0);
+    virtual void toInitial(int num = 0);
 
-    void setAt(const Components &m, int x, int y);
-    void setAtReal(const Components &m, int x, int y);
+    void setAt(const Components& m, int x, int y);
+    void setAtReal(const Components& m, int x, int y);
 
-    blitz::Array< double,2> getRawComponent(uint component) const;
-    bool setRawComponent(uint component, const blitz::Array< double, 2>& raw);
+    blitz::Array<double, 2> getRawComponent(uint component) const;
+    bool setRawComponent(uint component, const blitz::Array<double, 2>& raw);
 
     Components getMax() const;
     double getMax(uint component) const;
@@ -139,20 +141,25 @@ public:
 
     void computeDiffusionOperator();
     virtual void computeDiffusionOperator(uint component);
+
 protected:
     virtual void executeDiffusion(DiffusionStepWidth stepSize, bool advanceInTime = true);
+
 public:
     virtual void advanceTime(DiffusionStepWidth stepSize);
 
     virtual void step() = 0;
-    virtual void step(int numberOfSteps) { for(int i=0; i<numberOfSteps; ++i) step(); }
+    virtual void step(int numberOfSteps)
+    {
+        for (int i = 0; i < numberOfSteps; ++i)
+            step();
+    }
 
     friend std::ostream& operator<<(std::ostream& o,
-        const Lattice< T_model>& lattice)
+        const Lattice<T_model>& lattice)
     {
-        for (uint component = 0; component < Components::number_of_Variables; ++component)
-        {
-            o << lattice.lattice[ component ];
+        for (uint component = 0; component < Components::number_of_Variables; ++component) {
+            o << lattice.lattice[component];
         }
         return o;
     }
@@ -160,21 +167,20 @@ public:
     void status(std::ostream& o = std::cout);
 
     int numberOfClusters();
-    std::vector< Cluster> getClusters();
+    std::vector<Cluster> getClusters();
 
     double noiseIntensity();
     int noiseCorrelation();
     void setNoiseIntensity(double d);
     void setNoiseCorrelation(int i);
 
-    blitz::Array< std::complex<double>, 2>
-    latticeFftOutput[ Components::number_of_Variables ];
+    blitz::Array<std::complex<double>, 2>
+        latticeFftOutput[Components::number_of_Variables];
 
     void dump(std::ostream& stream, int every = 1, bool isBinary = false) const;
     void undump(std::istream& stream, int every = 1, bool isBinary = false);
     void save(bool append = false, std::string fileName = "tmpsave.bin") const;
     void recall(std::string fileName = "tmpsave.bin");
-
 
 
     /**
@@ -189,20 +195,20 @@ public:
     BoundaryCondition boundaryCondition() const;
     void setBoundaryCondition(BoundaryCondition bc);
 
-    void applyDefect(Defect< GeneralComponentSystem> defect)
+    void applyDefect(Defect<GeneralComponentSystem> defect)
     {
-        applyDefect( Defect< Components> ( defect ) );
+        applyDefect(Defect<Components>(defect));
     }
 
-    void addDefect(Defect< GeneralComponentSystem> defect)
+    void addDefect(Defect<GeneralComponentSystem> defect)
     {
-        addDefect( Defect< Components> ( defect ) );
+        addDefect(Defect<Components>(defect));
     }
 
-    void applyDefect(Defect< Components> defect);
+    void applyDefect(Defect<Components> defect);
     void applyDefects();
     void applyNoFluxMap();
-    void addDefect(Defect< Components> defect);
+    void addDefect(Defect<Components> defect);
     void removeDefects();
 
     double setSpotAt(double x, double y, double radius,
@@ -214,9 +220,8 @@ public:
     double setSpotAt(double x, double y, double size,
         const GeneralComponentSystem& values, bool round)
     {
-        return setSpotAt( x, y, size, Components( values ), round );
+        return setSpotAt(x, y, size, Components(values), round);
     }
-
 
 
     void setNoiseGenerator(uint noiseComponent, NoiseGenerator* ng);
@@ -228,9 +233,9 @@ public:
     }
 
     std::string modelInformation() const
-        {
-            return modelInformation_;
-        }
+    {
+        return modelInformation_;
+    }
 
     SurfacePoint centreOfMass(uint component) const;
     SurfacePoint centreOfExcitation(uint component) const;
@@ -239,55 +244,60 @@ public:
 
     bool isAlive() const;
 
-    std::list< Parameter< double >* > parameters() {
-          return modelParameters_;
-        }
+    std::list<Parameter<double>*> parameters()
+    {
+        return modelParameters_;
+    }
 
-    std::list< Parameter< double >* > adaptationParameters() {
-          return modelAdaptationParameters_;
-        }
+    std::list<Parameter<double>*> adaptationParameters()
+    {
+        return modelAdaptationParameters_;
+    }
 
 
-    Parameter< double >* parameter(std::string name) {
-typedef std::list< Parameter< double >* >::const_iterator T_iter;
-        for( T_iter it = modelParameters_.begin(); it != modelParameters_.end(); ++it ) {
-            if ( (*it)->name == name)
+    Parameter<double>* parameter(std::string name)
+    {
+        typedef std::list<Parameter<double>*>::const_iterator T_iter;
+        for (T_iter it = modelParameters_.begin(); it != modelParameters_.end(); ++it) {
+            if ((*it)->name == name)
                 return (*it);
         }
         return 0;
     }
 
-    std::vector< SurfacePoint > getSpiralTips();
-//    bool newton( SurfacePoint& p );
+    std::vector<SurfacePoint> getSpiralTips();
+    //    bool newton( SurfacePoint& p );
 protected:
     ClusterCounter clusterCounter_;
-    NoiseGenerator* noiseGenerator_ [ number_of_Noise_Variables ];
+    NoiseGenerator* noiseGenerator_[number_of_Noise_Variables];
+
 private:
     //blitz::TinyVector<NoiseGenerator*, number_of_Noise_Variables> originalNoiseGenerator_;//[ number_of_Noise_Variables ];
-    NoiseGenerator* originalNoiseGenerator_[ number_of_Noise_Variables ];
+    NoiseGenerator* originalNoiseGenerator_[number_of_Noise_Variables];
 
 protected:
-
-    void registerParameter( Parameter< double >* p ) {
-        modelParameters_.push_back( p );
+    void registerParameter(Parameter<double>* p)
+    {
+        modelParameters_.push_back(p);
     }
 
-    void registerAdaptationParameter( Parameter< double >* p ) {
-            modelAdaptationParameters_.push_back( p );
-        }
+    void registerAdaptationParameter(Parameter<double>* p)
+    {
+        modelAdaptationParameters_.push_back(p);
+    }
 
-    blitz::Array< double, 2> lattice[ Components::number_of_Variables ];
-    blitz::Array< std::complex< double> , 2>
-    latticeFft[ Components::number_of_Variables ];
+    blitz::Array<double, 2> lattice[Components::number_of_Variables];
+    blitz::Array<std::complex<double>, 2>
+        latticeFft[Components::number_of_Variables];
 
-     blitz::Array< std::complex< double >, 2 >
-    //blitz::Array< double, 2>
-    precomputedDiffusionOperator[ Components::number_of_Variables ];
+    blitz::Array<std::complex<double>, 2>
+        //blitz::Array< double, 2>
+        precomputedDiffusionOperator[Components::number_of_Variables];
 
     // Stellen ohne Diffusion
-    blitz::Array< bool, 2> latticePointHasReaction_;
+    blitz::Array<bool, 2> latticePointHasReaction_;
 
-    std::map< int, int> noFluxCorrespondenceMap_;
+    std::map<int, int> noFluxCorrespondenceMap_;
 
     void setExcitationThreshold(double threshold);
     double excitationThreshold() const;
@@ -311,7 +321,7 @@ protected:
     /**
          * holds some more Information about the model
          */
-        std::string modelInformation_;
+    std::string modelInformation_;
 
     //Components fixpoint_;
 
@@ -349,26 +359,26 @@ protected:
     double noiseIntensity_;
     int noiseCorrelation_;
 
-    static void precomputeNoise(Lattice< T_model>* lattice);
+    static void precomputeNoise(Lattice<T_model>* lattice);
 
-    double diffusion_[ Components::number_of_Variables ];
+    double diffusion_[Components::number_of_Variables];
 
-    fftw_plan forwardPlan[ Components::number_of_Variables ];
-    fftw_plan backwardPlan[ Components::number_of_Variables ];
+    fftw_plan forwardPlan[Components::number_of_Variables];
+    fftw_plan backwardPlan[Components::number_of_Variables];
 
     void createFftwPlanForComponent(uint component);
     void destroyFftwPlanForComponent(uint component);
 
     Fftw3Wrapper* fftw3Wrapper;
     // Gibt an, ob die Komponente bereits einen Plan hat.
-    blitz::TinyVector< bool, Components::number_of_Variables> componentHasPlan;
+    blitz::TinyVector<bool, Components::number_of_Variables> componentHasPlan;
 
     void setBoundary();
 
     BoundaryCondition boundaryCondition_;
 
-    std::vector< Defect< Components> > defects_;
-    std::vector< LatticePoint> noReactionList_;
+    std::vector<Defect<Components>> defects_;
+    std::vector<LatticePoint> noReactionList_;
 
     /**
      * Even though the blitz++ library is very fast, sometimes even accessing the
@@ -379,11 +389,11 @@ protected:
      * Having played around with blitz’s Array::resize() will lead to serious issues like breaking
      * or obscure and hard-to-find data corruption!
      */
-    double* latticeDataPointer[ Components::number_of_Variables ];
+    double* latticeDataPointer[Components::number_of_Variables];
 
     void adaptParameters() {}
-    std::list< Parameter< double >* > modelParameters_;
-    std::list< Parameter< double >* > modelAdaptationParameters_;
+    std::list<Parameter<double>*> modelParameters_;
+    std::list<Parameter<double>*> modelAdaptationParameters_;
 
     /*
      * Gibt den 4er-Laplace an \a position in Komponente \a component zurück.
@@ -392,28 +402,26 @@ protected:
     /*
      * Gibt den 8er-Laplace an \a position in Komponente \a component zurück.
      */
-    double laplacian8(uint component, int position, bool periodic) {return 0;}
+    double laplacian8(uint component, int position, bool periodic) { return 0; }
 
     /*
      * Gibt den X-Gradienten an \a position in Komponente \a component zurück.
      */
-    double gradientX(uint component, int position, bool periodic) {return 0;}
+    double gradientX(uint component, int position, bool periodic) { return 0; }
     /*
      * Gibt den Y-Gradienten an \a position in Komponente \a component zurück.
      */
-    double gradientY(uint component, int position, bool periodic) {return 0;}
-
-
+    double gradientY(uint component, int position, bool periodic) { return 0; }
 };
 
-template<typename T_model>
-inline double Lattice< T_model >::time() const
+template <typename T_model>
+inline double Lattice<T_model>::time() const
 {
     return time_;
 }
 
-template<typename T_model>
-inline void Lattice< T_model >::setTime(double t)
+template <typename T_model>
+inline void Lattice<T_model>::setTime(double t)
 {
     time_ = t;
 }
@@ -421,4 +429,3 @@ inline void Lattice< T_model >::setTime(double t)
 #include "lattice.cpp"
 
 #endif
-

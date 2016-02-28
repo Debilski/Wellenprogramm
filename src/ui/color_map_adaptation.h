@@ -17,25 +17,30 @@
 
 #include "qwt_double_interval.h"
 
-enum ColorMapAdaptationModes {
-    defaultColorMapMode, adaptiveColorMapMode, delayedAdaptiveColorMapMode
+enum ColorMapAdaptationModes
+{
+    defaultColorMapMode,
+    adaptiveColorMapMode,
+    delayedAdaptiveColorMapMode
 };
 
-class ColorMapAdaptationMode {
+class ColorMapAdaptationMode
+{
 public:
-    virtual ~ColorMapAdaptationMode() = 0
-    ;
+    virtual ~ColorMapAdaptationMode() = 0;
     virtual void adaptRange(double min, double max) = 0;
-    virtual void hintMax( double max ) {};
-    virtual void hintMin( double min ) {};
-    virtual void hint( QwtDoubleInterval hintInterval );
+    virtual void hintMax(double max){};
+    virtual void hintMin(double min){};
+    virtual void hint(QwtDoubleInterval hintInterval);
     QwtDoubleInterval range();
     virtual ColorMapAdaptationMode* copy() const = 0;
+
 protected:
     QwtDoubleInterval interval_;
 };
 
-class DefaultColorMapAdaptationMode : public ColorMapAdaptationMode {
+class DefaultColorMapAdaptationMode : public ColorMapAdaptationMode
+{
 public:
     DefaultColorMapAdaptationMode();
 
@@ -45,22 +50,23 @@ public:
 
     void setInterval(QwtDoubleInterval interval);
     void adaptRange(double /*min*/, double /*max*/);
-    void hintMax( double max );
-    void hintMin( double min );
+    void hintMax(double max);
+    void hintMin(double min);
 };
 
-class AdaptiveColorMapAdaptationMode : public ColorMapAdaptationMode {
+class AdaptiveColorMapAdaptationMode : public ColorMapAdaptationMode
+{
     AdaptiveColorMapAdaptationMode* copy() const;
 
     void adaptRange(double min, double max);
 };
 
-class DelayedAdaptiveColorMapAdaptationMode : public ColorMapAdaptationMode {
+class DelayedAdaptiveColorMapAdaptationMode : public ColorMapAdaptationMode
+{
     DelayedAdaptiveColorMapAdaptationMode* copy() const;
 
     void adaptRange(double min, double max);
 };
-
 
 
 #endif /* COLOUR_MAP_ADAPTATION_H_ */

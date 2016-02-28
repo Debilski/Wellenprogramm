@@ -16,8 +16,7 @@
 
 #include <QtGui>
 
-ParameterDockWidget::ParameterDockWidget(QWidget* parent, Qt::WindowFlags flags) :
-    QDockWidget(tr("Parameter Dock"),parent, flags)
+ParameterDockWidget::ParameterDockWidget(QWidget* parent, Qt::WindowFlags flags) : QDockWidget(tr("Parameter Dock"), parent, flags)
 {
     QWidget* w = new QWidget(this);
     QSpinBox* box = new QSpinBox(w);

@@ -6,7 +6,8 @@
 #include <QMacStyle>
 #endif
 
-void smallWidgetSizePolicyOnMac(QWidget* w) {
+void smallWidgetSizePolicyOnMac(QWidget* w)
+{
 #ifdef Q_WS_MAC
     QMacStyle::setWidgetSizePolicy(w, QMacStyle::SizeSmall);
 #else
@@ -14,11 +15,11 @@ void smallWidgetSizePolicyOnMac(QWidget* w) {
 #endif
 }
 
-void miniWidgetSizePolicyOnMac(QWidget* w) {
+void miniWidgetSizePolicyOnMac(QWidget* w)
+{
 #ifdef Q_WS_MAC
     QMacStyle::setWidgetSizePolicy(w, QMacStyle::SizeMini);
 #else
     Q_UNUSED(w)
 #endif
 }
-

@@ -8,36 +8,27 @@
 #include "fhn_lattice.h"
 
 
-
-FhnLattice::FhnLattice() :
-    SIIP_LatticeIntegrator< FhnLattice > (), epsilon(
-        0.1, "epsilon", 0.0, 100.0 ), gamma( 0.1, "gamma", -10.0, 100.0 ),
-        gamma_high(0.55, "γ high"),
-        gamma_low(0.1, "γ low"),
-        gamma_spacing(0.001, "γ spacing"),
-        waveSize_threshold(200, "wavesize"),
-        var_intensity(2,"intensity",0,100), var_size(3, "size", 0,100), var_speed(1,"speed",0,100)
+FhnLattice::FhnLattice() : SIIP_LatticeIntegrator<FhnLattice>(), epsilon(0.1, "epsilon", 0.0, 100.0), gamma(0.1, "gamma", -10.0, 100.0), gamma_high(0.55, "γ high"), gamma_low(0.1, "γ low"), gamma_spacing(0.001, "γ spacing"), waveSize_threshold(200, "wavesize"), var_intensity(2, "intensity", 0, 100), var_size(3, "size", 0, 100), var_speed(1, "speed", 0, 100)
 
 {
-    componentInfos[ 0 ] = ComponentInfo( "Aktivator", "u", -2.2, 2.5 ); // Einheit und Dimension klingt gut
-    componentInfos[ 1 ] = ComponentInfo( "Inhibitor", "v", -2.2, 2.5 );
+    componentInfos[0] = ComponentInfo("Aktivator", "u", -2.2, 2.5);  // Einheit und Dimension klingt gut
+    componentInfos[1] = ComponentInfo("Inhibitor", "v", -2.2, 2.5);
 
     modelName_ = "FitzHugh-Nagumo";
     modelInformation_ = "d<i>u</i>/d<i>t</i> = (1/<i>&epsilon;</i>) (3 <i>u</i> - <i>u</i><sup>3</sup> - <i>v</i>) + D<sub>u</sub>  &Delta; <i>u</i><br/>"
-        "d<i>v</i>/d<i>t</i> = <i>&gamma;</i> + 1 + <i>u</i>  + D<sub>v</sub> &Delta; <i>v</i>";
+                        "d<i>v</i>/d<i>t</i> = <i>&gamma;</i> + 1 + <i>u</i>  + D<sub>v</sub> &Delta; <i>v</i>";
 
-    registerParameter( &epsilon );
-    registerParameter( &gamma );
+    registerParameter(&epsilon);
+    registerParameter(&gamma);
 
-    registerParameter( &var_intensity );
-    registerParameter( &var_size );
-    registerParameter( &var_speed );
+    registerParameter(&var_intensity);
+    registerParameter(&var_size);
+    registerParameter(&var_speed);
 
-    registerAdaptationParameter( &gamma_high );
-    registerAdaptationParameter( &gamma_low );
-    registerAdaptationParameter( &gamma_spacing );
-    registerAdaptationParameter( &waveSize_threshold );
-
+    registerAdaptationParameter(&gamma_high);
+    registerAdaptationParameter(&gamma_low);
+    registerAdaptationParameter(&gamma_spacing);
+    registerAdaptationParameter(&waveSize_threshold);
 }
 
 double FhnLattice::suggestedTimeStep() const
@@ -47,7 +38,7 @@ double FhnLattice::suggestedTimeStep() const
     //   cout << epsilon() / (m * m) << endl;
     //   cout << "E" << pow( 10, floor( log( epsilon() / (m * m) )
     //           / log( 10 ) ) ) << endl;
-    return std::min( 0.01, pow( 10, floor( log( epsilon() / (m * m) ) / log( 10 ) ) ) );
+    return std::min(0.01, pow(10, floor(log(epsilon() / (m * m)) / log(10))));
 }
 
 
@@ -55,8 +46,8 @@ void FhnLattice::adaptParameters()
 {
     static int j = 0;
     double ws = this->currentWavesize();
-    if ( j % 10 == 0 ) {
-        if ( ws > waveSize_threshold() ) {
+    if (j % 10 == 0) {
+        if (ws > waveSize_threshold()) {
             gamma_low() = gamma_low() + gamma_spacing() * (gamma_high() - gamma_low()) * timeStep();
         } else {
             gamma_high() = gamma_high() - gamma_spacing() * (gamma_high() - gamma_low()) * timeStep();
@@ -64,22 +55,21 @@ void FhnLattice::adaptParameters()
         //    SurfacePoint po = lattice->centreOfExcitation();
         //    std::cout << "\nNew high: " << high << ", New low: " << low << ", Epsilon: " << lattice->epsilon() << " " << po.x <<"\n" << std::flush;
     }
-    if ( ws < waveSize_threshold() ) {
-        gamma.set( gamma_low() );
+    if (ws < waveSize_threshold()) {
+        gamma.set(gamma_low());
         // std::cout << " g set to " << Model::g << " " << std::endl << std::flush;
     } else {
-        gamma.set( gamma_high() );
+        gamma.set(gamma_high());
         // std::cout << " g set to " << Model::g << " " << std::endl << std::flush;
     }
     j++;
-
 }
 
-DEFINE_LATTICE_DRIVER2( "FhnLattice", FhnLattice )
+DEFINE_LATTICE_DRIVER2("FhnLattice", FhnLattice)
 
-DEFINE_LATTICE_DRIVER2( "FhnHeartLattice", FhnHeartLattice )
+DEFINE_LATTICE_DRIVER2("FhnHeartLattice", FhnHeartLattice)
 
-DEFINE_LATTICE_DRIVER2( "GameofLife", GameOfLife )
+DEFINE_LATTICE_DRIVER2("GameofLife", GameOfLife)
 
 REGISTER_PLUGINS_BEGIN
 REGISTER_PLUGIN(FhnLattice)

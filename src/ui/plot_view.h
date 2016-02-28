@@ -33,9 +33,10 @@ class QwtColorMap;
 class QwtDoubleInterval;
 class QwtPlotItem;
 
-class PlotStack {
+class PlotStack
+{
 public:
-    QList< PlotLayer* > plotStack_;
+    QList<PlotLayer*> plotStack_;
     void attach(QwtPlot* plot);
     void append(PlotLayer* pL);
     void adaptRange();
@@ -45,8 +46,9 @@ public:
 /**
  * Class that will basically hold the spectrogram together.
  */
-class PlotView : public QWidget {
-Q_OBJECT
+class PlotView : public QWidget
+{
+    Q_OBJECT
 public:
     PlotView(const PlotStack& plotStack, const QString label, QWidget* parent);
     ~PlotView();
@@ -71,19 +73,19 @@ public slots:
     void setColorMap(const QwtColorMap& colorMap);
     void setColorMapMode(ColorMapAdaptationModes mode);
 
-    void print( QImage& image, bool raw, bool resize = false );
+    void print(QImage& image, bool raw, bool resize = false);
 
     void showMenu(const QPoint& p);
     void changeTop();
     void changeBottom();
     void registerMouseEvent(const QwtDoublePoint& pos);
-    void registerMouseEvent(const QwtArray< QwtDoublePoint >& pa);
+    void registerMouseEvent(const QwtArray<QwtDoublePoint>& pa);
 signals:
     void selected(const uint&, const QPointF&);
+
 private:
     class PrivateData;
     PrivateData* d_data;
-
 };
 
 #endif /* PLOT_VIEW_H_ */

@@ -8,4 +8,4 @@
 #include "fhn_additional_lattice.h"
 
 
-LATTICE_REGISTER_MODEL2( "FhnAdditionalLattice", FhnAdditionalLattice )
+LATTICE_REGISTER_MODEL2("FhnAdditionalLattice", FhnAdditionalLattice)

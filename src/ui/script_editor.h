@@ -27,8 +27,9 @@
  * Trennung von UI und „Maschinerie“. D.h., Engine ebenfalls auslagern.
  */
 
-class ScriptEditor : public QDialog, private Ui::scriptEditor {
-Q_OBJECT
+class ScriptEditor : public QDialog, private Ui::scriptEditor
+{
+    Q_OBJECT
 public:
     ScriptEditor(QWidget* parent, LatticeController* latticeController);
 

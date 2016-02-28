@@ -19,7 +19,8 @@
 #include <qstringlist.h>
 #include <qvariant.h>
 
-class Option {
+class Option
+{
 
 private:
     QString name_;
@@ -62,7 +63,6 @@ public:
     void read();
 
     void write();
-
 };
 
 #endif /* OPTION_H_ */

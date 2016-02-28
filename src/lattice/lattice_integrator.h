@@ -28,14 +28,15 @@
 //TODO Much refactoring is needed
 
 
-
-template<int N>
-struct _tvec {
-    typedef blitz::TinyVector< double, N > TinyVectorWithZero;
+template <int N>
+struct _tvec
+{
+    typedef blitz::TinyVector<double, N> TinyVectorWithZero;
 };
 
-template<>
-struct _tvec< 0 > {
+template <>
+struct _tvec<0>
+{
     typedef void TinyVectorWithZero;
 };
 
@@ -43,11 +44,11 @@ struct _tvec< 0 > {
 /**
  * This class is intended to call the needed substeps in the integration process.
  */
-template<typename T_model>
-class LatticeIntegrator : public Lattice< T_model >{
+template <typename T_model>
+class LatticeIntegrator : public Lattice<T_model>
+{
 public:
-    LatticeIntegrator() :
-        Lattice< T_model > ()
+    LatticeIntegrator() : Lattice<T_model>()
     {
     }
     /*
@@ -74,40 +75,40 @@ public:
      * after_integration
      *
      */
-
 };
-
 
 
 /**
  * Eine Hilfsklasse, welche es erlaubt, Schleifen zur Übersetzungszeit zu generieren.
  */
-template<typename T_model, unsigned int N_steps>
-struct LatticeIntegratorLoop {
-    typedef blitz::TinyVector< double,
-        T_model::number_of_Noise_Variables ? T_model::number_of_Noise_Variables : 1 > T_noiseVector;
-    typedef blitz::TinyVector< double, T_model::number_of_Variables > T_componentsVector;
+template <typename T_model, unsigned int N_steps>
+struct LatticeIntegratorLoop
+{
+    typedef blitz::TinyVector<double,
+        T_model::number_of_Noise_Variables ? T_model::number_of_Noise_Variables : 1> T_noiseVector;
+    typedef blitz::TinyVector<double, T_model::number_of_Variables> T_componentsVector;
 
     /**
      * Anhand der Informationen im NoiseMapping-Template wird ein Komponentenvector aus dem Noisevector erzeugt.
      */
     static void noiseMapping(T_componentsVector& noiseOut, T_noiseVector& noiseIn,
-                             double multiplicator)
+        double multiplicator)
     {
-        int mapping = Metainfo< T_model >::template NoiseMapping< N_steps - 1 >::value;
-        if ( mapping >= 0 )
-            noiseOut[ N_steps - 1 ] = multiplicator * noiseIn[ mapping ];
-        LatticeIntegratorLoop< T_model, N_steps - 1 >::noiseMapping(
-            noiseOut, noiseIn, multiplicator );
+        int mapping = Metainfo<T_model>::template NoiseMapping<N_steps - 1>::value;
+        if (mapping >= 0)
+            noiseOut[N_steps - 1] = multiplicator * noiseIn[mapping];
+        LatticeIntegratorLoop<T_model, N_steps - 1>::noiseMapping(
+            noiseOut, noiseIn, multiplicator);
     }
 };
 
-template<typename T_model>
-struct LatticeIntegratorLoop< T_model, 0 > {
+template <typename T_model>
+struct LatticeIntegratorLoop<T_model, 0>
+{
     // Work-Around, damit es bei Fehlen von Rauschen keine Fehlermeldungen gibt.
-    typedef blitz::TinyVector< double,
-        T_model::number_of_Noise_Variables ? T_model::number_of_Noise_Variables : 1 > T_noiseVector;
-    typedef blitz::TinyVector< double, T_model::number_of_Variables > T_componentsVector;
+    typedef blitz::TinyVector<double,
+        T_model::number_of_Noise_Variables ? T_model::number_of_Noise_Variables : 1> T_noiseVector;
+    typedef blitz::TinyVector<double, T_model::number_of_Variables> T_componentsVector;
 
     static void noiseMapping(T_componentsVector&, T_noiseVector&, double)
     {
@@ -116,9 +117,7 @@ struct LatticeIntegratorLoop< T_model, 0 > {
 
 
 #define LOOP_COMPONENTS for (uint component = 0; component < Components::number_of_Variables; ++component)
-#define LOOP_COMPONENTS_ARG( component ) for (uint component = 0; component < Components::number_of_Variables; ++component)
-
-
+#define LOOP_COMPONENTS_ARG(component) for (uint component = 0; component < Components::number_of_Variables; ++component)
 
 
 #include "lattice_integrator.cpp"

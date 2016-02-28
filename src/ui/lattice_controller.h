@@ -24,18 +24,20 @@
 class LatticeInterface;
 class LatticeScripter;
 
-class LoopThread : public QThread {
-Q_OBJECT
+class LoopThread : public QThread
+{
+    Q_OBJECT
 public:
-    LoopThread(QObject *parent = 0);
+    LoopThread(QObject* parent = 0);
     ~LoopThread();
     void setLattice(LatticeInterface* lattice);
     void loop(int stepsAtOnce);
     void stop();
+
 protected:
     void run();
-private:
 
+private:
     QMutex mutex;
     QWaitCondition condition;
     LatticeInterface* lattice;
@@ -62,16 +64,17 @@ class QPointF;
  *
  *
  */
-class LatticeController : public QObject {
-Q_OBJECT
-Q_PROPERTY(int sizeX READ sizeX)
-Q_PROPERTY(int sizeY READ sizeY)
-Q_PROPERTY(int latticeSizeX READ latticeSizeX)
-Q_PROPERTY(int latticeSizeY READ latticeSizeY)
-Q_PROPERTY(int adaptationMode READ adaptationMode WRITE setAdaptationMode)
-Q_PROPERTY(QString modelTitle READ modelTitle)
-Q_PROPERTY(double time READ time WRITE setTime)
-Q_PROPERTY(int numberOfClusters READ numberOfClusters)
+class LatticeController : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(int sizeX READ sizeX)
+    Q_PROPERTY(int sizeY READ sizeY)
+    Q_PROPERTY(int latticeSizeX READ latticeSizeX)
+    Q_PROPERTY(int latticeSizeY READ latticeSizeY)
+    Q_PROPERTY(int adaptationMode READ adaptationMode WRITE setAdaptationMode)
+    Q_PROPERTY(QString modelTitle READ modelTitle)
+    Q_PROPERTY(double time READ time WRITE setTime)
+    Q_PROPERTY(int numberOfClusters READ numberOfClusters)
 public:
     LatticeController(QObject* parent = 0);
     ~LatticeController();
@@ -119,7 +122,7 @@ public slots:
     void setNoiseCorrelation(int d);
     void setTimeStep(double d);
 
-    void setDiffusion( int component, double value );
+    void setDiffusion(int component, double value);
 
     void adaptParameters();
     bool adaptationMode();
@@ -152,6 +155,7 @@ signals:
     void stopped();
     void processed(int);
     void parametersChanged();
+
 private:
     LoopThread thread;
 

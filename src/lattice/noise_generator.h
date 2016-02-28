@@ -57,7 +57,6 @@ double  DRanQuanNormalZig32(void);
 double  DRanQuanNormalZig32Vec(void);
 
 
-
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
@@ -65,47 +64,42 @@ double  DRanQuanNormalZig32Vec(void);
 #include <string.h>
 
 
-
 #ifdef __LP64__
     typedef unsigned long UINT64;
     typedef          long INT64;
-    #define LIT_UINT64(c) (c##ul)
-    #define LIT_INT64(c)  (c##l)
+#define LIT_UINT64(c) (c##ul)
+#define LIT_INT64(c) (c##l)
 #elif defined(_MSC_VER)
     typedef unsigned __int64 UINT64;
     typedef          __int64 INT64;
-    #define LIT_UINT64(c) (c##ui64)
-    #define LIT_INT64(c)  (c##i64)
+#define LIT_UINT64(c) (c##ui64)
+#define LIT_INT64(c) (c##i64)
 #else
     typedef unsigned long long UINT64;
     typedef          long long INT64;
-    #define LIT_UINT64(c) (c##ull)
-    #define LIT_INT64(c)  (c##ll)
+#define LIT_UINT64(c) (c##ull)
+#define LIT_INT64(c) (c##ll)
 #endif
 
-#define M_RAN_INVM30    9.31322574615478515625e-010           /* 1.0 / 2^30 */
-#define M_RAN_INVM32    2.32830643653869628906e-010           /* 1.0 / 2^32 */
-#define M_RAN_INVM48    3.55271367880050092936e-015           /* 1.0 / 2^48 */
-#define M_RAN_INVM52    2.22044604925031308085e-016           /* 1.0 / 2^52 */
-#define M_RAN_INVM64    5.42101086242752217004e-020           /* 1.0 / 2^64 */
+#define M_RAN_INVM30 9.31322574615478515625e-010 /* 1.0 / 2^30 */
+#define M_RAN_INVM32 2.32830643653869628906e-010 /* 1.0 / 2^32 */
+#define M_RAN_INVM48 3.55271367880050092936e-015 /* 1.0 / 2^48 */
+#define M_RAN_INVM52 2.22044604925031308085e-016 /* 1.0 / 2^52 */
+#define M_RAN_INVM64 5.42101086242752217004e-020 /* 1.0 / 2^64 */
 
-#define RANDBL_32old(iRan1)               \
-    ((unsigned int)(iRan1) * M_RAN_INVM32)
-#define RANDBL_48old(iRan1, iRan2)        \
-    ((unsigned int)(iRan1) + (unsigned int)((iRan2) << 16) \
-        * M_RAN_INVM32) * M_RAN_INVM32
-#define RANDBL_52old(iRan1, iRan2)        \
-    ((unsigned int)(iRan1) + (unsigned int)((iRan2) << 12) \
-        * M_RAN_INVM32) * M_RAN_INVM32
+#define RANDBL_32old(iRan1) \
+    ((unsigned int)(iRan1)*M_RAN_INVM32)
+#define RANDBL_48old(iRan1, iRan2) \
+    ((unsigned int)(iRan1) + (unsigned int)((iRan2) << 16) * M_RAN_INVM32) * M_RAN_INVM32
+#define RANDBL_52old(iRan1, iRan2) \
+    ((unsigned int)(iRan1) + (unsigned int)((iRan2) << 12) * M_RAN_INVM32) * M_RAN_INVM32
 
-#define RANDBL_32new(iRan1)                   \
-    ((int)(iRan1) * M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2))
-#define RANDBL_48new(iRan1, iRan2)            \
-    ((int)(iRan1) * M_RAN_INVM32 + (0.5 + M_RAN_INVM48 / 2) + \
-        (int)((iRan2) & 0x0000FFFF) * M_RAN_INVM48)
-#define RANDBL_52new(iRan1, iRan2)            \
-    ((int)(iRan1) * M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + \
-        (int)((iRan2) & 0x000FFFFF) * M_RAN_INVM52)
+#define RANDBL_32new(iRan1) \
+    ((int)(iRan1)*M_RAN_INVM32 + (0.5 + M_RAN_INVM32 / 2))
+#define RANDBL_48new(iRan1, iRan2) \
+    ((int)(iRan1)*M_RAN_INVM32 + (0.5 + M_RAN_INVM48 / 2) + (int)((iRan2)&0x0000FFFF) * M_RAN_INVM48)
+#define RANDBL_52new(iRan1, iRan2) \
+    ((int)(iRan1)*M_RAN_INVM32 + (0.5 + M_RAN_INVM52 / 2) + (int)((iRan2)&0x000FFFFF) * M_RAN_INVM52)
 
 void    GetInitialSeeds(unsigned int auiSeed[], int cSeed,
     unsigned int uiSeed, unsigned int uiMin);
@@ -163,10 +157,10 @@ void GetInitialSeeds(unsigned int auiSeed[], int cSeed,
 
 
 /*------------------------ George Marsaglia MWC ----------------------------*/
-#define MWC_R  256
-#define MWC_A  LIT_UINT64(809430660)
+#define MWC_R 256
+#define MWC_A LIT_UINT64(809430660)
 #define MWC_AI 809430660
-#define MWC_C  362436
+#define MWC_C 362436
 static unsigned int s_uiStateMWC = MWC_R - 1;
 static unsigned int s_uiCarryMWC = MWC_C;
 static unsigned int s_auiStateMWC[MWC_R];
@@ -324,14 +318,17 @@ void    RanSetRanExt(DRANFUN DRanFun, IRANFUN IRanFun, IVECRANFUN IVecRanFun,
 
 
 /*----------------------------- Polar normal RNG ---------------------------*/
-#define POLARBLOCK(u1, u2, d)                 \
-    do                                        \
-    {   u1 = (*s_fnDRanu)();  u1 = 2 * u1 - 1;\
-        u2 = (*s_fnDRanu)();  u2 = 2 * u2 - 1;\
-        d = u1 * u1 + u2 * u2;                \
-    } while (d >= 1);                         \
-    d = sqrt( (-2.0 / d) * log(d) );          \
-    u1 *= d;  u2 *= d
+#define POLARBLOCK(u1, u2, d)      \
+    do {                           \
+        u1 = (*s_fnDRanu)();       \
+        u1 = 2 * u1 - 1;           \
+        u2 = (*s_fnDRanu)();       \
+        u2 = 2 * u2 - 1;           \
+        d = u1 * u1 + u2 * u2;     \
+    } while (d >= 1);              \
+    d = sqrt((-2.0 / d) * log(d)); \
+    u1 *= d;                       \
+    u2 *= d
 
 static double s_dNormalInStore;
 
@@ -362,7 +359,8 @@ class NoiseGenerator;
 /**
  * Base class for implementing noise
  */
-class NoiseGenerator : public LatticeGeometry {
+class NoiseGenerator : public LatticeGeometry
+{
 public:
     NoiseGenerator(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY);
     NoiseGenerator(const LatticeGeometry& geometry);
@@ -380,6 +378,7 @@ public:
     void disconnectFromLattice();
 
     std::string getModelName();
+
 protected:
     blitz::Array<double, 2> noiseLattice_;
     ranlib::Normal<double> blitz_normal;

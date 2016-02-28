@@ -17,15 +17,17 @@
 
 #include <qtoolbar.h>
 
-class RightclickableToolBar : public QToolBar {
+class RightclickableToolBar : public QToolBar
+{
     Q_OBJECT
 public:
-    RightclickableToolBar(const QString & title, QWidget * parent = 0);
-    RightclickableToolBar(QWidget * parent = 0);
+    RightclickableToolBar(const QString& title, QWidget* parent = 0);
+    RightclickableToolBar(QWidget* parent = 0);
     ~RightclickableToolBar();
 public slots:
     void changeToolButtonStyle(int style);
-    void toolBarCustomContextMenu(const QPoint & pos);
+    void toolBarCustomContextMenu(const QPoint& pos);
+
 private:
     void init();
     class PrivateData;

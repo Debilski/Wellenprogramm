@@ -1,0 +1,10 @@
+BasedOnStyle: Webkit
+BreakBeforeBraces: Mozilla
+BreakConstructorInitializersBeforeComma: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+Cpp11BracedListStyle: true
+IndentCaseLabels: true
+MaxEmptyLinesToKeep: 2
+PointerBindsToType: true
+SpacesBeforeTrailingComments: 2
+Standard: Cpp11

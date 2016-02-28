@@ -11,20 +11,24 @@
 #include "../lattice/siip_lattice_integrator.h"
 
 // Legt ein System fest mit vier Komponenten A, AI, B, BI und dem Namen GLComponentSystem
-FOUR_COMPONENT_SYSTEM( GLComponentSystem, A, AI, B, BI)
+FOUR_COMPONENT_SYSTEM(GLComponentSystem, A, AI, B, BI)
 
 // Klasse muss vordeklariert werden
 class GinzburgLandauLattice;
 /**
  * Helper Class for additional but dependend Information
  */
-template<>
-struct Metainfo< GinzburgLandauLattice > : MetainfoBase {
+template <>
+struct Metainfo<GinzburgLandauLattice> : MetainfoBase
+{
     typedef GLComponentSystem Components;
     // Optimierungen
     static const int number_of_Noise_Variables = 1;
-    template<int N> struct NoiseMapping {
-        enum {
+    template <int N>
+    struct NoiseMapping
+    {
+        enum
+        {
             value = -1
         };
     };
@@ -32,47 +36,52 @@ struct Metainfo< GinzburgLandauLattice > : MetainfoBase {
     static const bool OPTIMISE_NO_MULTIPLICATIVE_NOISE = true;
     static const bool OPTIMISE_NO_EXTERNAL_FORCE = true;
 };
-template<> struct Metainfo< GinzburgLandauLattice >::NoiseMapping< secondComponent > {
-    enum {
+template <>
+struct Metainfo<GinzburgLandauLattice>::NoiseMapping<secondComponent>
+{
+    enum
+    {
         value = firstComponent
     };
 };
 
 // Hauptteil
-class GinzburgLandauLattice : public SIIP_LatticeIntegrator< GinzburgLandauLattice > {
+class GinzburgLandauLattice : public SIIP_LatticeIntegrator<GinzburgLandauLattice>
+{
 public:
     GinzburgLandauLattice();
-    Parameter< double > eta, r, s, etaB, rB, sB;
+    Parameter<double> eta, r, s, etaB, rB, sB;
 
     inline double step_A(double A, double AI, double B, double BI)
     {
-		return eta * A + r * A * AI * A + s * A * AI * B;
+        return eta * A + r * A * AI * A + s * A * AI * B;
     }
 
     inline double step_AI(double A, double AI, double B, double BI)
     {
-		return eta * AI + r * A * AI * AI + s * A * AI * BI;
+        return eta * AI + r * A * AI * AI + s * A * AI * BI;
     }
 
     inline double step_B(double A, double AI, double B, double BI)
     {
-		return etaB * B + rB * B * BI * B + s * B * BI * A;
+        return etaB * B + rB * B * BI * B + s * B * BI * A;
     }
 
     inline double step_BI(double A, double AI, double B, double BI)
     {
-		return etaB * BI + rB * B * BI * BI + sB * B * BI * AI;
+        return etaB * BI + rB * B * BI * BI + sB * B * BI * AI;
     }
 
     inline GLComponentSystem step_f(GLComponentSystem s, long int)
     {
-        return GLComponentSystem( step_A(s.A(), s.AI(), s.B(), s.BI()), step_AI(s.A(), s.AI(), s.B(),
-        s.BI()), step_B(s.A(), s.AI(), s.B(), s.BI()), step_BI(s.A(), s.AI(), s.B(), s.BI()));
+        return GLComponentSystem(step_A(s.A(), s.AI(), s.B(), s.BI()), step_AI(s.A(), s.AI(), s.B(),
+                                                                           s.BI()),
+            step_B(s.A(), s.AI(), s.B(), s.BI()), step_BI(s.A(), s.AI(), s.B(), s.BI()));
     }
 
     inline GLComponentSystem fixpoint(int) const
     {
-        return GLComponentSystem( 0, 0, 0, 0 );
+        return GLComponentSystem(0, 0, 0, 0);
     }
 };
 #endif /* FHN_LATTICE_H_ */

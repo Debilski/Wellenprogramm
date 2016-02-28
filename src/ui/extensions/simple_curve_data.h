@@ -17,7 +17,8 @@
 
 class QwtPlotCurve;
 
-class SimpleCurveData {
+class SimpleCurveData
+{
 public:
     QwtPlotCurve toQwtPlotCurve();
 };

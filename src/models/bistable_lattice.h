@@ -4,25 +4,32 @@
 #include "../lattice/rds_lattice.h"
 
 class BistableLattice;
-template<>
-struct Metainfo< BistableLattice > : MetainfoBase {
+template <>
+struct Metainfo<BistableLattice> : MetainfoBase
+{
     typedef OneComponentSystem Components;
-    template <int N> struct NoiseMapping {enum {value=-1};};
-};
-class BistableLattice : public SIIP_LatticeIntegrator< BistableLattice > {
-public:
-    inline BistableLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< BistableLattice > ( sizeX, sizeY, latticeSizeX, latticeSizeY ), epsilon(
-            0.1, "epsilon", 0.0, 100.0 )
+    template <int N>
+    struct NoiseMapping
     {
-        componentInfos[ 0 ] = ComponentInfo( "Aktivator", "u", -2.2, 2.5 );
+        enum
+        {
+            value = -1
+        };
+    };
+};
+class BistableLattice : public SIIP_LatticeIntegrator<BistableLattice>
+{
+public:
+    inline BistableLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) : SIIP_LatticeIntegrator<BistableLattice>(sizeX, sizeY, latticeSizeX, latticeSizeY), epsilon(0.1, "epsilon", 0.0, 100.0)
+    {
+        componentInfos[0] = ComponentInfo("Aktivator", "u", -2.2, 2.5);
 
-        registerParameter( &epsilon );
+        registerParameter(&epsilon);
     }
-    Parameter< double > epsilon;
+    Parameter<double> epsilon;
     inline OneComponentSystem fixpoint(long int) const
     {
-        return OneComponentSystem( fixpointU() );
+        return OneComponentSystem(fixpointU());
     }
     inline double fixpointU() const
     {
@@ -42,9 +49,8 @@ public:
     }
     inline OneComponentSystem step_df(OneComponentSystem sys)
     {
-        return OneComponentSystem( step_du( sys.u() ) );
+        return OneComponentSystem(step_du(sys.u()));
     }
-
 };
 
 #endif

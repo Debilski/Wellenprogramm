@@ -22,7 +22,8 @@
 class PluginKernel;
 
 /// Representation of a plugin
-class Plugin {
+class Plugin
+{
 public:
     /// Initialize and load plugin
     Plugin(const std::string& sFilename);
@@ -44,22 +45,22 @@ public:
     /// Register the plugin to a kernel
     void registerPlugin(PluginKernel& K)
     {
-        pfnRegisterPlugin_( K );
+        pfnRegisterPlugin_(K);
     }
 
 private:
     /// Too lazy to this now...
-    Plugin &operator =(const Plugin& Other);
+    Plugin& operator=(const Plugin& Other);
 
     /// Signature for the version query function
     typedef int fnGetEngineVersion();
     /// Signature for the plugin's registration function
     typedef void fnRegisterPlugin(PluginKernel&);
 
-    void* libHandle_; ///< Win32 DLL handle
-    size_t *libRefCount_; ///< Number of references to the DLL
-    fnGetEngineVersion *pfnGetEngineVersion_; ///< Version query function
-    fnRegisterPlugin *pfnRegisterPlugin_; ///< Plugin registration function
+    void* libHandle_;  ///< Win32 DLL handle
+    size_t* libRefCount_;  ///< Number of references to the DLL
+    fnGetEngineVersion* pfnGetEngineVersion_;  ///< Version query function
+    fnRegisterPlugin* pfnRegisterPlugin_;  ///< Plugin registration function
 };
 
 #endif /* PLUGIN_H_ */

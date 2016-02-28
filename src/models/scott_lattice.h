@@ -2,30 +2,29 @@
 #define SCOTT_LATTICE_H
 
 class ScottLattice;
-template<>
-struct Metainfo< ScottLattice > {
+template <>
+struct Metainfo<ScottLattice>
+{
     typedef OneComponentSystem Components;
 };
-class ScottLattice : public SIIP_LatticeIntegrator< ScottLattice > {
+class ScottLattice : public SIIP_LatticeIntegrator<ScottLattice>
+{
 public:
     inline void step_d(double* in, double* out)
     {
-        out[ 0 ] = step_du( in[ 0 ] );
-
+        out[0] = step_du(in[0]);
     }
-    inline ScottLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) :
-        SIIP_LatticeIntegrator< ScottLattice > ( sizeX, sizeY, latticeSizeX, latticeSizeY ), epsilon(
-            0.1, "epsilon", 0.0, 100.0 )
+    inline ScottLattice(int sizeX, int sizeY, int latticeSizeX, int latticeSizeY) : SIIP_LatticeIntegrator<ScottLattice>(sizeX, sizeY, latticeSizeX, latticeSizeY), epsilon(0.1, "epsilon", 0.0, 100.0)
     {
-        componentInfos[ 0 ] = ComponentInfo( "Aktivator", "u", -2.2, 2.5 );
+        componentInfos[0] = ComponentInfo("Aktivator", "u", -2.2, 2.5);
 
-        registerParameter( &epsilon );
+        registerParameter(&epsilon);
     }
-    Parameter< double > epsilon;
+    Parameter<double> epsilon;
 
     inline OneComponentSystem fixpoint() const
     {
-        return OneComponentSystem( fixpointU() );
+        return OneComponentSystem(fixpointU());
     }
     inline double fixpointU() const
     {
@@ -46,19 +45,18 @@ public:
 
     inline OneComponentSystem step_d(OneComponentSystem sys)
     {
-        return OneComponentSystem( step_du( sys.u() ) );
+        return OneComponentSystem(step_du(sys.u()));
     }
-    inline blitz::TinyVector< double, number_of_Variables > step_d(blitz::TinyVector< double,
-        number_of_Variables > sys)
+    inline blitz::TinyVector<double, number_of_Variables> step_d(blitz::TinyVector<double,
+        number_of_Variables> sys)
     {
-        return blitz::TinyVector< double, number_of_Variables >( step_du( sys[ 0 ] ) );
+        return blitz::TinyVector<double, number_of_Variables>(step_du(sys[0]));
     }
 
     inline int noiseVariable() const
     {
         return 0;
     }
-
 };
 
 #endif

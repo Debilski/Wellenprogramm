@@ -14,17 +14,16 @@
 
 #include "tiny_double_edit.h"
 
-TinyDoubleEdit::TinyDoubleEdit(QWidget* parent, double value, ExceptionMode mode) :
-    QDialog( parent ), initial_( value ), mode_(mode)
+TinyDoubleEdit::TinyDoubleEdit(QWidget* parent, double value, ExceptionMode mode) : QDialog(parent), initial_(value), mode_(mode)
 {
-    setupUi( this );
-    doubleEditSpinBox->setValue( value );
+    setupUi(this);
+    doubleEditSpinBox->setValue(value);
 }
 
 double TinyDoubleEdit::value()
 {
-    if ( result() != QDialog::Accepted ) {
-        if ( mode_ == ThrowException ) {
+    if (result() != QDialog::Accepted) {
+        if (mode_ == ThrowException) {
             throw UninitialisedValueException();
         } else {
             return initial_;
@@ -35,7 +34,7 @@ double TinyDoubleEdit::value()
 
 double TinyDoubleEdit::value(double defaultValue)
 {
-    if ( result() != QDialog::Accepted ) {
+    if (result() != QDialog::Accepted) {
         return defaultValue;
     }
     return doubleEditSpinBox->value();

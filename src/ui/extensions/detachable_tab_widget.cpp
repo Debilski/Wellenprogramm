@@ -18,24 +18,24 @@
 #include <qpoint.h>
 #include <qmenu.h>
 
-class DetachableTabWidget::PrivateData {
+class DetachableTabWidget::PrivateData
+{
 public:
     QMenu menu;
 };
 
-DetachableTabWidget::DetachableTabWidget(QWidget* parent) :
-    QTabWidget( parent )
+DetachableTabWidget::DetachableTabWidget(QWidget* parent) : QTabWidget(parent)
 {
-    tabBar()->setContextMenuPolicy( Qt::CustomContextMenu );
+    tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
 
     d_data = new PrivateData;
-    QAction* detach = new QAction( tr( "Detach" ), this );
-    detach->setEnabled( false );
-    d_data->menu.addAction( detach );
+    QAction* detach = new QAction(tr("Detach"), this);
+    detach->setEnabled(false);
+    d_data->menu.addAction(detach);
 
     connect(
-        tabBar(), SIGNAL( customContextMenuRequested(const QPoint&) ), this,
-        SLOT( showTabMenu (const QPoint&)) );
+        tabBar(), SIGNAL(customContextMenuRequested(const QPoint&)), this,
+        SLOT(showTabMenu(const QPoint&)));
 }
 
 DetachableTabWidget::~DetachableTabWidget()
@@ -46,5 +46,5 @@ DetachableTabWidget::~DetachableTabWidget()
 void DetachableTabWidget::showTabMenu(const QPoint& p)
 {
     // irgendwie mit TabAt und so weiter einbauen.
-    d_data->menu.popup( tabBar()->mapToGlobal( p ) );
+    d_data->menu.popup(tabBar()->mapToGlobal(p));
 }

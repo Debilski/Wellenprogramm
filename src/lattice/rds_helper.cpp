@@ -20,19 +20,19 @@
  */
 unsigned long leastCommonMultiple(int a, int b)
 {
-    long ab = a*b;
+    long ab = a * b;
     long k = 1;
-    while (isEven( a ) && isEven( b )) {
+    while (isEven(a) && isEven(b)) {
         a = a / 2;
         b = b / 2;
         k = k * 2;
     }
-    int t = (!isEven( a )) ? -b : a;
+    int t = (!isEven(a)) ? -b : a;
     while (t != 0) {
-        while (isEven( t )) {
+        while (isEven(t)) {
             t = t / 2;
         }
-        if ( t > 0 ) {
+        if (t > 0) {
             a = t;
         } else {
             b = -t;
@@ -40,5 +40,5 @@ unsigned long leastCommonMultiple(int a, int b)
 
         t = a - b;
     }
-    return ab/(a * k);
+    return ab / (a * k);
 }

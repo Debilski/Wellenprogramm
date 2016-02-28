@@ -20,15 +20,17 @@
 
 class QString;
 
-class LatticeScripter : public QObject {
-Q_OBJECT
+class LatticeScripter : public QObject
+{
+    Q_OBJECT
 public:
     LatticeScripter(QObject* latticeController);
     ~LatticeScripter();
 public slots:
     QScriptValue evaluate(const QString& program);
-    signals:
-    void result( QScriptValue );
+signals:
+    void result(QScriptValue);
+
 private:
     class PrivateData;
     PrivateData* d_data;

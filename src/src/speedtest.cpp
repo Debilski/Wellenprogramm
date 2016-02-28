@@ -17,25 +17,27 @@
 
 void savePng(QString fileName, LatticeInterface* lattice)
 {
-    QwtLinearColorMap colorMap( Qt::darkBlue, Qt::darkRed ); // -2.2, 2.5
-    colorMap.addColorStop( 0.0426, Qt::darkCyan ); // u = -2
-    colorMap.addColorStop( 0.1277, Qt::cyan ); // u = -1.6
-    colorMap.addColorStop( 0.5532, Qt::green ); // u = 0.4
-    colorMap.addColorStop( 0.8085, Qt::yellow ); // u = 1.6
-    colorMap.addColorStop( 0.8936, Qt::red ); // u = 2
+    QwtLinearColorMap colorMap(Qt::darkBlue, Qt::darkRed);  // -2.2, 2.5
+    colorMap.addColorStop(0.0426, Qt::darkCyan);  // u = -2
+    colorMap.addColorStop(0.1277, Qt::cyan);  // u = -1.6
+    colorMap.addColorStop(0.5532, Qt::green);  // u = 0.4
+    colorMap.addColorStop(0.8085, Qt::yellow);  // u = 1.6
+    colorMap.addColorStop(0.8936, Qt::red);  // u = 2
 
-    std::cout << "saving " << qPrintable( fileName ) << " ";
+    std::cout << "saving " << qPrintable(fileName) << " ";
     QImage image = QImage(
-            lattice->latticeSizeX(), lattice->latticeSizeY(),
-            QImage::Format_ARGB32 );
+        lattice->latticeSizeX(), lattice->latticeSizeY(),
+        QImage::Format_ARGB32);
 
     for (int i = 0; i < lattice->latticeSizeX(); ++i) {
         for (int j = 0; j < lattice->latticeSizeY(); ++j) {
-            image.setPixel( i, j, colorMap.color( QwtDoubleInterval(
-                    -2.2, 2.5 ), lattice->getComponentAt( firstComponent, i, j ) ).rgb() );
+            image.setPixel(i, j, colorMap.color(QwtDoubleInterval(
+                                                    -2.2, 2.5),
+                                             lattice->getComponentAt(firstComponent, i, j))
+                                     .rgb());
         }
     }
-    image.mirrored( true, false ).save( fileName, "PNG" );
+    image.mirrored(true, false).save(fileName, "PNG");
     std::cout << "... done";
 }
 
@@ -94,7 +96,7 @@ int main(int argc, char** argv)
     //fftw->fftwFlags = FFTW_ESTIMATE;
     //fftw->fftwCacheFileName = "fftw_test";
 
-/*    LatticeInterface* l1 = new FhnLattice(4,4,128,128);
+    /*    LatticeInterface* l1 = new FhnLattice(4,4,128,128);
     l1->clear();
     l1->setDiffusion(0, 1.0);
     l1->step();
@@ -116,7 +118,7 @@ return 0;
     //LatticeInterface* l5 = new FhnLattice(60,60,4512,4512);
     //savePng("l5.png", l5);
     //return 0;
- /*   l5->copyFromOtherReal(*l3);
+    /*   l5->copyFromOtherReal(*l3);
     savePng("l5.png", l5);
 
     l3->copyFromOther(*l5, 420, 420);
@@ -137,23 +139,23 @@ return 0;
     l6->copyFromOtherLattice(*l5);
     return 0;
 */
-//    FhnLattice l2 = FhnLattice(8*16,8*16,512,512);
+    //    FhnLattice l2 = FhnLattice(8*16,8*16,512,512);
 
-//    FhnLattice l3 = l2;
-    LatticeInterface* lat;// = new BarkleyLattice( 8 * 16, 8 * 16, 512, 512 );
-//delete lat;
+    //    FhnLattice l3 = l2;
+    LatticeInterface* lat;  // = new BarkleyLattice( 8 * 16, 8 * 16, 512, 512 );
+    //delete lat;
     lat = new FhnLattice();
 
     std::cout << "C" << std::flush;
-    lat->init(8 * 16, 8 * 16, 512, 512 );
-//    LatticeInterface* lat2 = new FhnLattice( 8 * 16, 8 * 16, 512, 512 );
+    lat->init(8 * 16, 8 * 16, 512, 512);
+    //    LatticeInterface* lat2 = new FhnLattice( 8 * 16, 8 * 16, 512, 512 );
     //FhnLattice lat = FhnLattice(4,4,4*32,4*32);
 
     lat->clear();
 
-//    NoiseGenerator* ng1 = new NoiseLattice(lat->geometry());
-//    ng1->disconnectFromLattice();
-//    ng1->connectToLattice(lat2);
+    //    NoiseGenerator* ng1 = new NoiseLattice(lat->geometry());
+    //    ng1->disconnectFromLattice();
+    //    ng1->connectToLattice(lat2);
     //NoiseGenerator* noise = new NoiseLattice(*lat);
     //lat->setNoiseGenerator(noise);
     //  lat.clear();
@@ -165,29 +167,29 @@ return 0;
     /*GeneralComponentSystem points( 2 );
      points[ 0 ] = 1.;
      points[ 1 ] = 0.;*/
-    TwoComponentSystem sys( 1, 2 );
-    TwoComponentSystem diff( 1, 0 );
+    TwoComponentSystem sys(1, 2);
+    TwoComponentSystem diff(1, 0);
     sys.u() = 1;
     sys.v() = 2;
     //lat.setAt( sys, 1,2);
     //lat.setDiffusion( diff );
 
-//    lat->setComponentAt( firstComponent, 1, 1, 2 );
-//    lat->setComponentAt( secondComponent, 2, 1, 2 );
+    //    lat->setComponentAt( firstComponent, 1, 1, 2 );
+    //    lat->setComponentAt( secondComponent, 2, 1, 2 );
     //lat.setDiffusion( diff );
-//    lat->setSpotAtComponent( 10, 10, 2, 20, firstComponent, true );
-    lat->setDiffusion( 0, 1 );
+    //    lat->setSpotAtComponent( 10, 10, 2, 20, firstComponent, true );
+    lat->setDiffusion(0, 1);
 
     //  std::cout << lat;
 
     lat->status();
     SurfacePoint c, d;
     const int steps = 1000;
-    ProgressBar p( steps );
-//    lat->setTimeStep( lat->suggestedTimeStep() );
+    ProgressBar p(steps);
+    //    lat->setTimeStep( lat->suggestedTimeStep() );
     lat->suggestedTimeStep();
 
-    boost::progress_display show_progress( steps );
+    boost::progress_display show_progress(steps);
     boost::progress_timer timer;
 
     for (int i = 0; i < steps; ++i) {
@@ -200,7 +202,7 @@ return 0;
         lat->step();
         //lat->getClusters();
         //cout << lat->suggestedTimeStep() << endl;
-        if ( i % 50 == 0 ) {
+        if (i % 50 == 0) {
 
             //std::cout << std::endl << lat->centreOfMass(0).x << " " << lat->centreOfExcitation(0).x << std::endl;
             //savePng( QString("testfile%1.png").arg(i), lat);
@@ -212,7 +214,7 @@ return 0;
     delete lat;
 
     lat = new BarkleyLattice();
-    lat->init(1,1,1,1);
+    lat->init(1, 1, 1, 1);
     delete lat;
     //std::cout << lat;
     //  lat.step();
@@ -249,7 +251,7 @@ return 0;
      for (int i=0; i<100; ++i) {
      p.print(i);
      lat.step();
-     }*//*
+     }*/ /*
      SurfacePoint po = lat.centreOfExcitation();
      cout << po.x << endl;*/
     //  delete lat;

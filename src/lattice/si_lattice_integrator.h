@@ -18,11 +18,11 @@
 
 #include "lattice_integrator.h"
 
-template<typename T_model>
-class SI_LatticeIntegrator : public LatticeIntegrator< T_model > {
+template <typename T_model>
+class SI_LatticeIntegrator : public LatticeIntegrator<T_model>
+{
 public:
-    SI_LatticeIntegrator() :
-        LatticeIntegrator< T_model > (  )
+    SI_LatticeIntegrator() : LatticeIntegrator<T_model>()
     {
     }
 };

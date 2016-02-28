@@ -23,10 +23,11 @@ class LatticeInterface;
 
 // Label hinzufügen
 
-class PlotSingle : public QDialog, private Ui::plotSingle {
-Q_OBJECT
+class PlotSingle : public QDialog, private Ui::plotSingle
+{
+    Q_OBJECT
 public:
-    PlotSingle( LatticeInterface* lattice, QWidget* parent = 0 );
+    PlotSingle(LatticeInterface* lattice, QWidget* parent = 0);
     ~PlotSingle();
 public slots:
     void update();
@@ -34,7 +35,7 @@ public slots:
     void on_actionCopy_to_Clipboard_triggered();
 
 protected:
-    void closeEvent ( QCloseEvent* event );
+    void closeEvent(QCloseEvent* event);
 
 private:
     void readSettings();

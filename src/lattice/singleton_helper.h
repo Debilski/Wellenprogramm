@@ -28,8 +28,9 @@
  * Beenden des Programms Zerstören auch den Singleton zerstört.
  */
 
-template<typename T_singleton>
-class SingletonCleaner {
+template <typename T_singleton>
+class SingletonCleaner
+{
 public:
     ~SingletonCleaner()
     {

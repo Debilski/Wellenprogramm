@@ -23,7 +23,8 @@
 
 #include "rightclickable_tool_bar.h"
 
-class PreferencePager::PrivateData {
+class PreferencePager::PrivateData
+{
 public:
     PrivateData(PreferencePager* self);
     ~PrivateData();
@@ -36,8 +37,7 @@ public:
     PreferencePager* self;
 };
 
-PreferencePager::PrivateData::PrivateData(PreferencePager* self) :
-    stack( 0 ), self( self )
+PreferencePager::PrivateData::PrivateData(PreferencePager* self) : stack(0), self(self)
 {
 }
 
@@ -47,14 +47,13 @@ PreferencePager::PrivateData::~PrivateData()
 
 void PreferencePager::PrivateData::init()
 {
-    stack = new QStackedWidget( self );
-    mapper = new QSignalMapper( self );
+    stack = new QStackedWidget(self);
+    mapper = new QSignalMapper(self);
 }
 
-PreferencePager::PreferencePager(QWidget* parent) :
-    QMainWindow( parent )
+PreferencePager::PreferencePager(QWidget* parent) : QMainWindow(parent)
 {
-    d_data = new PrivateData( this );
+    d_data = new PrivateData(this);
     d_data->init();
 
     QWidget* centralwidget = new QWidget(this);
@@ -66,52 +65,52 @@ PreferencePager::PreferencePager(QWidget* parent) :
 
     setCentralWidget(centralwidget);
 
-    connect( d_data->mapper, SIGNAL(mapped( int )), d_data->stack, SLOT( setCurrentIndex(int)) );
-    connect( d_data->stack, SIGNAL(currentChanged(int)), this, SLOT(resizeToMinimalSize()) );
+    connect(d_data->mapper, SIGNAL(mapped(int)), d_data->stack, SLOT(setCurrentIndex(int)));
+    connect(d_data->stack, SIGNAL(currentChanged(int)), this, SLOT(resizeToMinimalSize()));
 
-    d_data->toggleViewAction = new QAction( this );
-    d_data->toggleViewAction->setCheckable( true );
-    d_data->toggleViewAction->setText( windowTitle() );
+    d_data->toggleViewAction = new QAction(this);
+    d_data->toggleViewAction->setCheckable(true);
+    d_data->toggleViewAction->setText(windowTitle());
 
-    connect( d_data->toggleViewAction, SIGNAL(triggered(bool)), this, SLOT(toggleView(bool)) );
+    connect(d_data->toggleViewAction, SIGNAL(triggered(bool)), this, SLOT(toggleView(bool)));
     // connect( this, SIGNAL(visibilityChanged(bool)), d_data->toggleViewAction, SLOT(triggered(bool)) );
 
-    d_data->toolbar = new RightclickableToolBar( "toolbar", this );
+    d_data->toolbar = new RightclickableToolBar("toolbar", this);
 
-    addToolBar( d_data->toolbar );
-    d_data->toolbar->setFloatable( false );
-    d_data->toolbar->setMovable( false );
-    setUnifiedTitleAndToolBarOnMac( true );
+    addToolBar(d_data->toolbar);
+    d_data->toolbar->setFloatable(false);
+    d_data->toolbar->setMovable(false);
+    setUnifiedTitleAndToolBarOnMac(true);
 }
 
 int PreferencePager::addPage(QWidget* page, const QString& label)
 {
-    return addPage( page, QIcon(), label );
+    return addPage(page, QIcon(), label);
 }
 
 int PreferencePager::addPage(QWidget* page, const QIcon& icon, const QString& label)
 {
-    if ( !page )
+    if (!page)
         return -1;
-    int index = d_data->stack->insertWidget( -1, page );
-    QAction* ac = d_data->toolbar->addAction( icon, label );
+    int index = d_data->stack->insertWidget(-1, page);
+    QAction* ac = d_data->toolbar->addAction(icon, label);
 
-    connect( ac, SIGNAL( triggered() ), d_data->mapper, SLOT( map() ) );
-    d_data->mapper->setMapping( ac, index );
+    connect(ac, SIGNAL(triggered()), d_data->mapper, SLOT(map()));
+    d_data->mapper->setMapping(ac, index);
 
     return index;
 }
 
 void PreferencePager::resizeToMinimalSize()
 {
-/*    for (int i=0; i<d_data->stack->count(); ++i) {
+    /*    for (int i=0; i<d_data->stack->count(); ++i) {
         if ( d_data->stack->widget(i)->isHidden() ) {
             d_data->stack->widget(i)->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored);
         } else {
             d_data->stack->widget(i)->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred);
         }
     }*/
-    this->resize( sizeHint() );
+    this->resize(sizeHint());
 }
 
 QAction* PreferencePager::toggleViewAction() const
@@ -121,24 +120,23 @@ QAction* PreferencePager::toggleViewAction() const
 
 void PreferencePager::toggleView(bool b)
 {
-    if ( b == isHidden() ) {
-        if ( b )
+    if (b == isHidden()) {
+        if (b)
             show();
         else
             close();
     }
 }
 
-void PreferencePager::showEvent(QShowEvent * event)
+void PreferencePager::showEvent(QShowEvent* event)
 {
-    d_data->toggleViewAction->setChecked( true );
+    d_data->toggleViewAction->setChecked(true);
     resizeToMinimalSize();
     event->accept();
 }
 
-void PreferencePager::closeEvent(QCloseEvent * event)
+void PreferencePager::closeEvent(QCloseEvent* event)
 {
-    d_data->toggleViewAction->setChecked( false );
+    d_data->toggleViewAction->setChecked(false);
     event->accept();
 }
-

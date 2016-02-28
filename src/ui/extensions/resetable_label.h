@@ -17,14 +17,16 @@
 
 #include <qlabel.h>
 
-class ResetableLabel : public QLabel {
-Q_OBJECT
+class ResetableLabel : public QLabel
+{
+    Q_OBJECT
 public:
-    ResetableLabel(QWidget * parent = 0, Qt::WindowFlags f = 0);
-    ResetableLabel(const QString & text, QWidget * parent = 0, Qt::WindowFlags f = 0);
+    ResetableLabel(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    ResetableLabel(const QString& text, QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~ResetableLabel();
 signals:
     void reset();
+
 private:
     class PrivateData;
     PrivateData* d_data;

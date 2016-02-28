@@ -38,16 +38,17 @@
  *
  * \param N   Compile time size of the Array
  */
-template<unsigned int N>
-struct CheckTininess {
+template <unsigned int N>
+struct CheckTininess
+{
     /**
      * Checks if the Array @a array is smaller than 1E-7.
      * \param array Array of doubles with compile time size @a N
      */
     static inline bool isTiny(const double* array)
     {
-        return (std::fabs( array[ N - 1 ] ) < 1E-7)
-                && CheckTininess< N - 1 >::isTiny( array );
+        return (std::fabs(array[N - 1]) < 1E-7)
+            && CheckTininess<N - 1>::isTiny(array);
     }
 };
 
@@ -63,19 +64,21 @@ struct CheckTininess {
 /**
  * Template specialisation for N=1
  */
-template<>
-struct CheckTininess< 1 > {
+template <>
+struct CheckTininess<1>
+{
     static bool isTiny(const double* array)
     {
-        return (std::fabs( array[ 0 ] ) < 1E-7);
+        return (std::fabs(array[0]) < 1E-7);
     }
 };
 
 /**
  * Template specialisation for N=0. Returns the neutral element.
  */
-template<>
-struct CheckTininess< 0 > {
+template <>
+struct CheckTininess<0>
+{
     static bool isTiny(const double* /*array*/)
     {
         // Should never be executed.
@@ -98,21 +101,27 @@ inline bool isEven(int i)
 unsigned long leastCommonMultiple(int a, int b);
 
 
-
 /**
  * Helper Macro that can be used for automatically creating the Metainfo<> Template
  */
-#define META(model,components) class model;         \
-    template<>                                      \
-    struct Metainfo< model > {                      \
-        typedef components Components;              \
+#define META(model, components)        \
+    class model;                       \
+    template <>                        \
+    struct Metainfo<model>             \
+    {                                  \
+        typedef components Components; \
     };
 
 
-
-#define EASY_LATTICE_NOISE_MAPPING( component, noiseComponent ) \
-template <> struct Metainfo<EASY_LATTICE_NAME>::NoiseMapping< component >{ enum {value = noiseComponent}; };
-
+#define EASY_LATTICE_NOISE_MAPPING(component, noiseComponent)   \
+    template <>                                                 \
+    struct Metainfo<EASY_LATTICE_NAME>::NoiseMapping<component> \
+    {                                                           \
+        enum                                                    \
+        {                                                       \
+            value = noiseComponent                              \
+        };                                                      \
+    };
 
 
 #endif /* RDS_HELPER_H_ */

@@ -24,14 +24,16 @@
 
 #include "option.h"
 
-template<typename T>
-struct singleton : private boost::noncopyable {
+template <typename T>
+struct singleton : private boost::noncopyable
+{
 public:
-    static T & instance()
+    static T& instance()
     {
-        boost::call_once( call_me_once, once_ );
+        boost::call_once(call_me_once, once_);
         return instance_helper();
     }
+
 protected:
     static boost::once_flag once_;
     static void call_me_once()
@@ -39,7 +41,7 @@ protected:
         instance_helper();
     }
 
-    static T & instance_helper()
+    static T& instance_helper()
     {
         static T t;
         return t;
@@ -51,36 +53,36 @@ protected:
     {
     }
 };
-template<typename T>
-boost::once_flag singleton< T >::once_ = BOOST_ONCE_INIT;
+template <typename T>
+boost::once_flag singleton<T>::once_ = BOOST_ONCE_INIT;
 
-class Configuration : /*public QObject, */ public singleton< Configuration > {
+class Configuration : /*public QObject, */ public singleton<Configuration>
+{
 
 public:
-
     Configuration();
     ~Configuration()
     {
     }
-public:
 
+public:
     void debug();
     void read();
     void write();
 
     Option& addOption(const QString& name, const QVariant& defaultValue);
-    Option
-        & addOption(const QString& name, const QVariant& defaultValue, const QString& settingsKey);
+    Option& addOption(const QString& name, const QVariant& defaultValue, const QString& settingsKey);
 
     Option& operator()(const QString& name);
     Option option(const QString& name) const;
 
 public:
     Option emptyOption;
+
 private:
     Configuration(const Configuration&);
-    QHash< QString, Option > optionList;
-    typedef QHash< QString, Option >::iterator optionListIterator;
+    QHash<QString, Option> optionList;
+    typedef QHash<QString, Option>::iterator optionListIterator;
 };
 
 #define config Configuration::instance()

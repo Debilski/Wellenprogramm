@@ -14,10 +14,9 @@
 
 #include "diffusion_spin_box.h"
 
-DiffusionSpinBox::DiffusionSpinBox(int diffusionIndex, QWidget* parent /*= 0*/) :
-    QDoubleSpinBox( parent ), index_( diffusionIndex )
+DiffusionSpinBox::DiffusionSpinBox(int diffusionIndex, QWidget* parent /*= 0*/) : QDoubleSpinBox(parent), index_(diffusionIndex)
 {
-    connect( this, SIGNAL(valueChanged(const double&)), this, SLOT(emitChanged(const double&)) );
+    connect(this, SIGNAL(valueChanged(const double&)), this, SLOT(emitChanged(const double&)));
 }
 
 DiffusionSpinBox::~DiffusionSpinBox()

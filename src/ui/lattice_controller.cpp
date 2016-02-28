@@ -24,8 +24,7 @@
 #include "configuration.h"
 
 
-LoopThread::LoopThread(QObject *parent) :
-    lattice( 0 ), QThread( parent )
+LoopThread::LoopThread(QObject* parent) : lattice(0), QThread(parent)
 {
     abort = false;
     restart = false;
@@ -44,18 +43,18 @@ LoopThread::~LoopThread()
 
 void LoopThread::setLattice(LatticeInterface* lattice)
 {
-    QMutexLocker locker( &mutex );
+    QMutexLocker locker(&mutex);
     this->lattice = lattice;
 }
 
 void LoopThread::loop(int stepsAtOnce)
 {
-    QMutexLocker locker( &mutex );
+    QMutexLocker locker(&mutex);
     this->stepsAtOnce = stepsAtOnce;
 
     stopped = false;
-    if ( !isRunning() ) {
-        start( LowPriority );
+    if (!isRunning()) {
+        start(LowPriority);
     } else {
         restart = true;
         condition.wakeOne();
@@ -63,40 +62,40 @@ void LoopThread::loop(int stepsAtOnce)
 }
 void LoopThread::stop()
 {
-    QMutexLocker locker( &mutex );
+    QMutexLocker locker(&mutex);
     stopped = true;
-
 }
 
 void LoopThread::run()
 {
-    forever {
+    forever
+    {
         mutex.lock();
         int stepsAtOnce = this->stepsAtOnce;
         mutex.unlock();
         while (true) {
-            if ( restart )
+            if (restart)
                 break;
-            if ( stopped )
+            if (stopped)
                 break;
-            lattice->step( stepsAtOnce );
+            lattice->step(stepsAtOnce);
         }
         mutex.lock();
-        if ( !restart )
-            condition.wait( &mutex );
+        if (!restart)
+            condition.wait(&mutex);
         restart = false;
         mutex.unlock();
     }
 }
 
-class LatticeController::PrivateData {
+class LatticeController::PrivateData
+{
 public:
-    PrivateData() :
-        lattice( 0 ), stepsAtOnce( 5 ), stopped( true ), adaptationMode( false )
+    PrivateData() : lattice(0), stepsAtOnce(5), stopped(true), adaptationMode(false)
     {
     }
-    typedef std::auto_ptr< LatticeInterface > LatticePtr;
-    std::auto_ptr< LatticeInterface > lattice;
+    typedef std::auto_ptr<LatticeInterface> LatticePtr;
+    std::auto_ptr<LatticeInterface> lattice;
     PluginKernel TheKernel;
     LatticeScripter* latticeScripter;
     int stepsAtOnce;
@@ -112,33 +111,31 @@ public:
  *
  * Das Elternobjekt sorgt gegebenenfalls für das Zerstören des Controllers.
  */
-LatticeController::LatticeController(QObject* parent) :
-    QObject( parent )
+LatticeController::LatticeController(QObject* parent) : QObject(parent)
 {
     d_data = new PrivateData;
 
     // Load Libraries
     QStringList filters;
 
-    filters << config( "libraryPattern" ).toString();
+    filters << config("libraryPattern").toString();
 
     std::cout << "Checking if " << qPrintable(config("libraryDirectory").toString()) << " exists… ";
-    QDir libDir( config( "libraryDirectory" ).toString() );
-    if ( !libDir.exists() ) {
+    QDir libDir(config("libraryDirectory").toString());
+    if (!libDir.exists()) {
         std::cout << "No!" << std::endl;
-        exit( -1 );
+        exit(-1);
     } else {
         std::cout << "Yes." << std::endl;
     }
-    libDir.setNameFilters( filters );
+    libDir.setNameFilters(filters);
     QFileInfoList libs = libDir.entryInfoList();
 
-    foreach (const QFileInfo &libInfo, libs)
-        {
-            std::cout << "Found library: " << qPrintable(libInfo.filePath()) << std::endl;
-            d_data->TheKernel.loadPlugin( libInfo.filePath().toStdString() );
-        }
-    d_data->latticeScripter = new LatticeScripter( this );
+    foreach (const QFileInfo& libInfo, libs) {
+        std::cout << "Found library: " << qPrintable(libInfo.filePath()) << std::endl;
+        d_data->TheKernel.loadPlugin(libInfo.filePath().toStdString());
+    }
+    d_data->latticeScripter = new LatticeScripter(this);
 }
 
 LatticeController::~LatticeController()
@@ -175,7 +172,7 @@ bool LatticeController::isValid()
  *
  */
 bool LatticeController::load(const QString& name, int sizeX, int sizeY, int latticeSizeX,
-                             int latticeSizeY)
+    int latticeSizeY)
 {
     closeLattice();
     qDebug() << "Trying Model " << name;
@@ -185,18 +182,18 @@ bool LatticeController::load(const QString& name, int sizeX, int sizeY, int latt
 
     LatticeServer& LS = d_data->TheKernel.getLatticeServer();
     for (size_t i = 0; i < LS.getDriverCount(); ++i) {
-        std::string s = LS.getDriver( i ).getName();
+        std::string s = LS.getDriver(i).getName();
         std::cout << s.c_str() << std::endl;
-        if ( LS.getDriver( i ).getName() == std_name ) {
+        if (LS.getDriver(i).getName() == std_name) {
             n = i;
             modelExists = true;
         }
     }
 
-    d_data->internalName = LS.getDriver( n ).getName();
-    d_data->lattice = d_data->TheKernel.getLatticeServer().getDriver( n ).createRenderer();
+    d_data->internalName = LS.getDriver(n).getName();
+    d_data->lattice = d_data->TheKernel.getLatticeServer().getDriver(n).createRenderer();
     lattice()->init(sizeX, sizeY, latticeSizeX, latticeSizeY);
-    thread.setLattice( lattice() );
+    thread.setLattice(lattice());
     return modelExists;
 }
 
@@ -207,7 +204,7 @@ void LatticeController::closeLattice()
 {
     stopLoop();
     // Ist problematisch, da nicht das delete aus der Klasse verwendet wird. Muss noch irgendwann ins Interface.
-    d_data->lattice.reset( 0 );
+    d_data->lattice.reset(0);
 }
 
 /**
@@ -233,9 +230,9 @@ void LatticeController::stepUntil(double time)
  */
 void LatticeController::startLoop()
 {
-    if ( ! loopRuns() ) {
+    if (!loopRuns()) {
         d_data->stopped = false;
-        QTimer::singleShot( 0, this, SLOT(loop()) );
+        QTimer::singleShot(0, this, SLOT(loop()));
     }
 }
 
@@ -244,7 +241,7 @@ void LatticeController::startLoop()
  */
 void LatticeController::stopLoop()
 {
-    if ( loopRuns() ) {
+    if (loopRuns()) {
         d_data->stopped = true;
         emit changed();
     }
@@ -254,48 +251,49 @@ void LatticeController::stopLoop()
 QStringList LatticeController::getModelNames()
 {
     LatticeServer& LS = d_data->TheKernel.getLatticeServer();
-    std::list< std::string > names = LS.getModelNames();
+    std::list<std::string> names = LS.getModelNames();
     QStringList n;
-    for(std::list< std::string >::const_iterator it = names.begin(); it != names.end(); ++it ) {
-        n << QString::fromStdString( *it );
+    for (std::list<std::string>::const_iterator it = names.begin(); it != names.end(); ++it) {
+        n << QString::fromStdString(*it);
     }
     return n;
 }
 
-void LatticeController::setDiffusion( int component, double value ) {
-    lattice()->setDiffusion( component, value );
+void LatticeController::setDiffusion(int component, double value)
+{
+    lattice()->setDiffusion(component, value);
 }
 
 void LatticeController::setNoiseIntensity(double d)
 {
-    lattice()->setNoiseIntensity( d );
+    lattice()->setNoiseIntensity(d);
 }
 
 void LatticeController::setNoiseCorrelation(int d)
 {
-    lattice()->setNoiseCorrelation( d );
+    lattice()->setNoiseCorrelation(d);
 }
 
 void LatticeController::setTimeStep(double d)
 {
-    lattice()->setTimeStep( d );
+    lattice()->setTimeStep(d);
 }
 
 QString LatticeController::getModelName()
 {
-    return QString::fromStdString( d_data->internalName );
+    return QString::fromStdString(d_data->internalName);
 }
 
 
 void LatticeController::stepMany()
 {
-    stepNum( d_data->stepsAtOnce );
+    stepNum(d_data->stepsAtOnce);
     emit changed();
 }
 
 void LatticeController::stepNum(int n)
 {
-    d_data->lattice.get()->step( n );
+    d_data->lattice.get()->step(n);
     emit changed();
 }
 
@@ -307,16 +305,16 @@ LatticeScripter* LatticeController::getLatticeScripter() const
 void LatticeController::setToFixpoint(uint component, const QPointF& realPoint, uint size)
 {
     d_data->lattice.get()->setSpotAtComponent(
-        realPoint.x(), realPoint.y(), size, 0, component, true );
+        realPoint.x(), realPoint.y(), size, 0, component, true);
     doNormalize();
     emit changed();
 }
 
 void LatticeController::setComponentAt(uint component, const QPointF& realPoint, uint size,
-                                       double value)
+    double value)
 {
     d_data->lattice.get()->setSpotAtComponent(
-        realPoint.x(), realPoint.y(), size, value, component, true );
+        realPoint.x(), realPoint.y(), size, value, component, true);
     doNormalize();
     emit changed();
 }
@@ -333,7 +331,7 @@ int LatticeController::sizeY() const
 
 QSize LatticeController::size() const
 {
-    return QSize( sizeX(), sizeY() );
+    return QSize(sizeX(), sizeY());
 }
 
 int LatticeController::latticeSizeX() const
@@ -348,12 +346,12 @@ int LatticeController::latticeSizeY() const
 
 QSize LatticeController::latticeSize() const
 {
-    return QSize( latticeSizeX(), latticeSizeY() );
+    return QSize(latticeSizeX(), latticeSizeY());
 }
 
 QString LatticeController::modelTitle() const
 {
-    return QString::fromStdString( d_data->lattice->modelName() );
+    return QString::fromStdString(d_data->lattice->modelName());
 }
 
 void LatticeController::loop()
@@ -361,22 +359,21 @@ void LatticeController::loop()
     QTime t;
     t.start();
     while (t.elapsed() < 100) {
-        if ( d_data->stopped ) {
+        if (d_data->stopped) {
             return;
         }
-        if ( adaptationMode() ) {
-                        adaptParameters();
-                        emit parametersChanged();
+        if (adaptationMode()) {
+            adaptParameters();
+            emit parametersChanged();
         }
-        d_data->lattice->step( d_data->stepsAtOnce );
-        emit processed( d_data->stepsAtOnce );
-
+        d_data->lattice->step(d_data->stepsAtOnce);
+        emit processed(d_data->stepsAtOnce);
     }
-    if ( d_data->stopped ) {
+    if (d_data->stopped) {
         emit stopped();
         return;
     }
-    QTimer::singleShot( 0, this, SLOT(loop()) );
+    QTimer::singleShot(0, this, SLOT(loop()));
 }
 
 void LatticeController::adaptParameters()
@@ -407,7 +404,7 @@ void LatticeController::doNormalize()
 
 bool LatticeController::loopRuns() const
 {
-    return ! (d_data->stopped);
+    return !(d_data->stopped);
 }
 
 void LatticeController::setAdaptationMode(bool b)
@@ -437,7 +434,7 @@ double LatticeController::time()
 
 void LatticeController::setTime(double time)
 {
-    d_data->lattice->setTime( time );
+    d_data->lattice->setTime(time);
 }
 
 int LatticeController::numberOfClusters()
@@ -447,18 +444,18 @@ int LatticeController::numberOfClusters()
 
 void LatticeController::saveTemporary()
 {
-    if ( d_data->temporaryLattice.open() ) {
-        lattice()->save( false, d_data->temporaryLattice.fileName().toStdString() );
+    if (d_data->temporaryLattice.open()) {
+        lattice()->save(false, d_data->temporaryLattice.fileName().toStdString());
         d_data->temporaryLattice.close();
     }
 }
 
 void LatticeController::recallTemporary()
 {
-    if ( d_data->temporaryLattice.open() ) {
-            lattice()->recall( d_data->temporaryLattice.fileName().toStdString() );
-            d_data->temporaryLattice.close();
-        }
+    if (d_data->temporaryLattice.open()) {
+        lattice()->recall(d_data->temporaryLattice.fileName().toStdString());
+        d_data->temporaryLattice.close();
+    }
 }
 
 void LatticeController::setFixedObstacle(double x, double y, double size)
@@ -473,14 +470,13 @@ void LatticeController::setFixedObstacle(double x, double y, double size)
 void LatticeController::setNonReactingObstacle(double x, double y, double size)
 {
     Defect<GeneralComponentSystem> defect;
-        defect.boundaryCondition = NoReactionBoundary;
-        defect.centre.x = x;
-        defect.centre.y = y;
-        defect.radius = size;
-        lattice()->addDefect(defect);
+    defect.boundaryCondition = NoReactionBoundary;
+    defect.centre.x = x;
+    defect.centre.y = y;
+    defect.radius = size;
+    lattice()->addDefect(defect);
 }
 void LatticeController::clearObstacles()
 {
     lattice()->removeDefects();
 }
-

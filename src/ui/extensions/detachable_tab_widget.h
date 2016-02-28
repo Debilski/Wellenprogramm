@@ -17,8 +17,9 @@
 
 #include <qtabwidget.h>
 
-class DetachableTabWidget : public QTabWidget {
-Q_OBJECT
+class DetachableTabWidget : public QTabWidget
+{
+    Q_OBJECT
 public:
     DetachableTabWidget(QWidget* parent = 0);
     ~DetachableTabWidget();
@@ -26,6 +27,7 @@ public slots:
     void showTabMenu(const QPoint& p);
 signals:
     void detached(int index);
+
 private:
     class PrivateData;
     PrivateData* d_data;

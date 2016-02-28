@@ -17,13 +17,15 @@
 
 #include <qspinbox.h>
 
-class DiffusionSpinBox : public QDoubleSpinBox {
-Q_OBJECT
+class DiffusionSpinBox : public QDoubleSpinBox
+{
+    Q_OBJECT
 public:
     DiffusionSpinBox(int diffusionIndex, QWidget* parent = 0);
     ~DiffusionSpinBox();
 signals:
     void valueChanged(int, const double&);
+
 private:
     int index_;
 private slots:

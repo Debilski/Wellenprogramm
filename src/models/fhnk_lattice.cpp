@@ -7,19 +7,19 @@
 
 #include "fhnk_lattice.h"
 
-DEFINE_LATTICE_DRIVER2( "FhnKLattice 4er", FhnKLattice4)
+DEFINE_LATTICE_DRIVER2("FhnKLattice 4er", FhnKLattice4)
 
-DEFINE_LATTICE_DRIVER2( "FhnKLattice 8er", FhnKLattice8)
+DEFINE_LATTICE_DRIVER2("FhnKLattice 8er", FhnKLattice8)
 
-DEFINE_LATTICE_DRIVER2( "FhnKLattice global z 4er", FhnKLattice_z4)
+DEFINE_LATTICE_DRIVER2("FhnKLattice global z 4er", FhnKLattice_z4)
 
-DEFINE_LATTICE_DRIVER2( "FhnKLattice global z 8er", FhnKLattice_z8)
+DEFINE_LATTICE_DRIVER2("FhnKLattice global z 8er", FhnKLattice_z8)
 
-DEFINE_LATTICE_DRIVER2( "FhnKLattice Laplace", FhnKLattice_laplace)
+DEFINE_LATTICE_DRIVER2("FhnKLattice Laplace", FhnKLattice_laplace)
 
-DEFINE_LATTICE_DRIVER2( "FhnKLattice Laplace Extended", FhnKLattice_laplace_extended)
+DEFINE_LATTICE_DRIVER2("FhnKLattice Laplace Extended", FhnKLattice_laplace_extended)
 
-DEFINE_LATTICE_DRIVER2( "FhnKLattice Layers", FhnKLattice_layers)
+DEFINE_LATTICE_DRIVER2("FhnKLattice Layers", FhnKLattice_layers)
 
 REGISTER_PLUGINS_BEGIN
 REGISTER_PLUGIN(FhnKLattice4)

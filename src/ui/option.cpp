@@ -23,61 +23,53 @@
  \brief Stellt eine Option dar, welche gelesen und gespeichert werden kann.
  */
 
-    Option::Option(const Option& o):
-    name_(o.name_), value_(o.value_), defaultValue_(o.defaultValue_), commandLineStrings_(o.commandLineStrings_),
-    settingsKey_(o.settingsKey_), saveToConfig_(o.saveToConfig_), changedByUser_(o.changedByUser_)
-    {
-    }
+Option::Option(const Option& o) : name_(o.name_), value_(o.value_), defaultValue_(o.defaultValue_), commandLineStrings_(o.commandLineStrings_), settingsKey_(o.settingsKey_), saveToConfig_(o.saveToConfig_), changedByUser_(o.changedByUser_)
+{
+}
 
-    Option::Option() :
-        name_(), defaultValue_(), settingsKey_(), saveToConfig_( false ), changedByUser_( false )
-    {
-    }
+Option::Option() : name_(), defaultValue_(), settingsKey_(), saveToConfig_(false), changedByUser_(false)
+{
+}
 
-    Option::Option(const QString& name, QVariant defaultValue) :
-        name_( name ), defaultValue_( defaultValue ), saveToConfig_( false ),
-            changedByUser_( false )
-    {
-    }
+Option::Option(const QString& name, QVariant defaultValue) : name_(name), defaultValue_(defaultValue), saveToConfig_(false), changedByUser_(false)
+{
+}
 
-    Option::Option(const QString& name, QVariant defaultValue, const QString& settingsKey) :
-        name_( name ), defaultValue_( defaultValue ), settingsKey_( settingsKey ), saveToConfig_(
-            true ), changedByUser_( false )
-    {
-    }
+Option::Option(const QString& name, QVariant defaultValue, const QString& settingsKey) : name_(name), defaultValue_(defaultValue), settingsKey_(settingsKey), saveToConfig_(true), changedByUser_(false)
+{
+}
 
-    const QString& Option::name() const
-    {
-        return name_;
-    }
+const QString& Option::name() const
+{
+    return name_;
+}
 
-    const QVariant& Option::value() const
-    {
-        if ( value_.isValid() )
-            return value_;
-        return defaultValue_;
-    }
+const QVariant& Option::value() const
+{
+    if (value_.isValid())
+        return value_;
+    return defaultValue_;
+}
 
-    const QVariant& Option::defaultValue() const
-    {
-        return defaultValue_;
-    }
+const QVariant& Option::defaultValue() const
+{
+    return defaultValue_;
+}
 
-    void Option::setValue(const QVariant& value)
-    {
-        changedByUser_ = true;
-        value_ = value;
-    }
+void Option::setValue(const QVariant& value)
+{
+    changedByUser_ = true;
+    value_ = value;
+}
 
 
-    Option& Option::addCommandLineString(const QString& commandLineString, bool longFormat /*= true*/ )
-    {
+Option& Option::addCommandLineString(const QString& commandLineString, bool longFormat /*= true*/)
+{
 
-        QString format = longFormat ? "--%1=" : "-%1=";
-        commandLineStrings_ << format.arg( commandLineString );
-        return *this;
-
-    }
+    QString format = longFormat ? "--%1=" : "-%1=";
+    commandLineStrings_ << format.arg(commandLineString);
+    return *this;
+}
 
 QString Option::toString() const
 {
@@ -87,24 +79,23 @@ QString Option::toString() const
 bool Option::readCommandLine()
 {
     // qDebug() << "read Command Line" << name_;
-    if ( commandLineStrings_.isEmpty() )
+    if (commandLineStrings_.isEmpty())
         return false;
 
     QStringList arguments = QCoreApplication::instance()->arguments();
     QStringList filteredArgumentsList;
 
 
-    foreach( QString command, commandLineStrings_ ) {
-        QStringList filtered = arguments.filter( command );
+    foreach (QString command, commandLineStrings_) {
+        QStringList filtered = arguments.filter(command);
 
 
-        foreach( QString s, filtered ) {
-            filteredArgumentsList << s.replace( command, "" );
+        foreach (QString s, filtered) {
+            filteredArgumentsList << s.replace(command, "");
         }
-
     }
 
-    if ( filteredArgumentsList.isEmpty() )
+    if (filteredArgumentsList.isEmpty())
         return false;
 
 
@@ -117,22 +108,21 @@ bool Option::readCommandLine()
 bool Option::readQSettings()
 {
     //qDebug() << "read QSettings" << name_;
-    if ( !settingsKey_.isEmpty() ) {
-            QSettings settings;
-            value_ = settings.value( settingsKey_, defaultValue_ );
-        }
+    if (!settingsKey_.isEmpty()) {
+        QSettings settings;
+        value_ = settings.value(settingsKey_, defaultValue_);
+    }
     return value_.isValid();
-
 }
 
 void Option::read()
 {
 
-    if ( readCommandLine() ) {
+    if (readCommandLine()) {
         return;
     }
 
-    if (readQSettings() )
+    if (readQSettings())
         return;
 
     // Fallback
@@ -141,10 +131,9 @@ void Option::read()
 
 void Option::write()
 {
-    if ( !(saveToConfig_ && changedByUser_) ) {
+    if (!(saveToConfig_ && changedByUser_)) {
         return;
     }
     QSettings settings;
-    settings.setValue( settingsKey_, value_ );
-
+    settings.setValue(settingsKey_, value_);
 }

@@ -30,25 +30,20 @@ public:
 #endif
     }
 
-    void insert(double pos, const QColor &color);
+    void insert(double pos, const QColor& color);
     QRgb rgb(LinearTransparentColorMap::Mode, double pos) const;
 
     QwtArray<double> stops() const;
 
 private:
-
     class ColorStop
     {
     public:
-        ColorStop():
-            pos(0.0),
-            rgb(0)
-        {
-        };
+        ColorStop() : pos(0.0),
+                      rgb(0){};
 
-        ColorStop(double p, const QColor &c):
-            pos(p),
-            rgb(c.rgb())
+        ColorStop(double p, const QColor& c) : pos(p),
+                                               rgb(c.rgb())
         {
             r = qRed(rgb);
             g = qGreen(rgb);
@@ -64,37 +59,32 @@ private:
     QwtArray<ColorStop> _stops;
 };
 
-void LinearTransparentColorMap::ColorStops::insert(double pos, const QColor &color)
+void LinearTransparentColorMap::ColorStops::insert(double pos, const QColor& color)
 {
     // Lookups need to be very fast, insertions are not so important.
     // Anyway, a balanced tree is what we need here. TODO ...
 
-    if ( pos < 0.0 || pos > 1.0 )
+    if (pos < 0.0 || pos > 1.0)
         return;
 
     int index;
-    if ( _stops.size() == 0 )
-    {
+    if (_stops.size() == 0) {
         index = 0;
 #if QT_VERSION < 0x040000
         _stops.resize(1, QGArray::SpeedOptim);
 #else
         _stops.resize(1);
 #endif
-    }
-    else
-    {
+    } else {
         index = findUpper(pos);
-        if ( index == (int)_stops.size() ||
-            qwtAbs(_stops[index].pos - pos) >= 0.001 )
-        {
+        if (index == (int)_stops.size() || qwtAbs(_stops[index].pos - pos) >= 0.001) {
 #if QT_VERSION < 0x040000
             _stops.resize(_stops.size() + 1, QGArray::SpeedOptim);
 #else
             _stops.resize(_stops.size() + 1);
 #endif
-            for ( int i = _stops.size() - 1; i > index; i-- )
-                _stops[i] = _stops[i-1];
+            for (int i = _stops.size() - 1; i > index; i--)
+                _stops[i] = _stops[i - 1];
         }
     }
 
@@ -104,7 +94,7 @@ void LinearTransparentColorMap::ColorStops::insert(double pos, const QColor &col
 inline QwtArray<double> LinearTransparentColorMap::ColorStops::stops() const
 {
     QwtArray<double> positions(_stops.size());
-    for ( int i = 0; i < (int)_stops.size(); i++ )
+    for (int i = 0; i < (int)_stops.size(); i++)
         positions[i] = _stops[i].pos;
     return positions;
 }
@@ -114,19 +104,16 @@ inline int LinearTransparentColorMap::ColorStops::findUpper(double pos) const
     int index = 0;
     int n = _stops.size();
 
-    const ColorStop *stops = _stops.data();
+    const ColorStop* stops = _stops.data();
 
-    while (n > 0)
-    {
+    while (n > 0) {
         const int half = n >> 1;
         const int middle = index + half;
 
-        if ( stops[middle].pos <= pos )
-        {
+        if (stops[middle].pos <= pos) {
             index = middle + 1;
             n -= half + 1;
-        }
-        else
+        } else
             n = half;
     }
 
@@ -136,20 +123,17 @@ inline int LinearTransparentColorMap::ColorStops::findUpper(double pos) const
 inline QRgb LinearTransparentColorMap::ColorStops::rgb(
     LinearTransparentColorMap::Mode mode, double pos) const
 {
-    if ( pos <= 0.0 )
+    if (pos <= 0.0)
         return _stops[0].rgb;
-    if ( pos >= 1.0 )
+    if (pos >= 1.0)
         return _stops[(int)(_stops.size() - 1)].rgb;
 
     const int index = findUpper(pos);
-    if ( mode == FixedColors )
-    {
-        return _stops[index-1].rgb;
-    }
-    else
-    {
-        const ColorStop &s1 = _stops[index-1];
-        const ColorStop &s2 = _stops[index];
+    if (mode == FixedColors) {
+        return _stops[index - 1].rgb;
+    } else {
+        const ColorStop& s1 = _stops[index - 1];
+        const ColorStop& s2 = _stops[index];
 
         const double ratio = (pos - s1.pos) / (s2.pos - s1.pos);
 
@@ -174,18 +158,16 @@ public:
 
    \param format Preferred format of the color map
 */
-LinearTransparentColorMap::LinearTransparentColorMap(QwtColorMap::Format format):
-    QwtColorMap(format)
+LinearTransparentColorMap::LinearTransparentColorMap(QwtColorMap::Format format) : QwtColorMap(format)
 {
     d_data = new PrivateData;
     d_data->mode = ScaledColors;
 
-    setColorInterval( Qt::blue, Qt::yellow);
+    setColorInterval(Qt::blue, Qt::yellow);
 }
 
 //! Copy constructor
-LinearTransparentColorMap::LinearTransparentColorMap(const LinearTransparentColorMap &other):
-    QwtColorMap(other)
+LinearTransparentColorMap::LinearTransparentColorMap(const LinearTransparentColorMap& other) : QwtColorMap(other)
 {
     d_data = new PrivateData;
     *this = other;
@@ -198,9 +180,8 @@ LinearTransparentColorMap::LinearTransparentColorMap(const LinearTransparentColo
    \param color2 Color used for the maximum value of the value interval
    \param format Preferred format of the coor map
 */
-LinearTransparentColorMap::LinearTransparentColorMap(const QColor &color1,
-        const QColor &color2, QwtColorMap::Format format):
-    QwtColorMap(format)
+LinearTransparentColorMap::LinearTransparentColorMap(const QColor& color1,
+    const QColor& color2, QwtColorMap::Format format) : QwtColorMap(format)
 {
     d_data = new PrivateData;
     d_data->mode = ScaledColors;
@@ -214,8 +195,8 @@ LinearTransparentColorMap::~LinearTransparentColorMap()
 }
 
 //! Assignment operator
-LinearTransparentColorMap &LinearTransparentColorMap::operator=(
-    const LinearTransparentColorMap &other)
+LinearTransparentColorMap& LinearTransparentColorMap::operator=(
+    const LinearTransparentColorMap& other)
 {
     QwtColorMap::operator=(other);
     *d_data = *other.d_data;
@@ -223,7 +204,7 @@ LinearTransparentColorMap &LinearTransparentColorMap::operator=(
 }
 
 //! Clone the color map
-QwtColorMap *LinearTransparentColorMap::copy() const
+QwtColorMap* LinearTransparentColorMap::copy() const
 {
     LinearTransparentColorMap* map = new LinearTransparentColorMap();
     *map = *this;
@@ -265,7 +246,7 @@ LinearTransparentColorMap::Mode LinearTransparentColorMap::mode() const
    \sa color1(), color2()
 */
 void LinearTransparentColorMap::setColorInterval(
-    const QColor &color1, const QColor &color2)
+    const QColor& color1, const QColor& color2)
 {
     d_data->colorStops = ColorStops();
     d_data->colorStops.insert(0.0, color1);
@@ -284,7 +265,7 @@ void LinearTransparentColorMap::setColorInterval(
 */
 void LinearTransparentColorMap::addColorStop(double value, const QColor& color)
 {
-    if ( value >= 0.0 && value <= 1.0 )
+    if (value >= 0.0 && value <= 1.0)
         d_data->colorStops.insert(value, color);
 }
 
@@ -321,14 +302,15 @@ QColor LinearTransparentColorMap::color2() const
   \param value Value to map into a rgb value
 */
 QRgb LinearTransparentColorMap::rgb(
-    const QwtDoubleInterval &interval, double value) const
+    const QwtDoubleInterval& interval, double value) const
 {
     const double width = interval.width();
 
     double ratio = 0.0;
-    if ( width > 0.0 )
+    if (width > 0.0)
         ratio = (value - interval.minValue()) / width;
-    if (ratio < 0) return qRgba(0,0,0,0);
+    if (ratio < 0)
+        return qRgba(0, 0, 0, 0);
     return d_data->colorStops.rgb(d_data->mode, ratio);
 }
 
@@ -339,24 +321,23 @@ QRgb LinearTransparentColorMap::rgb(
   \param value Value to map into a color index
 */
 unsigned char LinearTransparentColorMap::colorIndex(
-    const QwtDoubleInterval &interval, double value) const
+    const QwtDoubleInterval& interval, double value) const
 {
     const double width = interval.width();
 
-    if ( width <= 0.0 || value <= interval.minValue() )
+    if (width <= 0.0 || value <= interval.minValue())
         return 0;
 
-    if ( value >= interval.maxValue() )
+    if (value >= interval.maxValue())
         return (unsigned char)255;
 
     const double ratio = (value - interval.minValue()) / width;
 
     unsigned char index;
-    if ( d_data->mode == FixedColors )
-        index = (unsigned char)(ratio * 255); // always floor
+    if (d_data->mode == FixedColors)
+        index = (unsigned char)(ratio * 255);  // always floor
     else
         index = (unsigned char)qRound(ratio * 255);
 
     return index;
 }
-

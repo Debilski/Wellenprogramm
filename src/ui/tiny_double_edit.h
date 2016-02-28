@@ -17,22 +17,28 @@
 #include <stdexcept>
 #include "ui_tiny_double_edit.h"
 
-class TinyDoubleEdit : public QDialog, private Ui::tinyDoubleEdit {
-Q_OBJECT
+class TinyDoubleEdit : public QDialog, private Ui::tinyDoubleEdit
+{
+    Q_OBJECT
 public:
-    enum ExceptionMode { NoException = 0, ThrowException = 1 };
+    enum ExceptionMode
+    {
+        NoException = 0,
+        ThrowException = 1
+    };
     TinyDoubleEdit(QWidget* parent = 0, double value = 0, ExceptionMode mode = ThrowException);
     double value();
-    double value( double defaultValue );
+    double value(double defaultValue);
+
 private:
     double initial_;
     ExceptionMode mode_;
 };
 
-class UninitialisedValueException : public std::runtime_error {
+class UninitialisedValueException : public std::runtime_error
+{
 public:
-    UninitialisedValueException() :
-        std::runtime_error( "Uninitialised Value" )
+    UninitialisedValueException() : std::runtime_error("Uninitialised Value")
     {
     }
 };

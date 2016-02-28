@@ -21,7 +21,8 @@
 #include "lattice_controller.h"
 #include "lattice_interface.h"
 
-class PlotLayer::PrivateData {
+class PlotLayer::PrivateData
+{
 public:
     PrivateData()
     {
@@ -51,44 +52,42 @@ PlotLayer::~PlotLayer()
 
 void PlotLayer::setColorMap(const QwtColorMap& colorMap, ColorMapAdaptationModes mode)
 {
-    setColorMapMode( mode );
-    setColorMap( colorMap );
+    setColorMapMode(mode);
+    setColorMap(colorMap);
 }
 
 void PlotLayer::setColorMapMode(ColorMapAdaptationModes mode)
 {
     switch (mode) {
         case adaptiveColorMapMode:
-            setAdaptationMode( AdaptiveColorMapAdaptationMode() );
+            setAdaptationMode(AdaptiveColorMapAdaptationMode());
             break;
         case delayedAdaptiveColorMapMode:
-            setAdaptationMode( DelayedAdaptiveColorMapAdaptationMode() );
+            setAdaptationMode(DelayedAdaptiveColorMapAdaptationMode());
             break;
         case defaultColorMapMode:
         default:
-            double min =
-                d_data->latticeController->lattice()->componentInfos[ component ].assumedMin();
-            double max =
-                d_data->latticeController->lattice()->componentInfos[ component ].assumedMax();
-            setAdaptationMode( DefaultColorMapAdaptationMode( QwtDoubleInterval( min, max ) ) );
+            double min = d_data->latticeController->lattice()->componentInfos[component].assumedMin();
+            double max = d_data->latticeController->lattice()->componentInfos[component].assumedMax();
+            setAdaptationMode(DefaultColorMapAdaptationMode(QwtDoubleInterval(min, max)));
     }
 }
 
 void PlotLayer::setColorMap(const QwtColorMap& colorMap)
 {
-    spectrogram()->setColorMap( colorMap );
+    spectrogram()->setColorMap(colorMap);
 }
 
 void PlotLayer::attach(QwtPlot* plot)
 {
-    d_data->spectrogram->attach( plot );
+    d_data->spectrogram->attach(plot);
 }
 
 void PlotLayer::adaptRange()
 {
     d_data->adaptationMode->adaptRange(
-        d_data->latticeController->lattice()->getMin( component ),
-        d_data->latticeController->lattice()->getMax( component ) );
+        d_data->latticeController->lattice()->getMin(component),
+        d_data->latticeController->lattice()->getMax(component));
 }
 
 void PlotLayer::setAdaptationMode(const ColorMapAdaptationMode& mode)

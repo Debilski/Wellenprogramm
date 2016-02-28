@@ -17,19 +17,18 @@
 #include <qmenu.h>
 #include <qsignalmapper.h>
 
-class RightclickableToolBar::PrivateData {
+class RightclickableToolBar::PrivateData
+{
 public:
     QMenu toolBarRightClickMenu;
 };
 
-RightclickableToolBar::RightclickableToolBar(const QString & title, QWidget * parent) :
-    QToolBar( title, parent ), d_data(new PrivateData)
+RightclickableToolBar::RightclickableToolBar(const QString& title, QWidget* parent) : QToolBar(title, parent), d_data(new PrivateData)
 {
     init();
 }
 
-RightclickableToolBar::RightclickableToolBar(QWidget * parent) :
-    QToolBar( parent ), d_data(new PrivateData)
+RightclickableToolBar::RightclickableToolBar(QWidget* parent) : QToolBar(parent), d_data(new PrivateData)
 {
     init();
 }
@@ -41,37 +40,37 @@ RightclickableToolBar::~RightclickableToolBar()
 
 void RightclickableToolBar::init()
 {
-    setIconSize( QSize( 32, 32 ) );
-    setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+    setIconSize(QSize(32, 32));
+    setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     typedef QPair<QString, Qt::ToolButtonStyle> T_toolBarString;
-    QList< T_toolBarString > listPairs;
-    listPairs << T_toolBarString( tr("Only Icons"), Qt::ToolButtonIconOnly );
-    listPairs << T_toolBarString( tr("Only Text"), Qt::ToolButtonTextOnly );
-    listPairs << T_toolBarString( tr("Text under Icon"), Qt::ToolButtonTextUnderIcon );
-    listPairs << T_toolBarString( tr("Text beside Icon"), Qt::ToolButtonTextBesideIcon );
+    QList<T_toolBarString> listPairs;
+    listPairs << T_toolBarString(tr("Only Icons"), Qt::ToolButtonIconOnly);
+    listPairs << T_toolBarString(tr("Only Text"), Qt::ToolButtonTextOnly);
+    listPairs << T_toolBarString(tr("Text under Icon"), Qt::ToolButtonTextUnderIcon);
+    listPairs << T_toolBarString(tr("Text beside Icon"), Qt::ToolButtonTextBesideIcon);
     QSignalMapper* toolBarRightClickMapper = new QSignalMapper(this);
 
-    connect( toolBarRightClickMapper, SIGNAL(mapped( int )), this, SLOT( changeToolButtonStyle( int )) );
+    connect(toolBarRightClickMapper, SIGNAL(mapped(int)), this, SLOT(changeToolButtonStyle(int)));
 
-    foreach( T_toolBarString s, listPairs ) {
-        QAction* action = new QAction( s.first, this );
+    foreach (T_toolBarString s, listPairs) {
+        QAction* action = new QAction(s.first, this);
         d_data->toolBarRightClickMenu.addAction(action);
-        connect( action, SIGNAL( triggered() ), toolBarRightClickMapper, SLOT( map() ) );
-        toolBarRightClickMapper->setMapping( action, s.second );
+        connect(action, SIGNAL(triggered()), toolBarRightClickMapper, SLOT(map()));
+        toolBarRightClickMapper->setMapping(action, s.second);
     }
 
-    setContextMenuPolicy( Qt::CustomContextMenu );
+    setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect( this, SIGNAL( customContextMenuRequested ( const QPoint&  ) ), this, SLOT( toolBarCustomContextMenu ( const QPoint& ) ));
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(toolBarCustomContextMenu(const QPoint&)));
 }
 
-void RightclickableToolBar::changeToolButtonStyle( int style )
+void RightclickableToolBar::changeToolButtonStyle(int style)
 {
-    setToolButtonStyle( static_cast<Qt::ToolButtonStyle>(style) );
+    setToolButtonStyle(static_cast<Qt::ToolButtonStyle>(style));
 }
 
-void RightclickableToolBar::toolBarCustomContextMenu ( const QPoint & pos )
+void RightclickableToolBar::toolBarCustomContextMenu(const QPoint& pos)
 {
-    d_data->toolBarRightClickMenu.popup( mapToGlobal( pos ) );
+    d_data->toolBarRightClickMenu.popup(mapToGlobal(pos));
 }

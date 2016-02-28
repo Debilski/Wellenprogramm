@@ -16,7 +16,7 @@
 #include "check_box_matrix.h"
 
 #include "qcheckbox.h"
-#include  "qdebug.h"
+#include "qdebug.h"
 
 /*! \class CheckBoxMatrix
  *  CheckBoxMatrix provides a simple way of handling a matrix of checkboxes and keeping them in sync with a QVector< int >.
@@ -27,47 +27,47 @@
 
 CheckBoxMatrix::CheckBoxMatrix(int rows, int cols)
 {
-    matrix_.resize( rows );
-    checkBoxMatrix_.resize( rows );
+    matrix_.resize(rows);
+    checkBoxMatrix_.resize(rows);
     for (int i = 0; i < checkBoxMatrix_.size(); ++i) {
-        checkBoxMatrix_[ i ].resize( cols );
+        checkBoxMatrix_[i].resize(cols);
     }
 }
 
 void CheckBoxMatrix::associateCheckBox(QCheckBox* checkBox, int row, int col,
-                                       bool keepStateOfCheckBox)
+    bool keepStateOfCheckBox)
 {
-    checkBoxMatrix_[ row ][ col ] = checkBox;
-    if ( keepStateOfCheckBox ) {
-        setChecked( checkBox->isChecked(), row, col );
+    checkBoxMatrix_[row][col] = checkBox;
+    if (keepStateOfCheckBox) {
+        setChecked(checkBox->isChecked(), row, col);
     } else {
-        checkBox->setChecked( isChecked( row, col ) );
+        checkBox->setChecked(isChecked(row, col));
     }
-    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( checkBoxToggled() ) );
+    connect(checkBox, SIGNAL(toggled(bool)), this, SLOT(checkBoxToggled()));
 }
 
 bool CheckBoxMatrix::isChecked(int row, int col) const
 {
     qDebug() << matrix_;
-    return matrix_[ row ] & (2 << col);
+    return matrix_[row] & (2 << col);
 }
 
 void CheckBoxMatrix::setChecked(bool check, int row, int col)
 {
-    checkBoxMatrix_[ row ][ col ]->setChecked( check );
-    if ( check ) {
-        matrix_[ row ] |= (2 << col);
+    checkBoxMatrix_[row][col]->setChecked(check);
+    if (check) {
+        matrix_[row] |= (2 << col);
     } else {
-        matrix_[ row ] &= !(2 << col);
+        matrix_[row] &= !(2 << col);
     }
 }
 
-void CheckBoxMatrix::setMatrix(QVector< int > matrix)
+void CheckBoxMatrix::setMatrix(QVector<int> matrix)
 {
     matrix_ = matrix;
 }
 
-QVector< int > CheckBoxMatrix::getMatrix() const
+QVector<int> CheckBoxMatrix::getMatrix() const
 {
     return matrix_;
 }
@@ -75,10 +75,10 @@ QVector< int > CheckBoxMatrix::getMatrix() const
 void CheckBoxMatrix::checkBoxToggled()
 {
     for (int r = 0; r < checkBoxMatrix_.size(); ++r) {
-        for (int c = 0; c < checkBoxMatrix_[ r ].size(); ++c) {
-            if ( sender() == checkBoxMatrix_[ r ][ c ] ) {
-                bool isChecked = checkBoxMatrix_[ r ][ c ]->isChecked();
-                setChecked( isChecked, r, c );
+        for (int c = 0; c < checkBoxMatrix_[r].size(); ++c) {
+            if (sender() == checkBoxMatrix_[r][c]) {
+                bool isChecked = checkBoxMatrix_[r][c]->isChecked();
+                setChecked(isChecked, r, c);
             }
         }
     }

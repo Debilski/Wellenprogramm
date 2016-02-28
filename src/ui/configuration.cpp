@@ -22,7 +22,7 @@
 Configuration::Configuration()
 {
     QSettings settings;
-// Ist noch nicht Environment-spezifisch.
+    // Ist noch nicht Environment-spezifisch.
     QString libDir = "target/models";
 #ifdef Q_OS_DARWIN
     QString libPattern = "*lattice.dylib";
@@ -30,25 +30,23 @@ Configuration::Configuration()
     QString libPattern = "*lattice.so";
 #endif
 
-    addOption( "libraryDirectory", libDir, "global/libraryDirectory" ). addCommandLineString(
-        "libDir" );
+    addOption("libraryDirectory", libDir, "global/libraryDirectory").addCommandLineString("libDir");
 
-    addOption( "libraryPattern", libPattern, "global/libraryPattern" ). addCommandLineString(
-        "libPattern" );
+    addOption("libraryPattern", libPattern, "global/libraryPattern").addCommandLineString("libPattern");
 
-    addOption( "last_model", "FhnLattice", "global/lastModel" ). addCommandLineString( "model" );
+    addOption("last_model", "FhnLattice", "global/lastModel").addCommandLineString("model");
 
-    addOption( "last_size_x", "128", "global/lastSizeX" ). addCommandLineString( "sizex" );
-    addOption( "last_size_y", "128", "global/lastSizeY" ). addCommandLineString( "sizey" );
-    addOption( "last_lattice_size_x", "128", "global/lastLatticeSizeX" ). addCommandLineString( "latticesizex" );
-    addOption( "last_lattice_size_y", "128", "global/lastLatticeSizeY" ). addCommandLineString( "latticesizey" );
+    addOption("last_size_x", "128", "global/lastSizeX").addCommandLineString("sizex");
+    addOption("last_size_y", "128", "global/lastSizeY").addCommandLineString("sizey");
+    addOption("last_lattice_size_x", "128", "global/lastLatticeSizeX").addCommandLineString("latticesizex");
+    addOption("last_lattice_size_y", "128", "global/lastLatticeSizeY").addCommandLineString("latticesizey");
 }
 
 Option& Configuration::operator()(const QString& name)
 {
-    if ( optionList.contains( name ) ) {
+    if (optionList.contains(name)) {
         //qDebug() << optionList[ name ].value();
-        return optionList[ name ];
+        return optionList[name];
     } else {
         qDebug() << "Option not found:" << name;
     }
@@ -57,27 +55,27 @@ Option& Configuration::operator()(const QString& name)
 
 Option Configuration::option(const QString& name) const
 {
-    return optionList.value( name );
+    return optionList.value(name);
 }
 
 Option& Configuration::addOption(const QString& name, const QVariant& defaultValue)
 {
-    return addOption( name, defaultValue, name );
+    return addOption(name, defaultValue, name);
 }
 
 Option& Configuration::addOption(const QString& name, const QVariant& defaultValue,
-                                 const QString& settingsKey)
+    const QString& settingsKey)
 {
-    Option newOption( name, defaultValue, settingsKey );
-    return optionList.insert( name, newOption ).value();
+    Option newOption(name, defaultValue, settingsKey);
+    return optionList.insert(name, newOption).value();
 }
 
 void Configuration::debug()
 {
     qDebug() << "Registered Variables";
-    foreach( Option o, optionList ) {
-            qDebug() << o.name() << o.value() << "Default" << o.defaultValue();
-        }
+    foreach (Option o, optionList) {
+        qDebug() << o.name() << o.value() << "Default" << o.defaultValue();
+    }
 }
 void Configuration::read()
 {
